@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config xmlns:android="http://schemas.android.com/apk/res/android=">
+    <setting
+        wsUrl="http://localhost:8080/service"
+        locatorWs="/BeaconLocatorService?wsdl"
+        positionerWs="/BeaconPositionerService?wsdl"
+        username="yourWebAppAdminUser"
+        password="yourWebAppAdminPassword"
+        namespace="http://services.indoornavsrv.gi.hsmainz.de/"
+        />
+</config>
