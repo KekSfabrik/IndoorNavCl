@@ -79,9 +79,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
-      <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 19 Platform (1)" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="ksoap2-base-3.4.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.1.0" level="project" />
@@ -94,5 +93,17 @@
     <orderEntry type="library" exported="" name="kxml-2.2.4" level="project" />
     <orderEntry type="library" exported="" name="kobjects-j2me-0.0-SNAPSHOT-20040926-2" level="project" />
     <orderEntry type="library" exported="" name="jts-1.13" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../BeaconCalculate/src/libs/jts-1.13.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../BeaconCalculate/src/libs/ejml-0.25.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../BeaconCalculate/src/libs" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
