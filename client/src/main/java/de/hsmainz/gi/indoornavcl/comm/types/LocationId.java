@@ -18,6 +18,8 @@
 
 package de.hsmainz.gi.indoornavcl.comm.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import de.hsmainz.gi.indoornavcl.util.Utilities;
 import org.ksoap2.serialization.KvmSerializable;
 import org.ksoap2.serialization.PropertyInfo;
@@ -35,7 +37,8 @@ public class LocationId
         implements  KvmSerializable,
                     Serializable,
                     Comparable,
-                    IndoorNavEntity {
+                    IndoorNavEntity,
+                    Parcelable {
 
     protected int beaconId;
     protected int site;
@@ -46,6 +49,25 @@ public class LocationId
      */
     public int getBeaconId() {
         return beaconId;
+    }
+
+    public LocationId() {
+
+    }
+
+    public LocationId(Beacon beacon, Site site) {
+        this.beaconId = beacon.getId();
+        this.site = site.getSite();
+    }
+
+    public LocationId(int beaconId, int site) {
+        this.beaconId = beaconId;
+        this.site = site;
+    }
+
+    public LocationId(Parcel in) {
+        this.beaconId = in.readInt();
+        this.site = in.readInt();
     }
 
     /**
@@ -176,8 +198,63 @@ public class LocationId
     @Override
     public int compareTo(Object o) {
         int out = 0;
-        out += 42 * this.site - ((LocationId) o).getSite();
         out += 79 * this.beaconId - ((LocationId) o).getBeaconId();
+        out += 42 * this.site - ((LocationId) o).getSite();
         return out;
     }
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable's
+     * marshalled representation.
+     *
+     * @return a bitmask indicating the set of special object types marshalled
+     * by the Parcelable.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.beaconId);
+        dest.writeInt(this.site);
+    }
+
+
+    public static final Parcelable.Creator<LocationId> CREATOR = new Parcelable.Creator<LocationId>() {
+
+        /**
+         * Create a new instance of the Parcelable class, instantiating it
+         * from the given Parcel whose data had previously been written by
+         * {@link android.os.Parcelable#writeToParcel Parcelable.writeToParcel()}.
+         *
+         * @param source The Parcel to read the object's data from.
+         * @return Returns a new instance of the Parcelable class.
+         */
+        @Override
+        public LocationId createFromParcel(Parcel source) {
+            return new LocationId(source);
+        }
+
+        /**
+         * Create a new array of the Parcelable class.
+         *
+         * @param size Size of the array.
+         * @return Returns an array of the Parcelable class, with every entry
+         * initialized to null.
+         */
+        @Override
+        public LocationId[] newArray(int size) {
+            return new LocationId[size];
+        }
+    };
+
 }

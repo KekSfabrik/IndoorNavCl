@@ -17,6 +17,8 @@
 
 package de.hsmainz.gi.indoornavcl.comm.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -39,7 +41,8 @@ public class WkbPoint
         implements KvmSerializable,
                     Serializable,
                     Comparable,
-                    IndoorNavEntity {
+                    IndoorNavEntity,
+                    Parcelable {
 
     private static final WKBReader  reader = new WKBReader();
     private static final WKBWriter  writer = new WKBWriter(3, true);
@@ -54,6 +57,10 @@ public class WkbPoint
 
     public WkbPoint(com.vividsolutions.jts.geom.Point point) {
         this.wkb = WKBWriter.toHex(writer.write(point));
+    }
+
+    public WkbPoint(Parcel in) {
+        this.wkb = in.readString();
     }
 
 // <editor-fold desc="old implementation" defaultstate="collapsed">
@@ -200,7 +207,7 @@ public class WkbPoint
         try {
             point = (Point) reader.read(WKBReader.hexToBytes(getWkb()));
         } catch (ParseException ex) {
-            android.util.Log.d("WkbPoint", "Couldn't parse WKB", ex);
+            android.util.Log.d("WkbPoint", "Couldn not parse WKB, handing out new Geometry(Point(0 0 0), 4326)", ex);
             point = new GeometryFactory()
                 .createPoint(
                         new Coordinate(
@@ -211,6 +218,11 @@ public class WkbPoint
         }
         return point;
     }
+
+    public void setPoint(com.vividsolutions.jts.geom.Point point) {
+        this.wkb = WKBWriter.toHex(writer.write(point));
+    }
+
 
     /**
      * @param wkb the wkb to set
@@ -301,4 +313,57 @@ public class WkbPoint
     public void setInnerText(String s) {
 
     }
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable's
+     * marshalled representation.
+     *
+     * @return a bitmask indicating the set of special object types marshalled
+     * by the Parcelable.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.wkb);
+    }
+
+
+    public static final Parcelable.Creator<WkbPoint> CREATOR = new Parcelable.Creator<WkbPoint>() {
+
+        /**
+         * Create a new instance of the Parcelable class, instantiating it
+         * from the given Parcel whose data had previously been written by
+         * {@link android.os.Parcelable#writeToParcel Parcelable.writeToParcel()}.
+         *
+         * @param source The Parcel to read the object's data from.
+         * @return Returns a new instance of the Parcelable class.
+         */
+        @Override
+        public WkbPoint createFromParcel(Parcel source) {
+            return new WkbPoint(source);
+        }
+
+        /**
+         * Create a new array of the Parcelable class.
+         *
+         * @param size Size of the array.
+         * @return Returns an array of the Parcelable class, with every entry
+         * initialized to null.
+         */
+        @Override
+        public WkbPoint[] newArray(int size) {
+            return new WkbPoint[size];
+        }
+    };
 }

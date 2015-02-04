@@ -18,6 +18,8 @@
 
 package de.hsmainz.gi.indoornavcl.comm.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import de.hsmainz.gi.indoornavcl.util.StringUtils;
 import de.hsmainz.gi.indoornavcl.util.Utilities;
 import org.ksoap2.serialization.KvmSerializable;
@@ -37,7 +39,8 @@ public class Beacon
         implements  KvmSerializable,
                     Serializable,
                     Comparable,
-                    IndoorNavEntity {
+                    IndoorNavEntity,
+                    Parcelable {
 
     protected int       id;
     protected int       major;
@@ -50,13 +53,28 @@ public class Beacon
     public Beacon() {
     }
 
+
     /**
-     * Construct a {@link Beacon} from it\'s Fields.
-     * @param   id      the Database ID
-     * @param   major   the Major Version (~site)
-     * @param   minor   the Minor Version (individual id)
-     * @param   uuid    the Manufacturer UUID
+     * Overridden method to un-{@link android.os.Parcel}
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s
+     *
+     * @param   in      the {@link android.os.Parcel}
      */
+    public Beacon(Parcel in) {
+        this.id = in.readInt();
+        this.major = in.readInt();
+        this.minor = in.readInt();
+        this.uuid = in.readString();
+    }
+
+
+            /**
+             * Construct a {@link Beacon} from it\'s Fields.
+             * @param   id      the Database ID
+             * @param   major   the Major Version (~site)
+             * @param   minor   the Minor Version (individual id)
+             * @param   uuid    the Manufacturer UUID
+             */
     public Beacon(int id, int major, int minor, String uuid) {
         this.id = id;
         this.major = major;
@@ -281,4 +299,61 @@ public class Beacon
         hash = 37 * hash + this.minor;
         return hash;
     }
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable's
+     * marshalled representation.
+     *
+     * @return a bitmask indicating the set of special object types marshalled
+     * by the Parcelable.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeInt(this.major);
+        dest.writeInt(this.minor);
+        dest.writeString(this.uuid);
+    }
+
+
+    public static final Parcelable.Creator<Beacon> CREATOR = new Parcelable.Creator<Beacon>() {
+
+        /**
+         * Create a new instance of the Parcelable class, instantiating it
+         * from the given Parcel whose data had previously been written by
+         * {@link android.os.Parcelable#writeToParcel Parcelable.writeToParcel()}.
+         *
+         * @param source The Parcel to read the object's data from.
+         * @return Returns a new instance of the Parcelable class.
+         */
+        @Override
+        public Beacon createFromParcel(Parcel source) {
+            return new Beacon(source);
+        }
+
+        /**
+         * Create a new array of the Parcelable class.
+         *
+         * @param size Size of the array.
+         * @return Returns an array of the Parcelable class, with every entry
+         * initialized to null.
+         */
+        @Override
+        public Beacon[] newArray(int size) {
+            return new Beacon[size];
+        }
+    };
+
 }

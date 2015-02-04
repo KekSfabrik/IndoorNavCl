@@ -41,11 +41,6 @@ public class BeaconScannerApplication extends Application {
     private BackgroundPowerSaver    backgroundPowerSaver;
     /** global reference to {@link org.altbeacon.beacon.BeaconManager} */
     private BeaconManager           beaconManager;
-    /** a set of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s not yet known to the DB */
-    private static Set<Beacon>      unregisteredBeacons = new HashSet<>();
-
-    /** whether or not the user is an administrator */
-    private static boolean          isAdminUser = true;
 
 
     @Override
@@ -70,40 +65,5 @@ public class BeaconScannerApplication extends Application {
      */
     public BeaconManager getBeaconManager() {
         return beaconManager;
-    }
-
-    /**
-     *
-     * @param   beacon  a unregistered {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}
-     * @return  whether or not successfull
-     */
-    public boolean enqueueUnregisteredBeacon(Beacon beacon) {
-        return unregisteredBeacons.add(beacon);
-    }
-
-    /**
-     *
-     * @param   beacon  the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} to unregister
-     * @return  whether or not successfull
-     */
-    public boolean dequeueUnregisteredBeacon(Beacon beacon) {
-        return unregisteredBeacons.remove(beacon);
-    }
-
-    /**
-     *
-     * @return  the set of unregistered {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s
-     */
-    public Set<Beacon> getUnregisteredBeacons() {
-        return unregisteredBeacons;
-    }
-
-
-    /**
-     * TODO proper user authentication
-     * @return  whether you are a privileged user
-     */
-    public boolean isIsAdminUser() {
-        return isAdminUser;
     }
 }

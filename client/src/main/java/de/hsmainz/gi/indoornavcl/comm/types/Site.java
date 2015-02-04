@@ -18,6 +18,8 @@
 
 package de.hsmainz.gi.indoornavcl.comm.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import de.hsmainz.gi.indoornavcl.util.StringUtils;
 import de.hsmainz.gi.indoornavcl.util.Utilities;
 import org.ksoap2.serialization.KvmSerializable;
@@ -37,7 +39,8 @@ public class Site
         implements  KvmSerializable,
                     Serializable,
                     Comparable,
-                    IndoorNavEntity {
+                    IndoorNavEntity,
+                    Parcelable {
 
     protected String name;
     protected int site;
@@ -51,6 +54,11 @@ public class Site
     public Site(int id, String name) {
         this.site = id;
         this.name = name;
+    }
+
+    public Site(Parcel in) {
+        this.name = in.readString();
+        this.site = in.readInt();
     }
 
     /**
@@ -207,4 +215,58 @@ public class Site
         hash = 11 * hash + Objects.hashCode(this.name);
         return hash;
     }
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable's
+     * marshalled representation.
+     *
+     * @return a bitmask indicating the set of special object types marshalled
+     * by the Parcelable.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.name);
+        dest.writeInt(this.site);
+    }
+
+
+    public static final Parcelable.Creator<Site> CREATOR = new Parcelable.Creator<Site>() {
+
+        /**
+         * Create a new instance of the Parcelable class, instantiating it
+         * from the given Parcel whose data had previously been written by
+         * {@link android.os.Parcelable#writeToParcel Parcelable.writeToParcel()}.
+         *
+         * @param source The Parcel to read the object's data from.
+         * @return Returns a new instance of the Parcelable class.
+         */
+        @Override
+        public Site createFromParcel(Parcel source) {
+            return new Site(source);
+        }
+
+        /**
+         * Create a new array of the Parcelable class.
+         *
+         * @param size Size of the array.
+         * @return Returns an array of the Parcelable class, with every entry
+         * initialized to null.
+         */
+        @Override
+        public Site[] newArray(int size) {
+            return new Site[size];
+        }
+    };
 }
