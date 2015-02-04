@@ -18,6 +18,8 @@
 
 package de.hsmainz.gi.indoornavcl.comm.types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import de.hsmainz.gi.indoornavcl.util.StringUtils;
 import org.ksoap2.serialization.KvmSerializable;
 import org.ksoap2.serialization.PropertyInfo;
@@ -37,13 +39,24 @@ public class WkbLocation
         implements  KvmSerializable,
                     Serializable,
                     Comparable,
-                    IndoorNavEntity {
+                    IndoorNavEntity,
+                    Parcelable {
 
-    protected Beacon beacon;
-    protected WkbPoint coord;
-    protected LocationId id;
-    protected Site site;
+    protected Beacon        beacon;
+    protected WkbPoint      coord;
+    protected LocationId    id;
+    protected Site          site;
 
+    public WkbLocation() {
+
+    }
+
+    public WkbLocation(Parcel in) {
+        this.beacon = in.readParcelable(Beacon.class.getClassLoader());
+        this.coord = in.readParcelable(WkbPoint.class.getClassLoader());
+        this.id = in.readParcelable(LocationId.class.getClassLoader());
+        this.site = in.readParcelable(Site.class.getClassLoader());
+    }
     /**
      * Ruft den Wert der beacon-Eigenschaft ab.
      * 
@@ -300,4 +313,59 @@ public class WkbLocation
         hash = 79 * hash + Objects.hashCode(this.coord);
         return hash;
     }
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable's
+     * marshalled representation.
+     *
+     * @return a bitmask indicating the set of special object types marshalled
+     * by the Parcelable.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.beacon, 0);
+        dest.writeParcelable(this.coord, 0);
+        dest.writeParcelable(this.id, 0);
+        dest.writeParcelable(this.site, 0);
+    }
+
+    public static final Parcelable.Creator<WkbLocation> CREATOR = new Parcelable.Creator<WkbLocation>() {
+
+        /**
+         * Create a new instance of the Parcelable class, instantiating it
+         * from the given Parcel whose data had previously been written by
+         * {@link android.os.Parcelable#writeToParcel Parcelable.writeToParcel()}.
+         *
+         * @param source The Parcel to read the object's data from.
+         * @return Returns a new instance of the Parcelable class.
+         */
+        @Override
+        public WkbLocation createFromParcel(Parcel source) {
+            return new WkbLocation(source);
+        }
+
+        /**
+         * Create a new array of the Parcelable class.
+         *
+         * @param size Size of the array.
+         * @return Returns an array of the Parcelable class, with every entry
+         * initialized to null.
+         */
+        @Override
+        public WkbLocation[] newArray(int size) {
+            return new WkbLocation[size];
+        }
+    };
 }

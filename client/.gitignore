@@ -1,3 +1,4 @@
 /build
 /lib
 /gradle
+/client/src/main/res/xml/config.xml
