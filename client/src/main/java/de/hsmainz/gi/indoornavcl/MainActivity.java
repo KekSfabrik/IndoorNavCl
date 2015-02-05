@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.vividsolutions.jts.geom.Point;
 import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
@@ -70,6 +71,13 @@ public class MainActivity
 
                                     Point point = wkbPoint.getPoint();
                                     showNotification("Found 'POINT(" + point.getCoordinate().x + " " + point.getCoordinate().y + " " + point.getCoordinate().z + ")'");
+
+                                    TextView xPos = (TextView) findViewById(R.id.txtX);
+                                    xPos.setText(point.getCoordinate().x + "");
+                                    TextView yPos = (TextView) findViewById(R.id.txtY);
+                                    yPos.setText(point.getCoordinate().y + "");
+                                    TextView zPos = (TextView) findViewById(R.id.txtZ);
+                                    zPos.setText(point.getCoordinate().z + "");
                                     // TODO display the new point on the UI
                                     break;
                                 case Globals.DISPLAY_TOAST_MSG:

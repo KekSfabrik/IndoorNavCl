@@ -15,30 +15,28 @@
  * MA 02110-1301  USA
  */
 
-package de.hsmainz.gi.indoornavcl.util;
+package de.hsmainz.gi.indoornavcl.positioning;
+
+import com.vividsolutions.jts.geom.Point;
+import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
+
+import java.util.Map;
 
 
 /**
  *
  * @author  KekS (mailto:keks@keksfabrik.eu), 2015
  */
-public class Measurement {
-    private int rssi;
-    private int txPower;
+public interface Locator {
 
-    public int getRssi() {
-        return rssi;
-    }
+    /**
+     * Calculate the {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} of the Client
+     * based on the visible {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s and their
+     * {@link de.hsmainz.gi.indoornavcl.positioning.Measurement}s.
+     *
+     * @param   locations   a Map of Locations with a List of their Measurements
+     * @return  the WkbLocation of the Client
+     */
+    public Point getLocation(Map<WkbLocation, Measurement> locations);
 
-    public void setRssi(int rssi) {
-        this.rssi = rssi;
-    }
-
-    public int getTxPower() {
-        return txPower;
-    }
-
-    public void setTxPower(int txPower) {
-        this.txPower = txPower;
-    }
 }

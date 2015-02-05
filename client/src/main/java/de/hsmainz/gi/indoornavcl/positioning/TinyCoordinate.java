@@ -15,28 +15,34 @@
  * MA 02110-1301  USA
  */
 
-package de.hsmainz.gi.indoornavcl.util;
+package de.hsmainz.gi.indoornavcl.positioning;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
-
-import java.util.Map;
-
 
 /**
- *
- * @author  KekS (mailto:keks@keksfabrik.eu), 2015
+ * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 04.02.15.
  */
-public interface Locator {
+public class TinyCoordinate {
+    double x, y, z;
 
-    /**
-     * Calculate the {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} of the Client
-     * based on the visible {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s and their
-     * {@link Measurement}s.
-     *
-     * @param   locations   a Map of Locations with a List of their Measurements
-     * @return  the WkbLocation of the Client
-     */
-    public Point getLocation(Map<WkbLocation, Measurement> locations);
+    TinyCoordinate() {
+    }
 
+    TinyCoordinate(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    TinyCoordinate(Point p) {
+        Coordinate c = p.getCoordinate();
+        this.x = c.x;
+        this.y = c.y;
+        this.z = c.z;
+    }
+
+    public String toString() {
+        return "TinyCoordinate (" + x + " " + y + " " + z + ")";
+    }
 }

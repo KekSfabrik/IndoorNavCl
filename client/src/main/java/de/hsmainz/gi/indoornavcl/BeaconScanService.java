@@ -24,11 +24,12 @@ import android.content.Intent;
 import android.os.*;
 import android.util.Log;
 import com.vividsolutions.jts.geom.Point;
+import de.hsmainz.gi.indoornavcl.comm.SoapLocatorRequests;
 import de.hsmainz.gi.indoornavcl.comm.SoapPositionerRequests;
-import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
-import de.hsmainz.gi.indoornavcl.comm.types.Site;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
+import de.hsmainz.gi.indoornavcl.comm.types.*;
+import de.hsmainz.gi.indoornavcl.positioning.Locator;
+import de.hsmainz.gi.indoornavcl.positioning.LocatorImplOne;
+import de.hsmainz.gi.indoornavcl.positioning.Measurement;
 import de.hsmainz.gi.indoornavcl.util.Globals;
 import de.hsmainz.gi.indoornavcl.util.StringUtils;
 import org.altbeacon.beacon.*;
@@ -52,12 +53,18 @@ public class BeaconScanService
                                         loggedBeacons       = Collections.synchronizedSet(new HashSet<de.hsmainz.gi.indoornavcl.comm.types.Beacon>()),
                                         checkedBeacons      = Collections.synchronizedSet(new HashSet<de.hsmainz.gi.indoornavcl.comm.types.Beacon>()),
                                         unregisteredBeacons = new HashSet<>();
-    private Site                        currentSite;
+    private Set<Site>                   possibleSites       = Collections.synchronizedSet(new HashSet<Site>());
+    private Site                        currentSite         = new Site(1, "KekSfabrik");
+    private Set<WkbLocation>            currentSiteLocations= Collections.synchronizedSet(new HashSet<WkbLocation>());
+    private Map<WkbLocation, Measurement>
+                                        currentSiteMeasurements= new TreeMap<>();
     private Region                      region;
+    private Point                       currentClientLocation;
     private BeaconScannerApplication    app;
     private boolean                     isScanning;
     private final IBinder               binder = new LocalBinder();
     private Messenger                   updateBeaconPositionMessenger;
+    private Locator                     locator = new LocatorImplOne();
 
     /** whether or not the user is an administrator */
     private static boolean              isAdminUser = true;
@@ -66,22 +73,38 @@ public class BeaconScanService
                         @Override
                         public boolean handleMessage(Message msg) {
                             switch (msg.what) {
-                                case 0:
+                                case Globals.ZERO:
                                     synchronized (loggedBeacons) {
-                //                        if (checkedBeacons != null) {
-                //                            for (de.hsmainz.gi.indoornavcl.comm.types.Beacon b : checkedBeacons) {
-                //                                Log.v(TAG, "Checked Beacon(" + StringUtils.toString(b) + ")");
-                //                                if (!loggedBeacons.contains(b)) {
-                //                                    app.enqueueUnregisteredBeacon(b);
-                //                                }
-                //                            }
-                //                            loggedBeacons.clear();
-                //                            Set<WkbLocation> wkbLocations = SoapLocatorRequests.getBeaconLocationsFromBeaconList(checkedBeacons);
-                //                            for (WkbLocation loc : wkbLocations) {
-                //                                Log.v(TAG, "(getBeaconLocationsFromBeaconList) Locations(" + StringUtils.toString(loc) + ")");
-                //                            }
-                //                        }
+                                        if (checkedBeacons != null) {
+                                            for (de.hsmainz.gi.indoornavcl.comm.types.Beacon b : checkedBeacons) {
+                                                Log.v(TAG, "Checked Beacon(" + StringUtils.toString(b) + ")");
+                                                if (!loggedBeacons.contains(b)) {
+                                                    unregisteredBeacons.add(b);
+                                                }
+                                            }
+                                            loggedBeacons.clear();
+                                            determineSite();
+                                        }
                                     }
+                                    break;
+                                case Globals.DETERMINE_SITE_CALLBACK_ARRIVED:
+                                    // TODO determine currentSite from possibleSites
+                                    currentSite = new Site(1, "KekSfabrik");
+                                    //getLocations();
+                                    getLocationsForCurrentSite();
+                                    break;
+                                case Globals.GET_LOCATIONS_CALLBACK_ARRIVED:
+                                    synchronized (currentSiteLocations) {
+                                        for (WkbLocation loc: currentSiteLocations) {
+                                            if (!currentSiteMeasurements.containsKey(loc)) {
+                                                currentSiteMeasurements.put(loc, null);
+                                            }
+//                                            Log.v(TAG, "GET_LOCATIONS_CALLBACK_ARRIVED -> "+StringUtils.toString(loc));
+                                        }
+                                    }
+                                    break;
+                                case Globals.CALC_POSITION_CALLBACK_ARRIVED:
+                                    updatePosition(new WkbPoint(currentClientLocation));
                                     break;
                             }
                             return false;
@@ -96,7 +119,7 @@ public class BeaconScanService
         verifyBluetooth();
         try {
             app.getBeaconManager().startRangingBeaconsInRegion(region);
-            tryAdminInterface();
+            //tryAdminInterface();
             isScanning = true;
         } catch (RemoteException e) {
             Log.w(TAG, "problem with startRangingBeaconsInRegion", e);
@@ -158,69 +181,89 @@ public class BeaconScanService
 
     private void logBeacons() {
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 synchronized (loggedBeacons) {
-                /*for (de.hsmainz.gi.indoornavcl.comm.types.Beacon b: loggedBeacons) {
-                    Log.v(TAG, "Logged Beacon("+b.getId()+"): "+b.getUuid() + ", " + b.getMajor() + ", " + b.getMinor());
-                }*/
-//                checkedBeacons.clear();
-                  /* getBeacon(beacon) */
-//                checkedBeacons.add(
-//                    SoapLocatorRequests.getBeacons(
-//                        loggedBeacons != null
-//                        ? loggedBeacons
-//                        : Arrays.asList(
-//                            new de.hsmainz.gi.indoornavcl.comm.types.Beacon[] {
-//                                new de.hsmainz.gi.indoornavcl.comm.types.Beacon(0, 100, 12, "00000000000000000000000000000000")
-//                            }
-//                        )
-//                    )
-//                );
-                  /* getBeacons(beacons) */
-//                checkedBeacons = SoapLocatorRequests.getBeacons(loggedBeacons);
+                    if (!loggedBeacons.isEmpty()) {
 
-//                    Set<Site> siteCandidates = SoapLocatorRequests.getSiteByApproximateName("Lucy");
-//                    Site keksfabrik = new Site(1, "KekSfabrik - Lotharstrasse 1,  55116 Mainz");
-//                    if (siteCandidates.contains(keksfabrik)) {
-//                        currentSite = keksfabrik;
-//                    }
-//                    Log.d(TAG, "(getSiteByApproximateName) current site = " + currentSite);
-//                    currentSite = null;
-//                    Log.d(TAG, "(getBeaconLocationsFromSite) All locations at keksfabrik: ");
-//                    for (WkbLocation loc: SoapLocatorRequests.getBeaconLocationsFromSite(keksfabrik)) {
-//                        Log.d(TAG, StringUtils.toString(loc));
-//                    }
-//                    /* getBeaconFromUuidMajorMinor */
-//                    for (de.hsmainz.gi.indoornavcl.comm.types.Beacon b : loggedBeacons) {
-//                        de.hsmainz.gi.indoornavcl.comm.types.Beacon bcn = SoapLocatorRequests
-//                                .getBeaconFromUuidMajorMinor(
-//                                        b.getUuid(), b.getMajor(), b.getMinor()
-//                                );
-//                        if (bcn != null) {
-//                            checkedBeacons.add(bcn);
-//                            if (currentSite == null) {
-//                                siteCandidates = SoapLocatorRequests.getSitesFromBeacon(bcn);
-//                                for (Site site: siteCandidates) {
-//                                    Log.d(TAG, "(getSitesFromBeacon) Site is possibly " + StringUtils.toString(site));
-//                                }
-//                            }
-//                            if (currentSite != null) {
-//                                Log.d(TAG, "trying to find location for " + StringUtils.toString(currentSite) + " & " + StringUtils.toString(bcn));
-//                                Point point = SoapLocatorRequests.getCoordinate(currentSite, bcn);
-//                                Log.d(TAG, "Point: "+point.toString());
-//                            }
-//                        }
-//                    }
-//                    for (Site site: SoapLocatorRequests.getSitesFromBeaconList(loggedBeacons)) {
-//                        Log.d(TAG, "SitesFromBeaconList" + StringUtils.toString(site));
-//                    }
+                        checkedBeacons.addAll(SoapLocatorRequests.getBeacons(loggedBeacons));
+                        Log.v(TAG, "logBeacons() -> checkedBeacons = " + Arrays.toString(StringUtils.listAll(checkedBeacons)));
+                    }
                 }
-                handler.sendEmptyMessage(0);
+                handler.sendEmptyMessage(Globals.ZERO);
             }
         }).start();
     }
+
+    private void determineSite() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (checkedBeacons) {
+                    if (checkedBeacons != null && !checkedBeacons.isEmpty()) {
+                        possibleSites = SoapLocatorRequests.getSitesFromBeaconList(checkedBeacons);
+                        Log.v(TAG, "determineSite() -> possibleSites = "+Arrays.toString(StringUtils.listAll(possibleSites)));
+                    }
+                }
+                handler.sendEmptyMessage(Globals.DETERMINE_SITE_CALLBACK_ARRIVED);
+            }
+        }).start();
+    }
+
+
+    private void getLocations() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (checkedBeacons) {
+                    if (checkedBeacons != null && !checkedBeacons.isEmpty()) {
+                        currentSiteLocations = SoapLocatorRequests.getBeaconLocationsFromBeaconList(checkedBeacons);
+                        Log.v(TAG, "getLocations() -> currentSiteLocations = "+Arrays.toString(StringUtils.listAll(currentSiteLocations)));
+                    }
+                }
+                handler.sendEmptyMessage(Globals.GET_LOCATIONS_CALLBACK_ARRIVED);
+            }
+        }).start();
+    }
+
+
+    private void getLocationsForCurrentSite() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (currentSiteLocations) {
+                    if (currentSite != null) {
+                        currentSiteLocations = SoapLocatorRequests.getBeaconLocationsFromSite(currentSite);
+                        Log.v(TAG, "getLocationsForCurrentSite() -> currentSiteLocations = "+Arrays.toString(StringUtils.listAll(currentSiteLocations)));
+                    }
+                }
+                handler.sendEmptyMessage(Globals.GET_LOCATIONS_CALLBACK_ARRIVED);
+            }
+        }).start();
+    }
+
+
+    private void calcPosition() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                currentClientLocation = locator.getLocation(currentSiteMeasurements);
+                Log.v(TAG, "calcPosition() -> Calculated site: " +currentClientLocation.toText());
+                handler.sendEmptyMessage(Globals.CALC_POSITION_CALLBACK_ARRIVED);
+            }
+        }).start();
+    }
+
+    /*
+    ==================================================================================
+
+
+    ==================================================================================
+
+
+    ==================================================================================
+     */
+
 
     /**
      * try out the admin interface with all its commands
@@ -302,34 +345,6 @@ public class BeaconScanService
     }
 
 
-
-    /**
-     *
-     * @param   beacon  a unregistered {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}
-     * @return  whether or not successfull
-     */
-    public boolean enqueueUnregisteredBeacon(Beacon beacon) {
-        return unregisteredBeacons.add(beacon);
-    }
-
-    /**
-     *
-     * @param   beacon  the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} to unregister
-     * @return  whether or not successfull
-     */
-    public boolean dequeueUnregisteredBeacon(Beacon beacon) {
-        return unregisteredBeacons.remove(beacon);
-    }
-
-    /**
-     *
-     * @return  the set of unregistered {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s
-     */
-    public Set<Beacon> getUnregisteredBeacons() {
-        return unregisteredBeacons;
-    }
-
-
     /**
      * TODO proper user authentication
      * @return  whether you are a privileged user
@@ -363,9 +378,53 @@ public class BeaconScanService
             public void didRangeBeaconsInRegion(Collection<org.altbeacon.beacon.Beacon> beacons, Region region) {
                 if (beacons.size() > 0) {
                     Iterator<org.altbeacon.beacon.Beacon> beaconIterator = beacons.iterator();
+                    boolean calcPosition = false;
                     while (beaconIterator.hasNext()) {
                         org.altbeacon.beacon.Beacon beacon = beaconIterator.next();
-                        loggedBeacons.add(new de.hsmainz.gi.indoornavcl.comm.types.Beacon(beacon));
+                        de.hsmainz.gi.indoornavcl.comm.types.Beacon ownBeacon = new de.hsmainz.gi.indoornavcl.comm.types.Beacon(beacon);
+                        synchronized (loggedBeacons) {
+                            for (de.hsmainz.gi.indoornavcl.comm.types.Beacon b: checkedBeacons) {
+                                if (b.equals(ownBeacon)) {
+                                    WkbLocation location = new WkbLocation();
+                                    location.setBeacon(b);
+                                    location.setSite(currentSite);
+                                    location.setId(new LocationId(b.getId(), currentSite.getSite()));
+                                    for (Map.Entry<WkbLocation, Measurement> entry : currentSiteMeasurements.entrySet()) {
+//                                        Log.d(TAG, "entry("+entry.getKey().getId().getBeaconId() + ", " + entry.getKey().getId().getSite() + ") = ("
+//                                                + b.getId() +", "+ currentSite.getSite() + ") ? b="
+//                                                + b.equals(entry.getKey().getBeacon()) + " s=" + currentSite.equals(entry.getKey().getSite()) + " -> "+ entry.equals(location));
+//                                        Log.d(TAG, " = ("+StringUtils.toString(entry.getKey().getBeacon()) + ", " + StringUtils.toString(entry.getKey().getSite()) + ") = ("
+//                                                +StringUtils.toString(b) + ", " + StringUtils.toString(currentSite) + ") ? " + entry.equals(location));
+                                        if (entry.getKey().equals(location)
+                                            && entry.getKey().getCoord() != null) {
+                                            Log.v(TAG, "found location: replacing " + StringUtils.toString(location) + " with " + StringUtils.toString(entry.getKey()));
+                                            location = entry.getKey();
+                                            currentSiteMeasurements.put(location, new Measurement(beacon.getRssi(), beacon.getTxPower()));
+                                            break;
+                                        }
+                                    }
+                                    Log.d(TAG, "currentSiteMeasurements.containsKey("+StringUtils.toString(location)+") = " + currentSiteMeasurements.containsKey(location));
+                                    if (currentSiteMeasurements.containsKey(location)) {
+                                        currentSiteMeasurements.put(location, new Measurement(beacon.getRssi(), beacon.getTxPower()));
+                                        calcPosition = true;
+                                    }
+                                    break;
+                                }
+                            }
+                            if (!checkedBeacons.contains(ownBeacon)
+                                    && !unregisteredBeacons.contains(ownBeacon)) {
+                                loggedBeacons.add(ownBeacon);
+                            }
+                            Log.v(TAG, "================== currentSiteMeasurements: ================== ");
+                            for (Map.Entry<WkbLocation, Measurement> entry : currentSiteMeasurements.entrySet()) {
+                                Log.v(TAG, StringUtils.toString(entry.getKey()) + " -> " + entry.getValue());
+                            }
+                            Log.v(TAG, "================== currentSiteMeasurements EOF ================== ");
+                            if (calcPosition) {
+                                Log.v(TAG, "calcPosition -> start to calculate the position!");
+                                calcPosition();
+                            }
+                        }
                     }
                     logBeacons();
                 }
@@ -373,27 +432,6 @@ public class BeaconScanService
         });
     }
 
-
-    /**
-     * Return the communication channel to the service.  May return null if
-     * clients can not bind to the service.  The returned
-     * {@link android.os.IBinder} is usually for a complex interface
-     * that has been <a href="{@docRoot}guide/components/aidl.html">described using
-     * aidl</a>.
-     * <p/>
-     * <p><em>Note that unlike other application components, calls on to the
-     * IBinder interface returned here may not happen on the main thread
-     * of the process</em>.  More information about the main thread can be found in
-     * <a href="{@docRoot}guide/topics/fundamentals/processes-and-threads.html">Processes and
-     * Threads</a>.</p>
-     *
-     * @param intent The Intent that was used to bind to this service,
-     *               as given to {@link android.content.Context#bindService
-     *               Context.bindService}.  Note that any extras that were included with
-     *               the Intent at that point will <em>not</em> be seen here.
-     * @return Return an IBinder through which clients can call on to the
-     * service.
-     */
     @Override
     public IBinder onBind(Intent intent) {
         Bundle extras = intent.getExtras();
@@ -405,79 +443,24 @@ public class BeaconScanService
         return binder;
     }
 
-    /**
-     * Called when all clients have disconnected from a particular interface
-     * published by the service.  The default implementation does nothing and
-     * returns false.
-     *
-     * @param intent The Intent that was used to bind to this service,
-     *               as given to {@link android.content.Context#bindService
-     *               Context.bindService}.  Note that any extras that were included with
-     *               the Intent at that point will <em>not</em> be seen here.
-     * @return Return true if you would like to have the service's
-     * {@link #onRebind} method later called when new clients bind to it.
-     */
+
     @Override
     public boolean onUnbind(Intent intent) {
         Log.v(TAG, "BeaconScanService unbound.");
         return super.onUnbind(intent);
     }
 
-    /**
-     * Called by the system to notify a Service that it is no longer used and is being removed.  The
-     * service should clean up any resources it holds (threads, registered
-     * receivers, etc) at this point.  Upon return, there will be no more calls
-     * in to this Service object and it is effectively dead.  Do not call this method directly.
-     */
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.v(TAG, "BeaconScanService destroyed.");
     }
 
-    /**
-     * Called by the system every time a client explicitly starts the service by calling
-     * {@link android.content.Context#startService}, providing the arguments it supplied and a
-     * unique integer token representing the start request.  Do not call this method directly.
-     * <p/>
-     * <p>For backwards compatibility, the default implementation calls
-     * {@link #onStart} and returns either {@link #START_STICKY}
-     * or {@link #START_STICKY_COMPATIBILITY}.
-     * <p/>
-     * <p>If you need your application to run on platform versions prior to API
-     * level 5, you can use the following model to handle the older {@link #onStart}
-     * callback in that case.  The <code>handleCommand</code> method is implemented by
-     * you as appropriate:
-     * <p/>
-     * {@sample development/samples/ApiDemos/src/com/example/android/apis/app/ForegroundService.java
-     * start_compatibility}
-     * <p/>
-     * <p class="caution">Note that the system calls this on your
-     * service's main thread.  A service's main thread is the same
-     * thread where UI operations take place for Activities running in the
-     * same process.  You should always avoid stalling the main
-     * thread's event loop.  When doing long-running operations,
-     * network calls, or heavy disk I/O, you should kick off a new
-     * thread, or use {@link android.os.AsyncTask}.</p>
-     *
-     * @param intent  The Intent supplied to {@link android.content.Context#startService},
-     *                as given.  This may be null if the service is being restarted after
-     *                its process has gone away, and it had previously returned anything
-     *                except {@link #START_STICKY_COMPATIBILITY}.
-     * @param flags   Additional data about this start request.  Currently either
-     *                0, {@link #START_FLAG_REDELIVERY}, or {@link #START_FLAG_RETRY}.
-     * @param startId A unique integer representing this specific request to
-     *                start.  Use with {@link #stopSelfResult(int)}.
-     * @return The return value indicates what semantics the system should
-     * use for the service's current started state.  It may be one of the
-     * constants associated with the {@link #START_CONTINUATION_MASK} bits.
-     * @see #stopSelfResult(int)
-     */
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-
-
         //Service is restarted if it gets terminated. Intent data passed to the onStartCommand method is null.
         // Used for services which manages their own state and do not depend on the Intent data.
         return Service.START_STICKY;

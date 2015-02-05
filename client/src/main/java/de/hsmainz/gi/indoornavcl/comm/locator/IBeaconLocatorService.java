@@ -228,6 +228,9 @@ public final class IBeaconLocatorService {
                 }
             }
         }
+//        for (WkbLocation loc: ret) {
+//            Log.d(TAG, "getBeaconLocationsFromSite returns: "+StringUtils.toString(loc));
+//        }
         return ret;
 //        Vector<SoapObject> sos = (Vector<SoapObject>) envelope.getResponse();
 //        if (sos == null || sos.isEmpty())
@@ -437,7 +440,7 @@ public final class IBeaconLocatorService {
     }
 
     private static <T extends KvmSerializable> T parseType(SoapObject so, Class<T> type) throws IllegalAccessException, InstantiationException {
-        T ret = (T) type.newInstance();
+        T ret = type.newInstance();
         for (int i = 0, len = so.getPropertyCount(); i < len; i++) {
             ret.setProperty(i, so.getProperty(i));
         }

@@ -16,6 +16,12 @@
  */
 
 
+
+
+
+
+
+
 buildscript {
     repositories {
         jcenter()
@@ -82,4 +88,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.vividsolutions:jts:1.13'
     compile 'com.google.code.ksoap2-android:ksoap2-android:3.4.0'
+    compile 'com.googlecode.efficient-java-matrix-library:ejml:0.25'
 }

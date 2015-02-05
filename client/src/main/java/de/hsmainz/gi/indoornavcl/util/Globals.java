@@ -26,8 +26,17 @@ public final class Globals {
     public static final String  CURRENT_POSITION        = "currentposition";
     public static final String  DISPLAY_TOAST           = "displaytoast";
 
+    public static final int     ZERO                = 0;
     public static final int     UPDATE_POSITION_MSG = 1;
     public static final int     DISPLAY_TOAST_MSG   = 2;
+    public static final int     DETERMINE_SITE_CALLBACK_ARRIVED = 3;
+    public static final int     GET_LOCATIONS_CALLBACK_ARRIVED  = 4;
+    public static final int     CALC_POSITION_CALLBACK_ARRIVED  = 5;
+
+
+
+
+    /** no instances*/
     private Globals() { }
 
 }
