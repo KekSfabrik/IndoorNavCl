@@ -29,7 +29,7 @@ public class DistanceCalculator {
      * @param   rssi            received signal strength indicator
      * @param   txPower         transmit power
      */
-    public static double calculateDistance(int txPower, double rssi) {
+    public static double calculateDistance(double txPower, double rssi) {
         if (rssi == 0) {
             return -1.0; // if we cannot determine accuracy, return -1.
         }

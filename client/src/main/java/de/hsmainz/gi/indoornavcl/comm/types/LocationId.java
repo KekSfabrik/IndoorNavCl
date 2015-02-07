@@ -190,16 +190,16 @@ public class LocationId
     @Override
     public int hashCode() {
         int result = 17;
-        result = 37 * result + this.getSite();
-        result = 37 * result + this.getBeaconId();
+        result = 37 * result + this.site;
+        result = 37 * result + this.beaconId;
         return result;
     }
 
     @Override
     public int compareTo(Object o) {
         int out = 0;
-        out += 79 * this.beaconId - ((LocationId) o).getBeaconId();
-        out += 42 * this.site - ((LocationId) o).getSite();
+        out += 37 * (this.beaconId - ((LocationId) o).getBeaconId());
+        out += 42 * (this.site - ((LocationId) o).getSite());
         return out;
     }
 

@@ -182,7 +182,7 @@ public class Site
     public int compareTo(Object o) {
         int out = 0;
         out += this.name.compareTo(((Site) o).getName());
-        out += 42 * this.site - ((Site) o).getSite();
+        //out += 42 * (this.site - ((Site) o).getSite());
         return out;
     }
 

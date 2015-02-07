@@ -262,8 +262,8 @@ public class Beacon
     public int compareTo(Object o) {
         int out = 0;
         out += this.uuid.compareTo(((Beacon) o).getUuid());
-        out += 42 * this.major - ((Beacon) o).getMajor();
-        out += 79 * this.major - ((Beacon) o).getMajor();
+        out += 37 * (this.major - ((Beacon) o).getMajor());
+        out += 42 * (this.minor - ((Beacon) o).getMinor());
         return out;
     }
 
@@ -283,7 +283,7 @@ public class Beacon
         try {
              res = this.uuid.equals(castOther.getUuid())
                     && this.major == castOther.getMajor()
-                    && this.major == castOther.getMajor();
+                    && this.minor == castOther.getMinor();
         } catch (NullPointerException npe) {
             android.util.Log.v("Beacon", "NPE " + StringUtils.toString(this) + " | " + StringUtils.toString(castOther), npe);
             res = false;

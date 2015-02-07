@@ -59,19 +59,21 @@ public class LocatorImplOne
         int i = 0;
         Map<Double, WkbLocation> mapByDistance = new TreeMap<>();
         for (Map.Entry<WkbLocation, Measurement> loc: locations.entrySet()) {
-            Point point = loc.getKey().getCoord().getPoint();
-            if (this.SRID == 0) {
-                SRID = point.getSRID();
-            } else if (this.SRID != point.getSRID()) {
-                Log.d(TAG, "Warning, varying SRIDs found (" + this.SRID + " ≠ " + point.getSRID() + ")");
+            if (loc.getValue() != null) {
+                Point point = loc.getKey().getCoord().getPoint();
+                if (this.SRID == 0) {
+                    SRID = point.getSRID();
+                } else if (this.SRID != point.getSRID()) {
+                    Log.d(TAG, "Warning, varying SRIDs found (" + this.SRID + " ≠ " + point.getSRID() + ")");
+                }
+                double dist = DistanceCalculator.calculateDistance(loc.getValue().getTxPower(), loc.getValue().getRssi());
+                output.set(i, 0, point.getX());     // X-coordinate
+                output.set(i, 1, point.getY());     // Y-coordinate
+                output.set(i, 2, 2.5d);             // Z-coordinate
+                output.set(i, 3, dist);             // calculated distance
+                i++;
+                mapByDistance.put(dist, loc.getKey());
             }
-            double dist = DistanceCalculator.calculateDistance(loc.getValue().getTxPower(), loc.getValue().getRssi());
-            output.set(i, 0, point.getX());     // X-coordinate
-            output.set(i, 1, point.getY());     // Y-coordinate
-            output.set(i, 2, 2.5d);             // Z-coordinate
-            output.set(i, 3, dist);             // calculated distance
-            i++;
-            mapByDistance.put(dist, loc.getKey());
         }
         if (mapByDistance.size() >= 3) {
             i = 0;

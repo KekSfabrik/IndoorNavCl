@@ -25,36 +25,36 @@ import android.os.Parcelable;
  */
 public class Measurement
             implements Parcelable {
-    private int rssi;
-    private int txPower;
+    private double rssi;
+    private double txPower;
 
     public Measurement() {
 
     }
 
-    public Measurement(int rssi, int txPower) {
+    public Measurement(double rssi, double txPower) {
         this.rssi = rssi;
         this.txPower = txPower;
     }
 
     public Measurement(Parcel in) {
-        this.rssi = in.readInt();
-        this.txPower = in.readInt();
+        this.rssi = in.readDouble();
+        this.txPower = in.readDouble();
     }
 
-    public int getRssi() {
+    public double getRssi() {
         return rssi;
     }
 
-    public void setRssi(int rssi) {
+    public void setRssi(double rssi) {
         this.rssi = rssi;
     }
 
-    public int getTxPower() {
+    public double getTxPower() {
         return txPower;
     }
 
-    public void setTxPower(int txPower) {
+    public void setTxPower(double txPower) {
         this.txPower = txPower;
     }
 
@@ -79,8 +79,8 @@ public class Measurement
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.rssi);
-        dest.writeInt(this.txPower);
+        dest.writeDouble(this.rssi);
+        dest.writeDouble(this.txPower);
     }
 
     public String toString() {
