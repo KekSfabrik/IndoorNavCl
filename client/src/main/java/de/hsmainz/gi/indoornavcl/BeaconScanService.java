@@ -28,7 +28,7 @@ import de.hsmainz.gi.indoornavcl.comm.SoapLocatorRequests;
 import de.hsmainz.gi.indoornavcl.comm.SoapPositionerRequests;
 import de.hsmainz.gi.indoornavcl.comm.types.*;
 import de.hsmainz.gi.indoornavcl.positioning.Locator;
-import de.hsmainz.gi.indoornavcl.positioning.LocatorImplOne;
+import de.hsmainz.gi.indoornavcl.positioning.LocatorImpl1;
 import de.hsmainz.gi.indoornavcl.positioning.Measurement;
 import de.hsmainz.gi.indoornavcl.util.Globals;
 import de.hsmainz.gi.indoornavcl.util.StringUtils;
@@ -64,7 +64,7 @@ public class BeaconScanService
     private boolean                     isScanning;
     private final IBinder               binder = new LocalBinder();
     private Messenger                   updateBeaconPositionMessenger;
-    private Locator                     locator = new LocatorImplOne();
+    private Locator                     locator = new LocatorImpl1();
 
     /** whether or not the user is an administrator */
     private static boolean              isAdminUser = true;

@@ -32,17 +32,17 @@ import java.util.*;
  * @author Saufaus, 31.01.2015.
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 04.02.15.
  */
-public class LocatorImplOne
+public class LocatorImpl1
         implements Locator {
 
-    private static final String     TAG = LocatorImplOne.class.getSimpleName();
+    private static final String TAG = LocatorImpl1.class.getSimpleName();
 
     private int                 SRID;
     private TinyCoordinate      initialPosition;
     private ParameterEstimation paramEst;
 
 
-    public LocatorImplOne(){
+    public LocatorImpl1(){
         this.SRID = 4326;
         this.initialPosition = new TinyCoordinate(0,0,0);
         this.paramEst = new ParameterEstimation();
@@ -76,7 +76,6 @@ public class LocatorImplOne
             }
         }
         if (mapByDistance.size() >= 3) {
-            i = 0;
             TinyCoordinate   a,      b,      c;
             double  dA,     dB,     dC,
                     cA=0.2, cB=0.2, cC=0.2;
@@ -178,8 +177,13 @@ public class LocatorImplOne
         paramEst = new ParameterEstimation();
         paramEst.setLastPosition(new double[]{initialPosition.x, initialPosition.y, initialPosition.z});
         Log.v(TAG, "Attempting to estimate for initialPosition " + initialPosition.toString());
-        SimpleMatrix res = paramEst.estimate(sm);
-        return this.asPoint(res);
+        try {
+            SimpleMatrix res = paramEst.estimate(sm);
+            return this.asPoint(res);
+        } catch (Exception ex) {
+            Log.w(TAG, "Could not determine position", ex);
+            return null;
+        }
     }
 
 }
