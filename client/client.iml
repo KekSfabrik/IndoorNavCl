@@ -82,29 +82,21 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="ksoap2-j2se-3.4.0" level="project" />
+    <orderEntry type="library" exported="" name="android-beacon-library-2.0" level="project" />
+    <orderEntry type="library" exported="" name="slf4j-api-1.6.1" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.3" level="project" />
     <orderEntry type="library" exported="" name="ksoap2-base-3.4.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.1.0" level="project" />
     <orderEntry type="library" exported="" name="ksoap2-android-3.4.0" level="project" />
-    <orderEntry type="library" exported="" name="ksoap2-j2se-3.4.0" level="project" />
-    <orderEntry type="library" exported="" name="android-beacon-library-2.0" level="project" />
+    <orderEntry type="library" exported="" name="osmdroid-android-4.2" level="project" />
     <orderEntry type="library" exported="" name="ejml-0.25" level="project" />
-    <orderEntry type="library" exported="" name="gson-2.3" level="project" />
+    <orderEntry type="library" exported="" name="1_ejml-0.25" level="project" />
     <orderEntry type="library" exported="" name="xmlpull-1.1.3.3" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-19.1.0" level="project" />
     <orderEntry type="library" exported="" name="kxml-2.2.4" level="project" />
     <orderEntry type="library" exported="" name="kobjects-j2me-0.0-SNAPSHOT-20040926-2" level="project" />
+    <orderEntry type="library" exported="" name="slf4j-simple-1.6.1" level="project" />
     <orderEntry type="library" exported="" name="jts-1.13" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../BeaconCalculate/src/libs/jts-1.13.jar!/" />
-          <root url="jar://$MODULE_DIR$/../../BeaconCalculate/src/libs/ejml-0.25.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../../BeaconCalculate/src/libs" />
-        </SOURCES>
-      </library>
-    </orderEntry>
   </component>
 </module>
