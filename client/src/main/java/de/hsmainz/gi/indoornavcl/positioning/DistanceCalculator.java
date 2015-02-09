@@ -15,30 +15,32 @@
  * MA 02110-1301  USA
  */
 
-package de.hsmainz.gi.indoornavcl.util;
-
+package de.hsmainz.gi.indoornavcl.positioning;
 
 /**
- *
- * @author  KekS (mailto:keks@keksfabrik.eu), 2015
+ * Created by Saufaus on 29.01.2015.
  */
-public class Measurement {
-    private int rssi;
-    private int txPower;
+public class DistanceCalculator {
 
-    public int getRssi() {
-        return rssi;
+    /**
+     * Basic calculation of distance from RSSI and txPower.
+     * Source: http://stackoverflow.com/a/20434019
+     *
+     * @param   rssi            received signal strength indicator
+     * @param   txPower         transmit power
+     */
+    public static double calculateDistance(double txPower, double rssi) {
+        if (rssi == 0) {
+            return -1.0; // if we cannot determine accuracy, return -1.
+        }
+
+        double ratio = rssi * 1.0 / txPower;
+        if (ratio < 1.0) {
+            return Math.pow(ratio, 10);
+        }
+        else {
+            return (0.89976) * Math.pow(ratio, 7.7095) + 0.111;
+        }
     }
 
-    public void setRssi(int rssi) {
-        this.rssi = rssi;
-    }
-
-    public int getTxPower() {
-        return txPower;
-    }
-
-    public void setTxPower(int txPower) {
-        this.txPower = txPower;
-    }
 }

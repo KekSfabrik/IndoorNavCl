@@ -186,7 +186,7 @@ public class WkbLocation
     @Override
     public void setProperty(int index, Object value) {
         SoapObject so = (SoapObject) value;
-        android.util.Log.d("WkbLocation", ".setProperty(" + index + ", " + value.toString() + ")");
+//        android.util.Log.d("WkbLocation", ".setProperty(" + index + ", " + value.toString() + ")");
         switch(index) {
             case 0: {
                     Beacon ret = new Beacon();
@@ -194,7 +194,6 @@ public class WkbLocation
                         ret.setProperty(i, so.getProperty(i));
                     }
                     this.beacon = ret;
-                    android.util.Log.d("WkbLocation", StringUtils.toString(ret));
                 }
                 break;
             case 1: {
@@ -203,7 +202,6 @@ public class WkbLocation
                         ret.setProperty(i, so.getProperty(i));
                     }
                     this.coord = ret;
-                    android.util.Log.d("WkbLocation", StringUtils.toString(ret));
                 }
                 break;
             case 2: {
@@ -212,7 +210,6 @@ public class WkbLocation
                         ret.setProperty(i, so.getProperty(i));
                     }
                     this.id = ret;
-                    android.util.Log.d("WkbLocation", StringUtils.toString(ret));
                 }
                 break;
             case 3: {
@@ -221,7 +218,6 @@ public class WkbLocation
                         ret.setProperty(i, so.getProperty(i));
                     }
                     this.site = ret;
-                    android.util.Log.d("WkbLocation", StringUtils.toString(ret));
                 }
                 break;
         }
@@ -295,8 +291,9 @@ public class WkbLocation
         WkbLocation castOther = (WkbLocation) other;
         boolean res;
         try {
-            res = (this.site.equals(castOther.getSite()))
-                    && (this.beacon.equals(castOther.getBeacon()));
+            res =   this.id.equals(castOther.getId())
+                    && this.site.equals(castOther.getSite())
+                    && this.beacon.equals(castOther.getBeacon());
         } catch (NullPointerException npe) {
             android.util.Log.v("WkbLocation", "NPE " + StringUtils.toString(this) + " | " + StringUtils.toString(castOther), npe);
             res = false;
@@ -310,7 +307,6 @@ public class WkbLocation
         hash = 79 * hash + Objects.hashCode(this.id);
         hash = 79 * hash + Objects.hashCode(this.beacon);
         hash = 79 * hash + Objects.hashCode(this.site);
-        hash = 79 * hash + Objects.hashCode(this.coord);
         return hash;
     }
 

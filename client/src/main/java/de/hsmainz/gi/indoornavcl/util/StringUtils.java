@@ -20,6 +20,7 @@ package de.hsmainz.gi.indoornavcl.util;
 import de.hsmainz.gi.indoornavcl.comm.types.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -28,11 +29,11 @@ import java.util.List;
  */
 public abstract class StringUtils {
 
-    public static String[] listAll(List<? extends IndoorNavEntity> list) {
+    public static String[] listAll(Collection<? extends IndoorNavEntity> list) {
         List<String> strings = new ArrayList<>();
         if (list != null && list.size() <= 1) {
             for (IndoorNavEntity entity : list) {
-                strings.add(entity.toString());
+                strings.add(toString(entity));
             }
             return strings.toArray(new String[0]);
             //return list.parallelStream().map(i -> toString(i)).collect(Collectors.toList()).toArray(new String[0]);
@@ -58,15 +59,18 @@ public abstract class StringUtils {
     public static String toString(WkbLocation l) {
         if (l == null || l.getBeacon().getUuid() == null || l.getSite().getName() == null)
             return "NPE (WkbLocation)";
+        Beacon b = l.getBeacon();
+        Site s = l.getSite();
+        WkbPoint p = l.getCoord();
         return "WkbLocation:\t" + toString(l.getId())
-                + " (" + l.getBeacon().getUuid() + ", " + l.getBeacon().getMajor() + ", " + l.getBeacon().getMinor()
-                + ") at " + l.getSite().getName()
-                + " @ " + l.getCoord().toText() ;
+                + " (" + (b != null ? (b.getUuid() != null ? b.getUuid() : "NULL")+ ", " + b.getMajor() + ", " + b.getMinor() : "NULL")
+                + ") at " + (s != null ? s.getName() : "NULL")
+                + " @ " + (p != null ? p.toText() : "NULL");
     }
 
 
     public static String toString(WkbPoint p) {
-        if (p == null)
+        if (p == null || p.getWkb() == null)
             return "NPE (WkbPoint)";
         return "WkbPoint:\t" + p.getWkb() + " = " + new com.vividsolutions.jts.io.WKTWriter(3).write(p.getPoint());
     }
