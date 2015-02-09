@@ -32,6 +32,7 @@ public final class Globals {
     public static final int     DETERMINE_SITE_CALLBACK_ARRIVED = 3;
     public static final int     GET_LOCATIONS_CALLBACK_ARRIVED  = 4;
     public static final int     CALC_POSITION_CALLBACK_ARRIVED  = 5;
+    public static final int     CURRENT_SITE_LOCATIONS_CALLBACK_ARRIVED  = 6;
 
 
 

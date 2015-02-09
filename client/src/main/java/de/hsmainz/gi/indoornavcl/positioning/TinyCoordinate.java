@@ -18,6 +18,7 @@
 package de.hsmainz.gi.indoornavcl.positioning;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 /**
@@ -40,6 +41,18 @@ public class TinyCoordinate {
         this.x = c.x;
         this.y = c.y;
         this.z = c.z;
+    }
+
+
+    public Point asPoint(int SRID){
+        Point output = new GeometryFactory()
+            .createPoint(
+                    new Coordinate(
+                            this.x, this.y, this.z
+                    )
+            );
+        output.setSRID(SRID);
+        return output;
     }
 
     public String toString() {

@@ -26,7 +26,11 @@ import android.util.Log;
 import com.vividsolutions.jts.geom.Point;
 import de.hsmainz.gi.indoornavcl.comm.SoapLocatorRequests;
 import de.hsmainz.gi.indoornavcl.comm.SoapPositionerRequests;
-import de.hsmainz.gi.indoornavcl.comm.types.*;
+import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
+import de.hsmainz.gi.indoornavcl.comm.types.LocationId;
+import de.hsmainz.gi.indoornavcl.comm.types.Site;
+import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
+import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
 import de.hsmainz.gi.indoornavcl.positioning.Locator;
 import de.hsmainz.gi.indoornavcl.positioning.LocatorImpl1;
 import de.hsmainz.gi.indoornavcl.positioning.Measurement;
@@ -49,12 +53,11 @@ public class BeaconScanService
     private static final int            beaconBackgroundScanInterval    = 10000;
     private static final int            beaconBackgroundScanWaitInterval= 20000;
 
-    private Set<de.hsmainz.gi.indoornavcl.comm.types.Beacon>
-                                        loggedBeacons       = Collections.synchronizedSet(new HashSet<de.hsmainz.gi.indoornavcl.comm.types.Beacon>()),
-                                        checkedBeacons      = Collections.synchronizedSet(new HashSet<de.hsmainz.gi.indoornavcl.comm.types.Beacon>()),
-                                        unregisteredBeacons = Collections.synchronizedSet(new HashSet<de.hsmainz.gi.indoornavcl.comm.types.Beacon>());
-    private Set<Site>                   possibleSites       = Collections.synchronizedSet(new HashSet<Site>());
-    private Site                        currentSite         = new Site(1, "KekSfabrik");
+    private Set<Beacon>                 loggedBeacons       = Collections.synchronizedSet(new HashSet<Beacon>()),
+                                        checkedBeacons      = Collections.synchronizedSet(new HashSet<Beacon>()),
+                                        unregisteredBeacons = Collections.synchronizedSet(new HashSet<Beacon>());
+    private Site                        currentSite         = new Site();
+    private boolean                     siteHasChanged      = true;
     private Set<WkbLocation>            currentSiteLocations= Collections.synchronizedSet(new HashSet<WkbLocation>());
     private Map<WkbLocation, Measurement>
                                         currentSiteMeasurements= Collections.synchronizedMap(new TreeMap<WkbLocation, Measurement>());
@@ -74,24 +77,6 @@ public class BeaconScanService
                         public boolean handleMessage(Message msg) {
                             switch (msg.what) {
                                 case Globals.ZERO:
-                                    synchronized (loggedBeacons) {
-                                        if (checkedBeacons != null) {
-                                            for (de.hsmainz.gi.indoornavcl.comm.types.Beacon b : checkedBeacons) {
-                                                Log.v(TAG, "Checked Beacon(" + StringUtils.toString(b) + ")");
-                                                if (!loggedBeacons.contains(b)) {
-                                                    unregisteredBeacons.add(b);
-                                                }
-                                            }
-                                            loggedBeacons.clear();
-                                            determineSite();
-                                        }
-                                    }
-                                    break;
-                                case Globals.DETERMINE_SITE_CALLBACK_ARRIVED:
-                                    // TODO determine currentSite from possibleSites
-                                    currentSite = new Site(1, "KekSfabrik");
-                                    //getLocations();
-                                    getLocationsForCurrentSite();
                                     break;
                                 case Globals.GET_LOCATIONS_CALLBACK_ARRIVED:
                                     synchronized (currentSiteLocations) {
@@ -105,6 +90,10 @@ public class BeaconScanService
                                     break;
                                 case Globals.CALC_POSITION_CALLBACK_ARRIVED:
                                     updatePosition(new WkbPoint(currentClientLocation));
+                                    break;
+                                case Globals.CURRENT_SITE_LOCATIONS_CALLBACK_ARRIVED:
+                                    determineSite();
+                                    getLocationsForCurrentSite();
                                     break;
                             }
                             return false;
@@ -194,30 +183,47 @@ public class BeaconScanService
         }).start();
     }
 
-    private void determineSite() {
+    private void updateCheckedBeacons(Set<WkbLocation> locations) {
+        for (WkbLocation loc : locations) {
+            checkedBeacons.add(loc.getBeacon());
+        }
+        synchronized (loggedBeacons) {
+            if (checkedBeacons != null) {
+                for (Beacon b : loggedBeacons) {
+                    Log.v(TAG, "Checked Beacon(" + StringUtils.toString(b) + ")");
+                    if (!checkedBeacons.contains(b)) {
+                        unregisteredBeacons.add(b);
+                    }
+                }
+                loggedBeacons.clear();
+            }
+        }
+    }
+    private void getLocationsFromLoggedBeacons() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                synchronized (checkedBeacons) {
-                    if (checkedBeacons != null && !checkedBeacons.isEmpty()) {
-                        possibleSites = SoapLocatorRequests.getSitesFromBeaconList(checkedBeacons);
-                        Log.v(TAG, "determineSite() -> possibleSites = "+Arrays.toString(StringUtils.listAll(possibleSites)));
+                synchronized (loggedBeacons) {
+                    if (!loggedBeacons.isEmpty()) {
+                        currentSiteLocations.addAll(SoapLocatorRequests.getBeaconLocationsFromBeaconList(loggedBeacons));
+                        updateCheckedBeacons(currentSiteLocations);
+                        Log.v(TAG, "getLocationsFromLoggedBeacons() -> currentSiteLocations = " + Arrays.toString(StringUtils.listAll(currentSiteLocations)));
                     }
                 }
-                handler.sendEmptyMessage(Globals.DETERMINE_SITE_CALLBACK_ARRIVED);
+                handler.sendEmptyMessage(Globals.CURRENT_SITE_LOCATIONS_CALLBACK_ARRIVED);
             }
         }).start();
     }
 
 
-    private void getLocations() {
+    private void getLocationsFromCheckedBeacons() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 synchronized (checkedBeacons) {
                     if (checkedBeacons != null && !checkedBeacons.isEmpty()) {
                         currentSiteLocations = SoapLocatorRequests.getBeaconLocationsFromBeaconList(checkedBeacons);
-                        Log.v(TAG, "getLocations() -> currentSiteLocations = "+Arrays.toString(StringUtils.listAll(currentSiteLocations)));
+                        Log.v(TAG, "getLocationsFromCheckedBeacons() -> currentSiteLocations = "+Arrays.toString(StringUtils.listAll(currentSiteLocations)));
                     }
                 }
                 handler.sendEmptyMessage(Globals.GET_LOCATIONS_CALLBACK_ARRIVED);
@@ -225,13 +231,38 @@ public class BeaconScanService
         }).start();
     }
 
+    private void determineSite() {
+        synchronized (currentSiteLocations) {
+            if (currentSiteLocations != null && !currentSiteLocations.isEmpty()) {
+                Map<Site, Integer> hits = new TreeMap<>();
+                for (WkbLocation loc : currentSiteLocations) {
+                    Site site = loc.getSite();
+                    if (hits.containsKey(site)) {
+                        hits.put(site, hits.get(site) + 1);
+                    } else {
+                        hits.put(site, 1);
+                    }
+                }
+                TreeMap<Integer, Site> mostLikely = new TreeMap<>();
+                for (Map.Entry<Site, Integer> s : hits.entrySet()) {
+                    mostLikely.put(s.getValue(), s.getKey());
+                }
+                Site site = mostLikely.lastEntry().getValue();
+                siteHasChanged = currentSite == null || !currentSite.isVerified() ? true : !currentSite.equals(site);
+                currentSite = site;
+                Log.v(TAG, "Most likely Site: " + StringUtils.toString(currentSite));
+            }
+        }
+    }
 
     private void getLocationsForCurrentSite() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 synchronized (currentSiteLocations) {
-                    if (currentSite != null) {
+                    if (currentSite != null
+                        && currentSite.isVerified()
+                        && siteHasChanged) {
                         currentSiteLocations = SoapLocatorRequests.getBeaconLocationsFromSite(currentSite);
                         Log.v(TAG, "getLocationsForCurrentSite() -> currentSiteLocations = "+Arrays.toString(StringUtils.listAll(currentSiteLocations)));
                     }
@@ -242,10 +273,10 @@ public class BeaconScanService
     }
 
 
-    private void checkMeasuredBeacon(de.hsmainz.gi.indoornavcl.comm.types.Beacon beacon, Measurement measurement) {
+    private void checkMeasuredBeacon(Beacon beacon, Measurement measurement) {
         boolean calcPosition = false;
         synchronized (loggedBeacons) {
-            for (de.hsmainz.gi.indoornavcl.comm.types.Beacon b: checkedBeacons) {
+            for (Beacon b: checkedBeacons) {
                 if (b.equals(beacon)) {
                     WkbLocation location = new WkbLocation();
                     location.setBeacon(b);
@@ -254,7 +285,6 @@ public class BeaconScanService
                     for (Map.Entry<WkbLocation, Measurement> entry : currentSiteMeasurements.entrySet()) {
                         if (entry.getKey().equals(location)) {
                             Log.v(TAG, "found location: replacing " + StringUtils.toString(location) + " with " + StringUtils.toString(entry.getKey()));
-                            location = null;
                             location = entry.getKey();
                             break;
                         }
@@ -268,7 +298,7 @@ public class BeaconScanService
                 }
             }
             if (!checkedBeacons.contains(beacon)
-                    && !unregisteredBeacons.contains(beacon)) {
+                && !unregisteredBeacons.contains(beacon)) {
                 loggedBeacons.add(beacon);
             }
             Log.v(TAG, "================== currentSiteMeasurements: ================== ");
@@ -277,7 +307,7 @@ public class BeaconScanService
             }
             Log.v(TAG, "================== currentSiteMeasurements EOF ================== ");
             if (calcPosition) {
-                Log.v(TAG, "calcPosition -> start to calculate the position!");
+                Log.d(TAG, "calcPosition -> start to calculate the position!");
                 calcPosition();
             }
         }
@@ -291,6 +321,9 @@ public class BeaconScanService
                 synchronized (currentSiteMeasurements) {
                     currentClientLocation = locator.getLocation(currentSiteMeasurements);
                     Log.v(TAG, "calcPosition() -> Calculated site: " + currentClientLocation.toText());
+                    for (Beacon b: unregisteredBeacons) {
+                        Log.v(TAG, "UNREGISTERED: " + StringUtils.toString(b));
+                    }
                     handler.sendEmptyMessage(Globals.CALC_POSITION_CALLBACK_ARRIVED);
                 }
             }
@@ -424,11 +457,11 @@ public class BeaconScanService
                     Iterator<org.altbeacon.beacon.Beacon> beaconIterator = beacons.iterator();
                     while (beaconIterator.hasNext()) {
                         org.altbeacon.beacon.Beacon beacon = beaconIterator.next();
-                        de.hsmainz.gi.indoornavcl.comm.types.Beacon ownBeacon = new de.hsmainz.gi.indoornavcl.comm.types.Beacon(beacon);
+                        Beacon ownBeacon = new Beacon(beacon);
                         Measurement measurement = new Measurement(beacon.getRssi(), beacon.getTxPower());
                         checkMeasuredBeacon(ownBeacon, measurement);
                     }
-                    updateCheckedBeacons();
+                    getLocationsFromLoggedBeacons();
                 }
             }
         });
@@ -455,6 +488,8 @@ public class BeaconScanService
     @Override
     public void onDestroy() {
         super.onDestroy();
+        stopScanning();
+        app.getBeaconManager().unbind(this);
         Log.v(TAG, "BeaconScanService destroyed.");
     }
 

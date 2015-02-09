@@ -22,7 +22,6 @@ import android.os.Parcelable;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
 import com.vividsolutions.jts.io.WKBWriter;
 import de.hsmainz.gi.indoornavcl.util.StringUtils;
@@ -206,8 +205,8 @@ public class WkbPoint
         Point point;
         try {
             point = (Point) reader.read(WKBReader.hexToBytes(getWkb()));
-        } catch (ParseException ex) {
-            android.util.Log.d("WkbPoint", "Couldn not parse WKB, handing out new Geometry(Point(0 0 0), 4326)", ex);
+        } catch (Exception ex) {
+            android.util.Log.d("WkbPoint", "Could not parse WKB (or something else failed), handing out new Geometry(Point(0 0 0), 4326)", ex);
             point = new GeometryFactory()
                 .createPoint(
                         new Coordinate(
@@ -366,4 +365,9 @@ public class WkbPoint
             return new WkbPoint[size];
         }
     };
+
+
+    public boolean isVerified() {
+        return  this.wkb != null;
+    }
 }

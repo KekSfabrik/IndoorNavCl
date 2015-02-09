@@ -22,6 +22,8 @@
 
 
 
+
+
 buildscript {
     repositories {
         jcenter()
@@ -89,6 +91,5 @@ dependencies {
     compile 'com.vividsolutions:jts:1.13'
     compile 'com.google.code.ksoap2-android:ksoap2-android:3.4.0'
     compile 'com.googlecode.efficient-java-matrix-library:ejml:0.25'
-    compile 'org.osmdroid:osmdroid-android:4.2'
-    compile 'org.slf4j:slf4j-simple:1.6.1'
+    compile 'com.google.android.gms:play-services-maps:6.5.87'
 }
