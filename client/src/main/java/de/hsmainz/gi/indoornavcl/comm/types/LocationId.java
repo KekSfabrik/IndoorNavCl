@@ -257,4 +257,8 @@ public class LocationId
         }
     };
 
+    public boolean isVerified() {
+        return  this.beaconId != 0
+                && this.site != 0;
+    }
 }

@@ -24,4 +24,10 @@ package de.hsmainz.gi.indoornavcl.comm.types;
  */
 public interface IndoorNavEntity {
     // dummy for own items
+
+    /**
+     * whether or not this item has all fields
+     * @return  whether all fields are set
+     */
+    public boolean isVerified();
 }

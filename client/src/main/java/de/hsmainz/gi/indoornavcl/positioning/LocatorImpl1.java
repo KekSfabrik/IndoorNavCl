@@ -40,12 +40,14 @@ public class LocatorImpl1
     private int                 SRID;
     private TinyCoordinate      initialPosition;
     private ParameterEstimation paramEst;
+    private int                 measurementCount;
 
 
     public LocatorImpl1(){
         this.SRID = 4326;
         this.initialPosition = new TinyCoordinate(0,0,0);
         this.paramEst = new ParameterEstimation();
+        this.measurementCount = 0;
     }
 
     /**
@@ -56,7 +58,7 @@ public class LocatorImpl1
     private SimpleMatrix locatorToObservations(Map<WkbLocation, Measurement> locations) {
         int u = 4;
         SimpleMatrix output = new SimpleMatrix(locations.size(), u); // Set size
-        int i = 0;
+        this.measurementCount = 0;
         Map<Double, WkbLocation> mapByDistance = new TreeMap<>();
         for (Map.Entry<WkbLocation, Measurement> loc: locations.entrySet()) {
             if (loc.getValue() != null) {
@@ -67,11 +69,11 @@ public class LocatorImpl1
                     Log.d(TAG, "Warning, varying SRIDs found (" + this.SRID + " ≠ " + point.getSRID() + ")");
                 }
                 double dist = DistanceCalculator.calculateDistance(loc.getValue().getTxPower(), loc.getValue().getRssi());
-                output.set(i, 0, point.getX());     // X-coordinate
-                output.set(i, 1, point.getY());     // Y-coordinate
-                output.set(i, 2, 2.5d);             // Z-coordinate
-                output.set(i, 3, dist);             // calculated distance
-                i++;
+                output.set(this.measurementCount, 0, point.getX());     // X-coordinate
+                output.set(this.measurementCount, 1, point.getY());     // Y-coordinate
+                output.set(this.measurementCount, 2, 2.5d);             // Z-coordinate
+                output.set(this.measurementCount, 3, dist);             // calculated distance
+                this.measurementCount++;
                 mapByDistance.put(dist, loc.getKey());
             }
         }
@@ -174,15 +176,23 @@ public class LocatorImpl1
     @Override
     public Point getLocation(Map<WkbLocation, Measurement> locations) {
         SimpleMatrix sm = this.locatorToObservations(locations);
-        paramEst = new ParameterEstimation();
-        paramEst.setLastPosition(new double[]{initialPosition.x, initialPosition.y, initialPosition.z});
-        Log.v(TAG, "Attempting to estimate for initialPosition " + initialPosition.toString());
-        try {
-            SimpleMatrix res = paramEst.estimate(sm);
-            return this.asPoint(res);
-        } catch (Exception ex) {
-            Log.w(TAG, "Could not determine position", ex);
-            return null;
+        switch (this.measurementCount) {
+            case 0: return null;
+            case 1:
+            case 2:
+            case 3: return initialPosition.asPoint(this.SRID);
+            default: {
+                paramEst = new ParameterEstimation();
+                paramEst.setLastPosition(new double[]{initialPosition.x, initialPosition.y, initialPosition.z});
+                Log.v(TAG, "Attempting to estimate for initialPosition " + initialPosition.toString());
+                try {
+                    SimpleMatrix res = paramEst.estimate(sm);
+                    return this.asPoint(res);
+                } catch (Exception ex) {
+                    Log.w(TAG, "Could not determine position", ex);
+                    return null;
+                }
+            }
         }
     }
 

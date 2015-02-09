@@ -356,4 +356,10 @@ public class Beacon
         }
     };
 
+    public boolean isVerified() {
+        return  this.id != 0
+                && this.major != 0
+                && this.minor != 0
+                && this.uuid != null;
+    }
 }

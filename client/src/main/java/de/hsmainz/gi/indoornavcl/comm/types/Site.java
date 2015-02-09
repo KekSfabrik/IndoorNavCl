@@ -269,4 +269,9 @@ public class Site
             return new Site[size];
         }
     };
+
+    public boolean isVerified() {
+        return  this.site != 0
+                && this.name != null;
+    }
 }

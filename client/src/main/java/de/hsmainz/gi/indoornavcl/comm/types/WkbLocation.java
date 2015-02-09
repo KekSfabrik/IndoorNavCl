@@ -364,4 +364,12 @@ public class WkbLocation
             return new WkbLocation[size];
         }
     };
+
+
+    public boolean isVerified() {
+        return  this.id.isVerified()
+                && this.site.isVerified()
+                && this.beacon.isVerified()
+                && this.coord.isVerified();
+    }
 }
