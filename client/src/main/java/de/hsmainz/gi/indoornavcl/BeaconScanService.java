@@ -48,6 +48,8 @@ public class BeaconScanService
         implements  BeaconConsumer {
 
     private static final String         TAG = BeaconScanService.class.getSimpleName();
+    private static final boolean        DEBUG = true;
+
     private static final int            beaconScanInterval              =  5000;
     private static final int            beaconScanWaitInterval          =     0;
     private static final int            beaconBackgroundScanInterval    = 10000;
@@ -535,6 +537,11 @@ public class BeaconScanService
     @Override
     public boolean stopService(Intent name) {
         return super.stopService(name);
+    }
+
+    public void writeToFile(String str) {
+        if (DEBUG)
+            app.getFileHelper().createFile(str);
     }
 
     public boolean isScanning() {

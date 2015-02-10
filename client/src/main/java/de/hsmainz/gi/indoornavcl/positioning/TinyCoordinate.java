@@ -56,7 +56,7 @@ public class TinyCoordinate {
     }
 
     public String toString() {
-        return "TinyCoordinate (" + x + " " + y + " " + z + ")";
+        return "POINT(" + x + " " + y + " " + z + ")";
     }
 
     public void round(int pow) {

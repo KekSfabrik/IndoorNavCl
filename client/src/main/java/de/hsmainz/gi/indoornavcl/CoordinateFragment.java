@@ -24,8 +24,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.google.gson.Gson;
 import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
 import de.hsmainz.gi.indoornavcl.positioning.TinyCoordinate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 10.02.15.
@@ -33,9 +37,12 @@ import de.hsmainz.gi.indoornavcl.positioning.TinyCoordinate;
 public class    CoordinateFragment
     extends     Fragment {
 
-    private static final String TAG = CoordinateFragment.class.getSimpleName();
-
-    private TextView x, y, z;
+    private static final String     TAG = CoordinateFragment.class.getSimpleName();
+    private TextView                x,
+                                    y,
+                                    z;
+    private static final Gson       gson = new Gson();
+    private List<TinyCoordinate>    coords = new ArrayList<>();
 
     public void setPoint(WkbPoint point) {
         TinyCoordinate coord = point.getCoordinate();
@@ -44,8 +51,14 @@ public class    CoordinateFragment
         y.setText(coord.y + "");
         z.setText(coord.z + "");
         ((MainActivity)getActivity()).showNotification("Found 'POINT(" + coord.x + " " + coord.y + " " + coord.z + ")'");
+        coords.add(coord);
     }
 
+    public String getCoords() {
+        String str = gson.toJson(coords);
+        coords.clear();
+        return str;
+    }
     /**
      * App startup
      * @param savedInstanceState
@@ -66,11 +79,12 @@ public class    CoordinateFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        x = (TextView) getView().findViewById(R.id.txtX);
-        y = (TextView) getView().findViewById(R.id.txtY);
-        z = (TextView) getView().findViewById(R.id.txtZ);
+        View view = inflater.inflate(R.layout.coordinate_fragment, container, false);
+        x = (TextView) view.findViewById(R.id.txtX);
+        y = (TextView) view.findViewById(R.id.txtY);
+        z = (TextView) view.findViewById(R.id.txtZ);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.coordinate_fragment, container, false);
+        return view;
     }
 
 

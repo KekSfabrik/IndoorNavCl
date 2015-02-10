@@ -124,6 +124,7 @@ public class    MainActivity
                     bs.stopScanning();
                     Toast.makeText(buttonStart.getContext(), "Stopped", Toast.LENGTH_SHORT).show();
                     buttonStart.setText(R.string.start);
+                    bs.writeToFile(coordFragment.getCoords());
                 }
             }
         });
