@@ -24,6 +24,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.WKBReader;
 import com.vividsolutions.jts.io.WKBWriter;
+import de.hsmainz.gi.indoornavcl.positioning.TinyCoordinate;
 import de.hsmainz.gi.indoornavcl.util.StringUtils;
 import org.ksoap2.serialization.KvmSerializable;
 import org.ksoap2.serialization.PropertyInfo;
@@ -369,5 +370,9 @@ public class WkbPoint
 
     public boolean isVerified() {
         return  this.wkb != null;
+    }
+
+    public TinyCoordinate getCoordinate() {
+        return new TinyCoordinate(this.getPoint());
     }
 }

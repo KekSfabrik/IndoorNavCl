@@ -25,8 +25,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -41,7 +39,7 @@ public class FileHelper {
     private static final String TAG = "FileHelper";
     private OutputStreamWriter  osw;
     private File                extStorage;
-    private final String        FILENAME_PREFIX = "beacons";
+    private final String        FILENAME_PREFIX = "pos";
 
     /**
      * Initialise extStorage using the reference passed in.
@@ -57,21 +55,17 @@ public class FileHelper {
      *
      * @param   fileData    String representing the data we want to write to a file.
      */
-    public void createFile(String fileData, double distance) {
-        try
-        {
+    public void createFile(String fileData) {
+        try {
             if (isExternalStorageAvailableAndWritable()) {
                 String now = (DateFormat.format("dd-MM-yyyy_HH-mm-ss", new java.util.Date()).toString());
-                DecimalFormat df = new DecimalFormat("#.###");
-                df.setRoundingMode(RoundingMode.HALF_EVEN);
-                File file = new File(extStorage, FILENAME_PREFIX + "-" + df.format(distance) + "m_" + now + ".json");
+                File file = new File(extStorage, FILENAME_PREFIX + "_" + now + ".json");
                 FileOutputStream fos = new FileOutputStream(file);
                 osw = new OutputStreamWriter(fos);
                 osw.write(fileData);
                 osw.flush();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.w(TAG, "Problem writing to file", e);
             e.printStackTrace();
         } finally {

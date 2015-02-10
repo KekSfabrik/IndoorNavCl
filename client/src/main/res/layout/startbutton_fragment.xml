@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2015 Jan "KekS" M.
   ~ This library is free software; you can redistribute it and/or
@@ -15,13 +16,15 @@
   ~ MA 02110-1301  USA
   -->
 
-<resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-    </style>
-    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light"></style>
-
-    <style name="AppTheme.MyActionBar" parent="@style/Widget.AppCompat.ActionBar"></style>
-</resources>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/startbutton_fragment_layout" >
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="197dp"
+            android:text="@string/start"
+            android:id="@+id/btnStart"
+            android:layout_gravity="center_horizontal" />
+</LinearLayout>
