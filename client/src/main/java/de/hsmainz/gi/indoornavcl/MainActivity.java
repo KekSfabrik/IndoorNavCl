@@ -28,24 +28,29 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-import com.vividsolutions.jts.geom.Point;
+import de.hsmainz.gi.indoornavcl.comm.types.Site;
 import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
 import de.hsmainz.gi.indoornavcl.util.Globals;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
  *
  * @author  KekS (mailto:keks@keksfabrik.eu), 2015
  */
-public class MainActivity
-        extends     Activity {
+public class    MainActivity
+    extends     Activity {
 
     private static final String         TAG = MainActivity.class.getSimpleName();
     private Button                      buttonStart;
     private BeaconScanService           bs;
     private boolean                     isBound = false;
+    private Set<Site>                   availableSites = new HashSet<>();
+    private Site                        currentSite;
+    private CoordinateFragment          coordFragment;
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection           connection = new ServiceConnection() {
@@ -65,23 +70,29 @@ public class MainActivity
                         @Override
                         public boolean handleMessage(Message msg) {
                             switch (msg.what) {
-                                case Globals.UPDATE_POSITION_MSG:
-                                    Bundle b = msg.getData();
-                                    WkbPoint wkbPoint = b.getParcelable(Globals.CURRENT_POSITION);
-
-                                    Point point = wkbPoint.getPoint();
-                                    showNotification("Found 'POINT(" + point.getCoordinate().x + " " + point.getCoordinate().y + " " + point.getCoordinate().z + ")'");
-
-                                    TextView xPos = (TextView) findViewById(R.id.txtX);
-                                    xPos.setText(point.getCoordinate().x + "");
-                                    TextView yPos = (TextView) findViewById(R.id.txtY);
-                                    yPos.setText(point.getCoordinate().y + "");
-                                    TextView zPos = (TextView) findViewById(R.id.txtZ);
-                                    zPos.setText(point.getCoordinate().z + "");
+                                case Globals.UPDATE_POSITION_MSG: {
+                                    if (coordFragment != null) {
+                                        Bundle b = msg.getData();
+                                        WkbPoint wkbPoint = b.getParcelable(Globals.CURRENT_POSITION);
+                                        if (wkbPoint != null && wkbPoint.isVerified()) {
+                                            coordFragment.setPoint(wkbPoint);
+                                        }
+                                    } else {
+                                        coordFragment = (CoordinateFragment) getFragmentManager().findFragmentById(R.id.coordinate_fragment);
+                                    }
                                     // TODO display the new point on the UI
+                                }
                                     break;
-                                case Globals.DISPLAY_TOAST_MSG:
+                                case Globals.DISPLAY_TOAST_MSG: {
                                     showNotification(msg.getData().getString(Globals.DISPLAY_TOAST));
+                                }
+                                    break;
+                                case Globals.SITE_CHANGED_MSG: {
+                                    availableSites = bs.getAllAvailableSites();
+                                    Bundle b = msg.getData();
+                                    currentSite = b.getParcelable(Globals.SITE_CHANGED);
+                                    // TODO update actionbar spinner to select the correct site
+                                }
                                     break;
                             }
                             return false;
@@ -99,7 +110,7 @@ public class MainActivity
         Intent intent = new Intent(this, BeaconScanService.class);
         intent.putExtra(Globals.UPDATE_POSITION_HANDLER, new Messenger(this.handler));
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
-        buttonStart = (Button) findViewById(R.id.btnStart);
+        buttonStart = (Button) getFragmentManager().findFragmentById(R.id.startbutton_fragment).getView().findViewById(R.id.btnStart);
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,9 +124,11 @@ public class MainActivity
                     bs.stopScanning();
                     Toast.makeText(buttonStart.getContext(), "Stopped", Toast.LENGTH_SHORT).show();
                     buttonStart.setText(R.string.start);
+                    bs.writeToFile(coordFragment.getCoords());
                 }
             }
         });
+        coordFragment = (CoordinateFragment) getFragmentManager().findFragmentById(R.id.coordinate_fragment);
     }
 
     public void showNotification(String str) {

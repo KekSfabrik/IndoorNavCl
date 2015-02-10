@@ -48,6 +48,8 @@ public class BeaconScanService
         implements  BeaconConsumer {
 
     private static final String         TAG = BeaconScanService.class.getSimpleName();
+    private static final boolean        DEBUG = true;
+
     private static final int            beaconScanInterval              =  5000;
     private static final int            beaconScanWaitInterval          =     0;
     private static final int            beaconBackgroundScanInterval    = 10000;
@@ -57,6 +59,7 @@ public class BeaconScanService
                                         checkedBeacons      = Collections.synchronizedSet(new HashSet<Beacon>()),
                                         unregisteredBeacons = Collections.synchronizedSet(new HashSet<Beacon>());
     private Site                        currentSite         = new Site();
+    private Set<Site>                   availableSites      = new HashSet<>();
     private boolean                     siteHasChanged      = true;
     private Set<WkbLocation>            currentSiteLocations= Collections.synchronizedSet(new HashSet<WkbLocation>());
     private Map<WkbLocation, Measurement>
@@ -89,11 +92,14 @@ public class BeaconScanService
                                     }
                                     break;
                                 case Globals.CALC_POSITION_CALLBACK_ARRIVED:
-                                    updatePosition(new WkbPoint(currentClientLocation));
+                                    uiUpdatePosition(new WkbPoint(currentClientLocation));
                                     break;
                                 case Globals.CURRENT_SITE_LOCATIONS_CALLBACK_ARRIVED:
                                     determineSite();
                                     getLocationsForCurrentSite();
+                                    break;
+                                case Globals.SITES_AVAILABLE_CALLBACK_ARRIVED:
+                                    uiSiteChanged();
                                     break;
                             }
                             return false;
@@ -166,6 +172,19 @@ public class BeaconScanService
             });
             builder.show();
         }
+    }
+
+    private void getAvailableSites() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (!availableSites.isEmpty()) {
+                    availableSites.addAll(SoapLocatorRequests.getSiteByApproximateName(""));
+                    Log.v(TAG, "updateCheckedBeacons() -> checkedBeacons = " + Arrays.toString(StringUtils.listAll(checkedBeacons)));
+                }
+                handler.sendEmptyMessage(Globals.SITES_AVAILABLE_CALLBACK_ARRIVED);
+            }
+        }).start();
     }
 
     private void updateCheckedBeacons() {
@@ -414,7 +433,7 @@ public class BeaconScanService
 
             // This is called when doInBackground() is finished
             protected void onPostExecute(Long result) {
-                tellUser("Request took " + result + "ms");
+                uiTellUser("Request took " + result + "ms");
             }
         };
         task.execute("");
@@ -465,6 +484,7 @@ public class BeaconScanService
                 }
             }
         });
+        getAvailableSites();
     }
 
     @Override
@@ -502,9 +522,26 @@ public class BeaconScanService
         return Service.START_STICKY;
     }
 
+    public Site getCurrentSite() {
+        return currentSite;
+    }
+
+    public void setCurrentSite(Site site) {
+        this.currentSite = site;
+    }
+
+    public Set<Site> getAllAvailableSites() {
+        return availableSites;
+    }
+
     @Override
     public boolean stopService(Intent name) {
         return super.stopService(name);
+    }
+
+    public void writeToFile(String str) {
+        if (DEBUG)
+            app.getFileHelper().createFile(str);
     }
 
     public boolean isScanning() {
@@ -517,7 +554,7 @@ public class BeaconScanService
         }
     }
 
-    private void updatePosition(WkbPoint point) {
+    private void uiUpdatePosition(WkbPoint point) {
         try {
             Message msg = Message.obtain();
             msg.what = Globals.UPDATE_POSITION_MSG;
@@ -531,7 +568,22 @@ public class BeaconScanService
         }
     }
 
-    private void tellUser(String str) {
+
+    private void uiSiteChanged() {
+        try {
+            Message msg = Message.obtain();
+            msg.what = Globals.UPDATE_POSITION_MSG;
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(Globals.SITE_CHANGED, currentSite);
+            msg.setData(bundle);
+            updateBeaconPositionMessenger.send(msg);
+        }
+        catch (android.os.RemoteException e1) {
+            Log.w(getClass().getName(), "Exception sending message", e1);
+        }
+    }
+
+    private void uiTellUser(String str) {
         try {
             Message msg = Message.obtain();
             msg.what = Globals.DISPLAY_TOAST_MSG;

@@ -25,18 +25,18 @@ import com.vividsolutions.jts.geom.Point;
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 04.02.15.
  */
 public class TinyCoordinate {
-    double x, y, z;
+    public double x, y, z;
 
-    TinyCoordinate() {
+    public TinyCoordinate() {
     }
 
-    TinyCoordinate(double x, double y, double z) {
+    public TinyCoordinate(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    TinyCoordinate(Point p) {
+    public TinyCoordinate(Point p) {
         Coordinate c = p.getCoordinate();
         this.x = c.x;
         this.y = c.y;
@@ -56,6 +56,13 @@ public class TinyCoordinate {
     }
 
     public String toString() {
-        return "TinyCoordinate (" + x + " " + y + " " + z + ")";
+        return "POINT(" + x + " " + y + " " + z + ")";
+    }
+
+    public void round(int pow) {
+        double fac = Math.pow(10, pow);
+        this.x = Math.round(this.x*fac) / fac;
+        this.y = Math.round(this.y*fac) / fac;
+        this.z = Math.round(this.z*fac) / fac;
     }
 }
