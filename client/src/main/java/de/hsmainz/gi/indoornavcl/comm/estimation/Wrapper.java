@@ -5,7 +5,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
-import de.hsmainz.gi.indoornavcl.util.Measurement;
+import de.hsmainz.gi.indoornavcl.positioning.Measurement;
 import org.ejml.simple.SimpleMatrix;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class Wrapper {
 
                 // Sort raw observations
                 for (int l=0; l< rawObservations.size();l++) {
-                    sortedObservations.add(rawObservations.get(i).getRssi());
+                    sortedObservations.add( (int)rawObservations.get(i).getRssi());
                 }
                 Collections.sort(sortedObservations);                                                                   //
                 System.out.println("Number of sorted observations before filtering for median: " + sortedObservations.size());
@@ -71,12 +71,12 @@ public class Wrapper {
             }
 
             // Check if found median observation is suitable
-            if (DistanceCalculation.calculateDistance(rawObservations.get(0).getTxPower(), mediandistance) <= thresholdDistance) {
+            if (DistanceCalculation.calculateDistance( (int) rawObservations.get(0).getTxPower(), mediandistance) <= thresholdDistance) {
                 // Add the position of the beacon and the calculated distance from the observed pseudoranges to output matrix
                 output.set(k, 0, foundLocations.get(i).getCoord().getPoint().getX());                                          // X-coordinate
                 output.set(k, 1, foundLocations.get(i).getCoord().getPoint().getY());                                          // Y-coordinate
                 output.set(k, 2, 2.5);                                                                                         // Z-coordinate
-                output.set(k, 3, DistanceCalculation.calculateDistance(rawObservations.get(0).getTxPower(), mediandistance));  // calculated distance
+                output.set(k, 3, DistanceCalculation.calculateDistance( (int) rawObservations.get(0).getTxPower(), mediandistance));  // calculated distance
                 k++;
             }
 

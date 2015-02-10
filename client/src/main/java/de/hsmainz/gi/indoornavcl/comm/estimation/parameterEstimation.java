@@ -9,11 +9,7 @@ import org.ejml.simple.SimpleMatrix;
 
 public class parameterEstimation {
 
-
-
-    private final double EPS = 0.0001;
     private boolean initialized = false;
-    private boolean sigma_s_changed = false;
     private double sigma_s = 1.0D;                              // Standard deviation. Can be changed but in modern computations is not needed anymore
     private double[] lastPosition = {0, 0, 0};
 
@@ -23,12 +19,10 @@ public class parameterEstimation {
      *
 
      * @param   inputMatrix   a Matrix containing (in order): X-coordinate, Y-coordinate, observed distance to fix point
-     * @return  the Location of the Client
+     * @return  the location of the client
      */
 
     public SimpleMatrix estimate(SimpleMatrix inputMatrix) {
-
-
 
         // Calculating the DOF (degrees of freedom)
         int n = inputMatrix.numRows();                          // # of observations
@@ -65,7 +59,7 @@ public class parameterEstimation {
 
             double sumx = 0;
             double sumy = 0;
-            //double sumz = 0;
+            double sumz = 0;
 
             for (int i=0;i<inputMatrix.numRows();i++){
                 sumx += inputMatrix.get(i,0);
@@ -75,7 +69,7 @@ public class parameterEstimation {
             // Update approximate Position
             lastPosition[0] = (sumx/inputMatrix.numRows());
             lastPosition[1] = (sumy/inputMatrix.numRows());
-            //lastPosition[2] = sumz;
+            //lastPosition[2] = sumz;                           // Only needed if heights vary
             lastPosition[2] = 2.5;
 
             // set status to initialized
@@ -89,10 +83,8 @@ public class parameterEstimation {
         // Trivial because L_0 is usually filled with zeros
         l = L.minus(L_0);
 
-        // Trivial because we assume sigma_s = 1 (as noted above)
-        if (sigma_s_changed) {
-            sigma_ll_post.scale(sigma_s * sigma_s);
-        }
+        sigma_ll_post.scale(sigma_s * sigma_s);
+
 
         // Building X_0 vector : Estimations for X-,Y,-Z-Coordinates and the ppm value
         X_0.set(0, lastPosition[0]);
@@ -100,9 +92,7 @@ public class parameterEstimation {
         X_0.set(2, lastPosition[2]);
         X_0.set(3, 0.0);
 
-
-        // SChleife ?!
-
+        // Possiblility for a loop if we get decent calculation function and a good estimation for the position
         // Building desgin (or jacobi) matrix
         for (int i=0;i<A.numRows();i++){
         A.set(i, 0, ( - ( ( 1 + X_0.get(3) ) * (inputMatrix.get(i, 0) - X_0.get(0) ) ) / ( Math.sqrt( Math.pow((inputMatrix.get(i,0)-X_0.get(0)), 2) + Math.pow((inputMatrix.get(i,1) - X_0.get(1)), 2) + Math.pow(inputMatrix.get(i,2) - X_0.get(2),2)))));
@@ -111,7 +101,7 @@ public class parameterEstimation {
         A.set(i, 3, Math.sqrt( Math.pow((inputMatrix.get(i,0)-X_0.get(0)), 2) + Math.pow((inputMatrix.get(i,1) - X_0.get(1)), 2) + Math.pow(inputMatrix.get(i,2) - X_0.get(2),2) ));
         }
 
-        A.print("%10.4f");
+        //A.print("%10.4f");
 
         N = A.transpose().mult(P.mult(A));
         n1 = A.transpose().mult(P.mult(l));
@@ -151,11 +141,10 @@ public class parameterEstimation {
         output.set(2,1,Math.sqrt(sigma_dx.get(2,2)));           // sigma Z
         output.set(3,1,Math.sqrt(sigma_dx.get(3,3)));           // sigma scale
 
-        System.out.println();
-        sigma_dx.print("%8.6f");
-        System.out.println();
-        output.print("%10.5f");
-
+        //System.out.println();
+        //sigma_dx.print("%8.6f");
+        //System.out.println();
+        //output.print("%10.5f");
         return output;
     }
 
@@ -167,6 +156,8 @@ public class parameterEstimation {
         this.lastPosition = lastPosition;
         setInitialized(true);
         System.out.println("----- Position initialized -----");
+        System.out.println("Postion (X/Y/Z): " + lastPosition[0] + "/" + lastPosition[1] + "/" + lastPosition[2] + "");
+        System.out.println();
     }
 
     public boolean isInitialized() {
@@ -183,7 +174,6 @@ public class parameterEstimation {
 
     public void setSigma_s(double sigma_s) {
         this.sigma_s = sigma_s;
-        sigma_s_changed = true;
     }
 
 }
