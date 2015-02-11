@@ -156,8 +156,7 @@ public class BeaconScanService
             } else {
                 Log.d(TAG, "BT verified");
             }
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Bluetooth LE not available");
             builder.setMessage("Sorry, this device does not support Bluetooth LE.");
@@ -318,11 +317,6 @@ public class BeaconScanService
                 && !unregisteredBeacons.contains(beacon)) {
                 loggedBeacons.add(beacon);
             }
-            Log.v(TAG, "================== currentSiteMeasurements: ================== ");
-            for (Map.Entry<WkbLocation, Measurement> entry : currentSiteMeasurements.entrySet()) {
-                Log.v(TAG, StringUtils.toString(entry.getKey()) + " -> " + entry.getValue());
-            }
-            Log.v(TAG, "================== currentSiteMeasurements EOF ================== ");
             if (calcPosition) {
                 Log.d(TAG, "calcPosition -> start to calculate the position!");
             }
@@ -336,6 +330,11 @@ public class BeaconScanService
             @Override
             public void run() {
                 synchronized (currentSiteMeasurements) {
+                    Log.v(TAG, "================== calcPosition with measurements: ================== ");
+                    for (Map.Entry<WkbLocation, Measurement> entry : currentSiteMeasurements.entrySet()) {
+                        Log.v(TAG, StringUtils.toString(entry.getKey()) + " -> " + entry.getValue());
+                    }
+                    Log.v(TAG, "================== calcPosition with measurements EOF ================== ");
                     currentClientLocation = locator.getLocation(currentSiteMeasurements);
                     Log.v(TAG, "calcPosition() -> Calculated site: " + currentClientLocation.toText());
                     for (Beacon b: unregisteredBeacons) {

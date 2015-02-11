@@ -22,6 +22,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
+import de.hsmainz.gi.indoornavcl.util.StringUtils;
 import org.ejml.simple.SimpleMatrix;
 
 import java.util.*;
@@ -60,6 +61,8 @@ public class LocatorImpl1
         SimpleMatrix output = new SimpleMatrix(locations.size(), u); // Set size
         this.measurementCount = 0;
         Map<Double, WkbLocation> mapByDistance = new TreeMap<>();
+        double x= 0 , y=0;
+        int cnt = 0;
         for (Map.Entry<WkbLocation, Measurement> loc: locations.entrySet()) {
             if (loc.getValue() != null) {
                 Point point = loc.getKey().getCoord().getPoint();
@@ -68,52 +71,59 @@ public class LocatorImpl1
                 } else if (this.SRID != point.getSRID()) {
                     Log.d(TAG, "Warning, varying SRIDs found (" + this.SRID + " ≠ " + point.getSRID() + ")");
                 }
-                double dist = DistanceCalculator.calculateDistance(loc.getValue().getTxPower(), loc.getValue().getRssi());
+                double dist = DistanceCalculator.calculateDistancePoly3(loc.getValue().getTxPower(), loc.getValue().getRssi());
                 output.set(this.measurementCount, 0, point.getX());     // X-coordinate
                 output.set(this.measurementCount, 1, point.getY());     // Y-coordinate
                 output.set(this.measurementCount, 2, 2.5d);             // Z-coordinate
                 output.set(this.measurementCount, 3, dist);             // calculated distance
+                Log.v(TAG, "distToPoint: " + dist + "\t" + StringUtils.toString(loc.getKey()));
                 this.measurementCount++;
                 mapByDistance.put(dist, loc.getKey());
+                x+=point.getX();
+                y+=point.getY();
+                cnt++;
             }
         }
-        if (mapByDistance.size() >= 3) {
-            TinyCoordinate   a,      b,      c;
-            double  dA,     dB,     dC,
-                    cA=0.2, cB=0.2, cC=0.2;
-            Iterator<Map.Entry<Double, WkbLocation>> it = mapByDistance.entrySet().iterator();
-            Map.Entry<Double, WkbLocation> e = it.next();
-            Point p = e.getValue().getCoord().getPoint();
-            if (e == null || e.getValue() == null) {
-                Log.d(TAG, "no location candidate for a");
-            } else {
-                a = new TinyCoordinate(p);
-                dA = e.getKey();
-                e = it.next();
-                p = e.getValue().getCoord().getPoint();
-                if (e == null || e.getValue() == null) {
-                    Log.d(TAG, "no location candidate for b -> initialposition = a");
-                    initialPosition = new TinyCoordinate(p);
-                } else {
-                    b = new TinyCoordinate(p);
-                    dB = e.getKey();
-                    e = it.next();
-                    p = e.getValue().getCoord().getPoint();
-                    if (e == null || e.getValue() == null) {
-                        Log.d(TAG, "no location candidate for c -> initialposition between a and b");
-                        initialPosition = new TinyCoordinate();
-                        double ratio = (dA + dB) / 2;
-                        initialPosition.x = (dA * a.x + dB * b.x) / ratio;
-                        initialPosition.y = (dA * a.y + dB * b.y) / ratio;
-                        initialPosition.z = (dA * a.z + dB * b.z) / ratio;
-                    } else {
-                        c = new TinyCoordinate(p);
-                        dC = e.getKey();
-                        initialPosition = position(a, b, c, dA, dB, dC, cA, cB, cC);
-                    }
-                }
-            }
-        }
+        x /= this.measurementCount;
+        y /= this.measurementCount;
+        initialPosition = new TinyCoordinate(x, y, 1.5);
+//        if (mapByDistance.size() >= 3) {
+//            TinyCoordinate   a,      b,      c;
+//            double  dA,     dB,     dC,
+//                    cA=0.2, cB=0.2, cC=0.2;
+//            Iterator<Map.Entry<Double, WkbLocation>> it = mapByDistance.entrySet().iterator();
+//            Map.Entry<Double, WkbLocation> e = it.next();
+//            Point p = e.getValue().getCoord().getPoint();
+//            if (e == null || e.getValue() == null) {
+//                Log.d(TAG, "no location candidate for a");
+//            } else {
+//                a = new TinyCoordinate(p);
+//                dA = e.getKey();
+//                e = it.next();
+//                p = e.getValue().getCoord().getPoint();
+//                if (e == null || e.getValue() == null) {
+//                    Log.d(TAG, "no location candidate for b -> initialposition = a");
+//                    initialPosition = new TinyCoordinate(p);
+//                } else {
+//                    b = new TinyCoordinate(p);
+//                    dB = e.getKey();
+//                    e = it.next();
+//                    p = e.getValue().getCoord().getPoint();
+//                    if (e == null || e.getValue() == null) {
+//                        Log.d(TAG, "no location candidate for c -> initialposition between a and b");
+//                        initialPosition = new TinyCoordinate();
+//                        double ratio = (dA + dB) / 2;
+//                        initialPosition.x = (dA * a.x + dB * b.x) / ratio;
+//                        initialPosition.y = (dA * a.y + dB * b.y) / ratio;
+//                        initialPosition.z = (dA * a.z + dB * b.z) / ratio;
+//                    } else {
+//                        c = new TinyCoordinate(p);
+//                        dC = e.getKey();
+//                        initialPosition = position(a, b, c, dA, dB, dC, cA, cB, cC);
+//                    }
+//                }
+//            }
+//        }
         return output;
     }
 

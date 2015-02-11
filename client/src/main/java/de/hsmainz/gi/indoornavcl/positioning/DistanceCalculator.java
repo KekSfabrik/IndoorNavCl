@@ -55,18 +55,7 @@ public class DistanceCalculator {
      */
 
     public static double calculateDistancePoly3(double txPower, double rssi) {
-        if (rssi == 0) {
-            return -1.0; // if we cannot determine accuracy, return -1.
-        }
-
-        double ratio = rssi * 1.0 / txPower;
-        if (ratio < 1.0) {
-            return Math.pow(ratio, 10);
-        }
-        else {
-            // distance = a * ratio^3 + b * ratio^2 + c * ratio + d
-            return (-0.000327) * Math.pow(ratio, 3) + (-0.066887) * Math.pow(ratio,2) + (-4.518441) * ratio + (-97.864651);
-        }
+        return (-0.000327) * Math.pow(rssi, 3) + (-0.066887) * Math.pow(rssi,2) + (-4.518441) * rssi + (-97.864651);
     }
 
 }
