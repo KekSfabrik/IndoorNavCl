@@ -50,7 +50,7 @@ public class BeaconScanService
     private static final String         TAG = BeaconScanService.class.getSimpleName();
     private static final boolean        DEBUG = true;
 
-    private static final int            beaconScanInterval              =  5000;
+    private static final int            beaconScanInterval              =   500;
     private static final int            beaconScanWaitInterval          =     0;
     private static final int            beaconBackgroundScanInterval    = 10000;
     private static final int            beaconBackgroundScanWaitInterval= 20000;
@@ -178,10 +178,8 @@ public class BeaconScanService
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (!availableSites.isEmpty()) {
-                    availableSites.addAll(SoapLocatorRequests.getSiteByApproximateName(""));
-                    Log.v(TAG, "updateCheckedBeacons() -> checkedBeacons = " + Arrays.toString(StringUtils.listAll(checkedBeacons)));
-                }
+                availableSites.addAll(SoapLocatorRequests.getSiteByApproximateName(""));
+                Log.v(TAG, "getAvailableSites() -> availableSites = " + Arrays.toString(StringUtils.listAll(availableSites)));
                 handler.sendEmptyMessage(Globals.SITES_AVAILABLE_CALLBACK_ARRIVED);
             }
         }).start();
@@ -292,7 +290,7 @@ public class BeaconScanService
     }
 
 
-    private void checkMeasuredBeacon(Beacon beacon, Measurement measurement) {
+    private boolean checkMeasuredBeacon(Beacon beacon, Measurement measurement) {
         boolean calcPosition = false;
         synchronized (loggedBeacons) {
             for (Beacon b: checkedBeacons) {
@@ -327,9 +325,9 @@ public class BeaconScanService
             Log.v(TAG, "================== currentSiteMeasurements EOF ================== ");
             if (calcPosition) {
                 Log.d(TAG, "calcPosition -> start to calculate the position!");
-                calcPosition();
             }
         }
+        return calcPosition;
     }
 
 
@@ -474,13 +472,18 @@ public class BeaconScanService
             public void didRangeBeaconsInRegion(Collection<org.altbeacon.beacon.Beacon> beacons, Region region) {
                 if (beacons.size() > 0) {
                     Iterator<org.altbeacon.beacon.Beacon> beaconIterator = beacons.iterator();
+                    boolean calcPosition = false;
                     while (beaconIterator.hasNext()) {
                         org.altbeacon.beacon.Beacon beacon = beaconIterator.next();
                         Beacon ownBeacon = new Beacon(beacon);
                         Measurement measurement = new Measurement(beacon.getRssi(), beacon.getTxPower());
-                        checkMeasuredBeacon(ownBeacon, measurement);
+                        boolean shouldCalc = checkMeasuredBeacon(ownBeacon, measurement);
+                        calcPosition = calcPosition || shouldCalc;
                     }
                     getLocationsFromLoggedBeacons();
+                    if (calcPosition) {
+                        calcPosition();
+                    }
                 }
             }
         });
@@ -572,7 +575,7 @@ public class BeaconScanService
     private void uiSiteChanged() {
         try {
             Message msg = Message.obtain();
-            msg.what = Globals.UPDATE_POSITION_MSG;
+            msg.what = Globals.SITE_CHANGED_MSG;
             Bundle bundle = new Bundle();
             bundle.putParcelable(Globals.SITE_CHANGED, currentSite);
             msg.setData(bundle);

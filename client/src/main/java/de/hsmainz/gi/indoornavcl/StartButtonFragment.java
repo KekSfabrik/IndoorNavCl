@@ -33,9 +33,6 @@ public class    StartButtonFragment
     private static final String TAG = StartButtonFragment.class.getSimpleName();
 
 
-    //private Button buttonStart;
-
-
 
     /**
      * App startup
@@ -57,7 +54,6 @@ public class    StartButtonFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //buttonStart = (Button) getView().findViewById(R.id.btnStart);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.startbutton_fragment, container, false);
     }

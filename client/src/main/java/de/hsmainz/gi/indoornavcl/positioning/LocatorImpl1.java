@@ -161,7 +161,6 @@ public class LocatorImpl1
                     )
                 );
         output.setSRID(this.SRID);
-        System.out.println("Point created: " + output.getCoordinate().toString());
         return output;
     }
 
@@ -178,8 +177,8 @@ public class LocatorImpl1
         SimpleMatrix sm = this.locatorToObservations(locations);
         switch (this.measurementCount) {
             case 0: return null;
-            case 1:
-            case 2:
+            case 1: return initialPosition.asPoint(this.SRID);
+            case 2: return initialPosition.asPoint(this.SRID);
             case 3: return initialPosition.asPoint(this.SRID);
             default: {
                 paramEst = new ParameterEstimation();

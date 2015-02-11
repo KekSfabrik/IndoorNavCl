@@ -24,7 +24,9 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:theme="@android:style/Theme.Holo.Light"
     tools:context=".MainActivity">
+    <!-- should be avoided: android:configChanges="orientation|screenSize"-->
     <fragment android:name="de.hsmainz.gi.indoornavcl.StartButtonFragment"
               android:id="@+id/startbutton_fragment"
               android:layout_weight="1"

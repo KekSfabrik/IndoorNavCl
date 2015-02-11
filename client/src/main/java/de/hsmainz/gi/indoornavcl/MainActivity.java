@@ -17,24 +17,29 @@
 
 package de.hsmainz.gi.indoornavcl;
 
-import android.app.Activity;
+import android.app.ActionBar;
+import android.app.FragmentManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.*;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 import de.hsmainz.gi.indoornavcl.comm.types.Site;
 import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
 import de.hsmainz.gi.indoornavcl.util.Globals;
+import de.hsmainz.gi.indoornavcl.util.StringUtils;
+import de.hsmainz.gi.indoornavcl.util.TaskFragment;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -42,15 +47,22 @@ import java.util.Set;
  * @author  KekS (mailto:keks@keksfabrik.eu), 2015
  */
 public class    MainActivity
-    extends     Activity {
+    extends     ActionBarActivity
+    implements  ActionBar.OnNavigationListener,
+                TaskFragment.TaskCallbacks {
 
     private static final String         TAG = MainActivity.class.getSimpleName();
+    private static final String         TAG_TASK_FRAGMENT = "main_activity_task_fragment";
+
+    private TaskFragment                mTaskFragment;
     private Button                      buttonStart;
     private BeaconScanService           bs;
     private boolean                     isBound = false;
-    private Set<Site>                   availableSites = new HashSet<>();
+    private List<String>                availableSites = new ArrayList<>();
     private Site                        currentSite;
     private CoordinateFragment          coordFragment;
+    private ArrayAdapter<String>        adapter;
+    private ActionBar                   actionBar;
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection           connection = new ServiceConnection() {
@@ -80,7 +92,7 @@ public class    MainActivity
                                     } else {
                                         coordFragment = (CoordinateFragment) getFragmentManager().findFragmentById(R.id.coordinate_fragment);
                                     }
-                                    // TODO display the new point on the UI
+                                    // TODO display the new point in the map
                                 }
                                     break;
                                 case Globals.DISPLAY_TOAST_MSG: {
@@ -88,9 +100,20 @@ public class    MainActivity
                                 }
                                     break;
                                 case Globals.SITE_CHANGED_MSG: {
-                                    availableSites = bs.getAllAvailableSites();
+                                    availableSites.clear();
+                                    for (Site s: bs.getAllAvailableSites()) {
+                                        availableSites.add(s.getName());
+                                    }
                                     Bundle b = msg.getData();
                                     currentSite = b.getParcelable(Globals.SITE_CHANGED);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            int position = adapter.getPosition(currentSite.getName());
+                                            Log.v(TAG, "current site position: " + position + " ("+ StringUtils.toString(currentSite)+")");
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
                                     // TODO update actionbar spinner to select the correct site
                                 }
                                     break;
@@ -107,6 +130,16 @@ public class    MainActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.v(TAG, "started");
+
+        FragmentManager fm = getFragmentManager();
+        mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
+
+        // If the Fragment is non-null, then it is currently being
+        // retained across a configuration change.
+        if (mTaskFragment == null) {
+            mTaskFragment = new TaskFragment();
+            fm.beginTransaction().add(mTaskFragment, TAG_TASK_FRAGMENT).commit();
+        }
         Intent intent = new Intent(this, BeaconScanService.class);
         intent.putExtra(Globals.UPDATE_POSITION_HANDLER, new Messenger(this.handler));
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
@@ -129,12 +162,25 @@ public class    MainActivity
             }
         });
         coordFragment = (CoordinateFragment) getFragmentManager().findFragmentById(R.id.coordinate_fragment);
+
+        // Set up the action bar to show a dropdown list.
+        actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, android.R.id.text1, availableSites);
+        actionBar.setListNavigationCallbacks(adapter, this);
     }
 
     public void showNotification(String str) {
         Toast.makeText(buttonStart.getContext(), str, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    protected void onSaveInstanceState (Bundle outState) {
+        if (bs.isScanning()) {
+            bs.writeToFile(coordFragment.getCoords());
+        }
+    }
     /**
      * app shutdown
      */
@@ -168,4 +214,35 @@ public class    MainActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * This method is called whenever a navigation item in your action bar
+     * is selected.
+     *
+     * @param itemPosition Position of the item clicked.
+     * @param itemId       ID of the item clicked.
+     * @return True if the event was handled, false otherwise.
+     */
+    @Override
+    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+        Log.v(TAG, "CALLBACK onNavigationItemSelected("+itemPosition+","+itemId+") = " + availableSites.get(itemPosition));
+        return false;
+    }
+
+
+    // The four methods below are called by the TaskFragment when new
+    // progress updates or results are available. The MainActivity
+    // should respond by updating its UI to indicate the change.
+
+    @Override
+    public void onPreExecute() {  }
+
+    @Override
+    public void onProgressUpdate(int percent) {  }
+
+    @Override
+    public void onCancelled() {  }
+
+    @Override
+    public void onPostExecute() {  }
 }

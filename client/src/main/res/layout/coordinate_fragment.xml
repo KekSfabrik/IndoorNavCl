@@ -37,7 +37,10 @@
             android:inputType="numberSigned"
             android:ems="10"
             android:id="@+id/txtX"
-            android:ellipsize="none" />
+            android:ellipsize="middle"
+            android:editable="false"
+            android:clickable="false"
+            android:focusable="false"/>
     </TableRow>
     <TableRow
         android:layout_width="match_parent"
@@ -54,7 +57,10 @@
             android:layout_height="wrap_content"
             android:inputType="numberSigned"
             android:ems="10"
-            android:id="@+id/txtY" />
+            android:id="@+id/txtY"
+            android:editable="false"
+            android:clickable="false"
+            android:focusable="false" android:ellipsize="middle"/>
     </TableRow>
     <TableRow
         android:layout_width="match_parent"
@@ -71,6 +77,9 @@
             android:layout_height="wrap_content"
             android:inputType="numberSigned"
             android:ems="10"
-            android:id="@+id/txtZ" />
+            android:id="@+id/txtZ"
+            android:editable="false"
+            android:clickable="false"
+            android:focusable="false" android:ellipsize="middle"/>
     </TableRow>
 </TableLayout>
