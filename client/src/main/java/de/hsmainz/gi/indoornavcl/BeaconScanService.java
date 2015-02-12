@@ -27,10 +27,7 @@ import com.vividsolutions.jts.geom.Point;
 import de.hsmainz.gi.indoornavcl.comm.SoapLocatorRequests;
 import de.hsmainz.gi.indoornavcl.comm.SoapPositionerRequests;
 import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
-import de.hsmainz.gi.indoornavcl.comm.types.LocationId;
-import de.hsmainz.gi.indoornavcl.comm.types.Site;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
+import de.hsmainz.gi.indoornavcl.comm.types.*;
 import de.hsmainz.gi.indoornavcl.positioning.Locator;
 import de.hsmainz.gi.indoornavcl.positioning.LocatorImpl1;
 import de.hsmainz.gi.indoornavcl.positioning.Measurement;
@@ -58,7 +55,7 @@ public class BeaconScanService
     private Set<Beacon>                 loggedBeacons       = Collections.synchronizedSet(new HashSet<Beacon>()),
                                         checkedBeacons      = Collections.synchronizedSet(new HashSet<Beacon>()),
                                         unregisteredBeacons = Collections.synchronizedSet(new HashSet<Beacon>());
-    private Site                        currentSite         = new Site(1, "KekSfabrik");
+    private Site                        currentSite         = new Site();
     private Set<Site>                   availableSites      = new HashSet<>();
     private boolean                     siteHasChanged      = true;
     private Set<WkbLocation>            currentSiteLocations= Collections.synchronizedSet(new HashSet<WkbLocation>());
@@ -265,7 +262,7 @@ public class BeaconScanService
                 }
                 Site site = mostLikely.lastEntry().getValue();
                 siteHasChanged = currentSite == null || !currentSite.isVerified() ? true : !currentSite.equals(site);
-                //currentSite = site;
+                currentSite = site;
                 Log.v(TAG, "Most likely Site: " + StringUtils.toString(currentSite));
             }
         }
@@ -532,7 +529,7 @@ public class BeaconScanService
     }
 
     public void setCurrentSite(Site site) {
-        //this.currentSite = site;
+        this.currentSite = site;
     }
 
     public Set<Site> getAllAvailableSites() {

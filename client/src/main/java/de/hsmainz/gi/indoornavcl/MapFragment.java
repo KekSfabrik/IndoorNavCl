@@ -43,7 +43,7 @@ public class    MapFragment
     private WebView     leaflet;
 
     private enum SITES {
-        ug, eg, og1, og2, og3;
+        ug, eg, og1, og2, og3, test
     }
 
     /**
