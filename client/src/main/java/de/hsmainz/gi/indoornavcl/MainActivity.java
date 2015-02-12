@@ -18,7 +18,6 @@
 package de.hsmainz.gi.indoornavcl;
 
 import android.app.ActionBar;
-import android.app.FragmentManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -61,6 +60,7 @@ public class    MainActivity
     private List<String>                availableSites = new ArrayList<>();
     private Site                        currentSite;
     private CoordinateFragment          coordFragment;
+    private MapFragment                 mapFragment;
     private ArrayAdapter<String>        adapter;
     private ActionBar                   actionBar;
 
@@ -83,14 +83,17 @@ public class    MainActivity
                         public boolean handleMessage(Message msg) {
                             switch (msg.what) {
                                 case Globals.UPDATE_POSITION_MSG: {
-                                    if (coordFragment != null) {
+                                    if (coordFragment != null
+                                        && mapFragment != null) {
                                         Bundle b = msg.getData();
                                         WkbPoint wkbPoint = b.getParcelable(Globals.CURRENT_POSITION);
                                         if (wkbPoint != null && wkbPoint.isVerified()) {
                                             coordFragment.setPoint(wkbPoint);
+                                            mapFragment.setPoint(wkbPoint);
                                         }
                                     } else {
                                         coordFragment = (CoordinateFragment) getFragmentManager().findFragmentById(R.id.coordinate_fragment);
+                                        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
                                     }
                                     // TODO display the new point in the map
                                 }
@@ -131,15 +134,15 @@ public class    MainActivity
         setContentView(R.layout.activity_main);
         Log.v(TAG, "started");
 
-        FragmentManager fm = getFragmentManager();
-        mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
-
-        // If the Fragment is non-null, then it is currently being
-        // retained across a configuration change.
-        if (mTaskFragment == null) {
-            mTaskFragment = new TaskFragment();
-            fm.beginTransaction().add(mTaskFragment, TAG_TASK_FRAGMENT).commit();
-        }
+//        FragmentManager fm = getFragmentManager();
+//        mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
+//
+//        // If the Fragment is non-null, then it is currently being
+//        // retained across a configuration change.
+//        if (mTaskFragment == null) {
+//            mTaskFragment = new TaskFragment();
+//            fm.beginTransaction().add(mTaskFragment, TAG_TASK_FRAGMENT).commit();
+//        }
         Intent intent = new Intent(this, BeaconScanService.class);
         intent.putExtra(Globals.UPDATE_POSITION_HANDLER, new Messenger(this.handler));
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
@@ -162,6 +165,7 @@ public class    MainActivity
             }
         });
         coordFragment = (CoordinateFragment) getFragmentManager().findFragmentById(R.id.coordinate_fragment);
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
 
         // Set up the action bar to show a dropdown list.
         actionBar = getActionBar();

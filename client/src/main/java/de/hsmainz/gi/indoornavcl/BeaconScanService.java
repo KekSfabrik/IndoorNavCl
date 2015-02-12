@@ -50,7 +50,7 @@ public class BeaconScanService
     private static final String         TAG = BeaconScanService.class.getSimpleName();
     private static final boolean        DEBUG = true;
 
-    private static final int            beaconScanInterval              =   500;
+    private static final int            beaconScanInterval              =  1000;
     private static final int            beaconScanWaitInterval          =     0;
     private static final int            beaconBackgroundScanInterval    = 10000;
     private static final int            beaconBackgroundScanWaitInterval= 20000;
@@ -58,7 +58,7 @@ public class BeaconScanService
     private Set<Beacon>                 loggedBeacons       = Collections.synchronizedSet(new HashSet<Beacon>()),
                                         checkedBeacons      = Collections.synchronizedSet(new HashSet<Beacon>()),
                                         unregisteredBeacons = Collections.synchronizedSet(new HashSet<Beacon>());
-    private Site                        currentSite         = new Site();
+    private Site                        currentSite         = new Site(1, "KekSfabrik");
     private Set<Site>                   availableSites      = new HashSet<>();
     private boolean                     siteHasChanged      = true;
     private Set<WkbLocation>            currentSiteLocations= Collections.synchronizedSet(new HashSet<WkbLocation>());
@@ -265,7 +265,7 @@ public class BeaconScanService
                 }
                 Site site = mostLikely.lastEntry().getValue();
                 siteHasChanged = currentSite == null || !currentSite.isVerified() ? true : !currentSite.equals(site);
-                currentSite = site;
+                //currentSite = site;
                 Log.v(TAG, "Most likely Site: " + StringUtils.toString(currentSite));
             }
         }
@@ -470,6 +470,9 @@ public class BeaconScanService
             @Override
             public void didRangeBeaconsInRegion(Collection<org.altbeacon.beacon.Beacon> beacons, Region region) {
                 if (beacons.size() > 0) {
+                    for (Map.Entry<WkbLocation, Measurement> entry : currentSiteMeasurements.entrySet()) {
+                        currentSiteMeasurements.put(entry.getKey(), null);
+                    }
                     Iterator<org.altbeacon.beacon.Beacon> beaconIterator = beacons.iterator();
                     boolean calcPosition = false;
                     while (beaconIterator.hasNext()) {
@@ -529,7 +532,7 @@ public class BeaconScanService
     }
 
     public void setCurrentSite(Site site) {
-        this.currentSite = site;
+        //this.currentSite = site;
     }
 
     public Set<Site> getAllAvailableSites() {

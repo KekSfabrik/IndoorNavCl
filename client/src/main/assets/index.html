@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (C) 2015 Jan "KekS" M.
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation; either
+  ~ version 2.1 of the License, or (at your option) any later version.
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+  ~ MA 02110-1301  USA
+  -->
+
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Leaflet mobile example</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <link rel="stylesheet" href="leaflet.css" />
+        <script src="leaflet.js"></script>
+        <style>
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            html, body, #map {
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+        <script>
+            /*
+             * TOPLEFT:       lat: 49.988826788413355    lng: 8.226335048675539 
+             * BOTTOMRIGHT:   lat: 49.9881473340133      lng: 8.227686882019045
+            var trafo = new L.Transformation(49.988826788413355, 0.0001, 8.226335048675539, 0.0001);
+            var crs = new L.Proj.CRS('EPSG:4326',
+                    '+lon_0=49.988826788413355 +lat_0=8.226335048675539 +k=1.0 +x_0=1500000.0 ' +
+                    '+y_0=0.0 +proj=tmerc +ellps=bessel +units=m ' +
+                    '+towgs84=414.1,41.3,603.1,-0.855,2.141,-7.023,0 +no_defs');
+             */
+            var siteMap = {
+                ug: {
+                    room:   'indoornav:raeume_ug_aggr',
+                    floor:  'indoornav:flur_ug'
+                },
+                eg: {
+                    room:   'indoornav:raeume_eg_aggr',
+                    floor:  'indoornav:flur_eg'
+                },
+                og1: {
+                    room:   'indoornav:raeume_1og_aggrpolygon',
+                    floor:  'indoornav:flur_1og'
+                },
+                og2: {
+                    room:   'indoornav:raeume_2og_aggr',
+                    floor:  'indoornav:flur_2og'
+                },
+                og3: {
+                    room:   'indoornav:raeume_3og_aggr',
+                    floor:  'indoornav:flur_3og'
+                }
+            }
+            var wms = Android.getTileServer();
+            var roomLayer = L.tileLayer.wms(wms, {
+                layers: siteMap["og2"].room,
+                format: 'image/png',
+                transparent: true,
+                version: '1.1.0'
+            });
+            var floorLayer = L.tileLayer.wms(wms, {
+                layers: siteMap["og2"].floor,
+                format: 'image/png',
+                transparent: true,
+                version: '1.1.0'
+            });
+
+
+            var map = L.map('map', {
+                center: [-33, 1],
+                zoom: 2,
+                attributionControl: false,
+                zoomControl: false,
+                layers: [
+                    //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+                    roomLayer,
+                    floorLayer
+                ]
+            });
+            var marker = L.marker([0, 0]).bindPopup('You');
+            map.locate({setView: true, maxZoom: 16});
+
+
+            function setup(wmsUrl) {
+                roomLayer.setUrl(wmsUrl);
+                floorLayer.setUrl(wmsUrl);
+            }
+
+            function changeSite(site) {
+                var rll = siteMap[site].room,
+                    fll = siteMap[site].floor;
+                if (typeof rll !== 'undefined') {
+                    roomLayer.setParams({layers: rll});
+                }
+                if (typeof fll !== 'undefined') {
+                    floorLayer.setParams({layers: fll});
+                }
+            }
+
+            var callcount = 0;
+            function setPosition(lat, lng, height) {
+                marker.removeFrom(map);
+                marker.setLatLng([lat, lng]);
+                if (callcount % 10 == 0) {
+                    map.setView([lat, lng]);
+                }
+                if (typeof height !== 'undefined') {
+                    marker.bindPopup(height+"m");
+                }
+                marker.addTo(map);
+                callcount++;
+            }
+
+            setInterval(function() { Android.showToast(roomLayer._url); }, 10000);
+        </script>
+    </body>
+</html>

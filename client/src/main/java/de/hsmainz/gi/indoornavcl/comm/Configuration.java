@@ -39,6 +39,7 @@ public final class Configuration {
     private static String     username;
     private static String     password;
     private static String     namespace;
+    private static String     tileServer;
     private static boolean    isInitialized = false;
 
     /**
@@ -53,7 +54,6 @@ public final class Configuration {
                     if ((name != null) && name.equals("setting")) {
                         for(int i = 0, size = parser.getAttributeCount(); i < size; i++) {
                             String attrName = parser.getAttributeName(i);
-                            String attrValue = parser.getAttributeValue(i);
                             if ((attrName != null)) {
                                 switch (attrName) {
                                     case "wsUrl":
@@ -73,6 +73,9 @@ public final class Configuration {
                                         break;
                                     case "namespace":
                                         this.namespace = parser.getAttributeValue(i);
+                                        break;
+                                    case "tileServer":
+                                        this.tileServer = parser.getAttributeValue(i);
                                         break;
                                 }
                             }
@@ -127,5 +130,9 @@ public final class Configuration {
 
     public static String getNamespace() {
         return namespace;
+    }
+
+    public static String getTileServer() {
+        return tileServer;
     }
 }

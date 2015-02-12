@@ -84,6 +84,7 @@ public class LocatorImpl1
                 cnt++;
             }
         }
+        output.reshape(this.measurementCount, u);
         x /= this.measurementCount;
         y /= this.measurementCount;
         initialPosition = new TinyCoordinate(x, y, 1.5);
