@@ -20,6 +20,7 @@ package de.hsmainz.gi.indoornavcl.util;
 import de.hsmainz.gi.indoornavcl.comm.types.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,17 +30,17 @@ import java.util.List;
  */
 public abstract class StringUtils {
 
-    public static String[] listAll(Collection<? extends IndoorNavEntity> list) {
+    public static <T extends IndoorNavEntity> String listAll(Collection<T> collection) {
         List<String> strings = new ArrayList<>();
-        if (list != null && list.size() <= 1) {
-            for (IndoorNavEntity entity : list) {
+        if (collection != null && !collection.isEmpty()) {
+            for (T entity : collection) {
                 strings.add(toString(entity));
             }
-            return strings.toArray(new String[0]);
+            return Arrays.toString(strings.toArray(new String[0]));
             //return list.parallelStream().map(i -> toString(i)).collect(Collectors.toList()).toArray(new String[0]);
         }
         else {
-            return new String[]{ "" };
+            return "";
         }
     }
 
@@ -85,6 +86,21 @@ public abstract class StringUtils {
         if (s == null || s.getName() == null)
             return "NPE (Site)";
         return "Site:\t\t" + s.getSite() + ", '" + s.getName() + "'";
+    }
+
+
+    public static String toString(IndoorNavEntity e) {
+        if (e instanceof Beacon)
+            return toString((Beacon) e);
+        if (e instanceof WkbPoint)
+            return toString((WkbPoint) e);
+        if (e instanceof LocationId)
+            return toString((LocationId) e);
+        if (e instanceof WkbLocation)
+            return toString((WkbLocation) e);
+        if (e instanceof Site)
+            return toString((Site) e);
+        return toString(e);
     }
 
     public static String toString(Object o) {

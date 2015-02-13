@@ -16,6 +16,7 @@
   ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
   ~ MA 02110-1301  USA
   -->
+
 <html>
     <head>
         <title>Leaflet mobile example</title>
@@ -66,20 +67,20 @@
                     floor:  'indoornav:flur_3og'
                 },
                 test: {
-                    room:   'indoornav:test',
-                    floor:  'indoornav:test'
+                    room:   'indoornav:poi_eg',
+                    floor:  'indoornav:poi_eg'
                 }
             }
             var wms = Android.getTileServer();
             var roomLayer = L.tileLayer.wms(wms, {
-                layers: siteMap["og2"].room,
-                format: 'image/png',
+                layers: siteMap["test"].room,
+                format: 'image/png8',
                 transparent: true,
                 version: '1.1.0'
             });
             var floorLayer = L.tileLayer.wms(wms, {
-                layers: siteMap["og2"].floor,
-                format: 'image/png',
+                layers: siteMap["test"].floor,
+                format: 'image/png8',
                 transparent: true,
                 version: '1.1.0'
             });
@@ -106,6 +107,7 @@
             }
 
             function changeSite(site) {
+                //Logger("changesite" + site);
                 var rll = siteMap[site].room,
                     fll = siteMap[site].floor;
                 if (typeof rll !== 'undefined') {
@@ -130,7 +132,10 @@
                 callcount++;
             }
 
-            //setInterval(function() { Android.showToast(roomLayer._url); }, 10000);
+            function Logger(str) {
+                Android.alert("JS\t" + str)
+            }
+            //setInterval(function() { Logger(roomLayer._url); }, 10000);
         </script>
     </body>
 </html>

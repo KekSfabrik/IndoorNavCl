@@ -35,6 +35,12 @@ public class WebAppInterface {
 
     /** Show a toast from the web page */
     @JavascriptInterface
+    public void alert(String toast) {
+        showToast(toast);
+    }
+
+    /** Show a toast from the web page */
+    @JavascriptInterface
     public void showToast(String toast) {
         Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
     }

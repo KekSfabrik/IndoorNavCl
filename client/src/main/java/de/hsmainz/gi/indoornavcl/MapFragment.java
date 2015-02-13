@@ -21,7 +21,6 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -42,7 +41,7 @@ public class    MapFragment
 
     private WebView     leaflet;
 
-    private enum SITES {
+    private enum SITE {
         ug, eg, og1, og2, og3, test
     }
 
@@ -85,21 +84,31 @@ public class    MapFragment
         leaflet.loadUrl("javascript:setPosition("+coord.y+", "+coord.x+", "+ coord.z +")");
     }
 
+    public void changeSite(String siteName) {
+        SITE s;
+        if (siteName != null && siteName.length() >= 3) {
+            if (siteName.startsWith("UG")) {
+                s = SITE.ug;
+            } else if (siteName.startsWith("EG")) {
+                s = SITE.eg;
+            } else if (siteName.startsWith("1OG")) {
+                s = SITE.og1;
+            } else if (siteName.startsWith("2OG")) {
+                s = SITE.og2;
+            } else if (siteName.startsWith("3OG")) {
+                s = SITE.og3;
+            } else {
+                s = SITE.test;
+            }
+        } else {
+            s = SITE.test;
+        }
+        Log.d(TAG, "Calling changeSite(\"" + s + "\") in JS");
+        leaflet.loadUrl("javascript:changeSite(\"" + s + "\")");
+    }
 
     public void changeSite(Site site) {
-        String s = "";
-        if (site.getName().startsWith("UG")) {
-            s = "ug";
-        } else if (site.getName().startsWith("EG")) {
-            s = "eg";
-        } else if (site.getName().startsWith("1OG")) {
-            s = "og1";
-        } else if (site.getName().startsWith("2OG")) {
-            s = "og2";
-        } else if (site.getName().startsWith("3OG")) {
-            s = "og3";
-        }
-        leaflet.loadUrl("javascript:changeSite(\""+s+"\")");
+        changeSite(site.getName());
     }
 
     /**
@@ -116,20 +125,5 @@ public class    MapFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

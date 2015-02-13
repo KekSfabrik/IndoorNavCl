@@ -211,7 +211,7 @@ public class Site
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 11 * hash + this.site;
+        //hash = 11 * hash + this.site;
         hash = 11 * hash + Objects.hashCode(this.name);
         return hash;
     }

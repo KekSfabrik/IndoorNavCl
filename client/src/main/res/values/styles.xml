@@ -15,13 +15,31 @@
   ~ MA 02110-1301  USA
   -->
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/AppTheme.MyActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/AppTheme.MyActionBar</item>
+        <item name="android:spinnerDropDownItemStyle">@style/AppTheme.DropDown</item>
+        <item name="android:spinnerStyle">@style/AppTheme.DropDown</item>
+        <item name="android:displayOptions">showHome|homeAsUp|showTitle</item>
+        <item name="android:icon">@android:color/transparent</item>
+        <item name="android:spinnerMode">dropdown</item>
     </style>
-    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light"></style>
-
-    <style name="AppTheme.MyActionBar" parent="@style/Widget.AppCompat.ActionBar"></style>
+    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:textSize">10sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:spinnerMode">dropdown</item>
+    </style>
+    <style name="AppTheme.MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:textSize">10sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:spinnerMode">dropdown</item>
+    </style>
+    <style name="AppTheme.DropDown" parent="@android:style/Widget.Holo.Light.Spinner">
+        <item name="android:textSize">10sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:spinnerMode">dropdown</item>
+    </style>
 </resources>

@@ -21,10 +21,9 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+import de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  package de.hsmainz.geoinform.util;
@@ -44,6 +43,7 @@ import java.util.Set;
  */
 public class Utilities {
 
+    public static final Random R = new Random();
 
     //----------------------------------------------------
     //                  Parceling Maps
@@ -136,5 +136,43 @@ public class Utilities {
             Log.d("UTIL", "Couldn't parse as Integer", ex);
             return null;
         }
+    }
+
+    /**
+     * Check through a {@link java.util.Collection} of {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity}s
+     * and returns whether all all of their {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified}
+     * methods are {@link java.lang.Boolean#TRUE}.
+     *
+     * @param   entities    a Collection of IndoorNavEntities
+     * @return  whether all entities are verified
+     */
+    public static boolean areAllVerified(Collection<? extends IndoorNavEntity> entities) {
+        boolean verified = true;
+        for (IndoorNavEntity entity: entities) {
+            verified = verified && entity.isVerified();
+        }
+        return verified;
+    }
+
+    /**
+     * Get a {@link java.util.Collection} of the same Type as the input-{@link java.util.Collection} where all
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity} elements are verified or not as specified by
+     * the second argument. Warning: does not work for {@link java.util.ArrayList}s generated with {@link java.util.Arrays#asList}
+     * or any of the {@link java.util.Collections} specials such as {@link java.util.Collections#synchronizedList} or
+     * {@link java.util.Collections#unmodifiableSet} (throws {@link java.lang.NoSuchMethodException}).
+     * @param   entities            the collection to filter through
+     * @param   shouldBeVerified    whether the output should contain the elements whose
+     *          {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} returned true or false
+     * @param   <T>                 the generic type of the entities
+     * @return  all elements that satisfy the shouldBeVerified argument
+     */
+    public static <T extends Collection<U>, U extends IndoorNavEntity> T getAllVerified(T entities, boolean shouldBeVerified) throws IllegalAccessException, InstantiationException {
+        T output = (T) entities.getClass().newInstance();
+        for (U entity: entities) {
+            if (entity.isVerified() == shouldBeVerified) {
+                output.add(entity);
+            }
+        }
+        return output;
     }
 }

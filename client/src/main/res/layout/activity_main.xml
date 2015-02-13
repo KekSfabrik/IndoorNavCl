@@ -20,8 +20,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@android:style/Theme.Holo.Light"
-    tools:context=".MainActivity" android:rowCount="3" android:columnCount="1">
+    android:theme="@style/AppTheme.MyActionBar"
+    android:textSize="6sp"
+    tools:context=".MainActivity"
+    android:rowCount="3"
+    android:columnCount="1">
     <!-- should be avoided: android:configChanges="orientation|screenSize"-->
     <fragment android:name="de.hsmainz.gi.indoornavcl.StartButtonFragment"
               android:id="@+id/startbutton_fragment"

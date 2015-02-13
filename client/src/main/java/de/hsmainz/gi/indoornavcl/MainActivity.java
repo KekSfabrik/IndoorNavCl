@@ -18,19 +18,17 @@
 package de.hsmainz.gi.indoornavcl;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.*;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.*;
 import de.hsmainz.gi.indoornavcl.comm.types.Site;
 import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
 import de.hsmainz.gi.indoornavcl.util.Globals;
@@ -46,14 +44,14 @@ import java.util.List;
  * @author  KekS (mailto:keks@keksfabrik.eu), 2015
  */
 public class    MainActivity
-    extends     ActionBarActivity
+    extends     Activity
     implements  ActionBar.OnNavigationListener,
                 TaskFragment.TaskCallbacks {
 
     private static final String         TAG = MainActivity.class.getSimpleName();
-    private static final String         TAG_TASK_FRAGMENT = "main_activity_task_fragment";
-
-    private TaskFragment                mTaskFragment;
+//    private static final String         TAG_TASK_FRAGMENT = "main_activity_task_fragment";
+//
+//    private TaskFragment                mTaskFragment;
     private Button                      buttonStart;
     private BeaconScanService           bs;
     private boolean                     isBound = false;
@@ -63,6 +61,7 @@ public class    MainActivity
     private MapFragment                 mapFragment;
     private ArrayAdapter<String>        adapter;
     private ActionBar                   actionBar;
+    private MenuItem                    spinnerItem;
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection           connection = new ServiceConnection() {
@@ -95,7 +94,6 @@ public class    MainActivity
                                         coordFragment = (CoordinateFragment) getFragmentManager().findFragmentById(R.id.coordinate_fragment);
                                         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
                                     }
-                                    // TODO display the new point in the map
                                 }
                                     break;
                                 case Globals.DISPLAY_TOAST_MSG: {
@@ -109,14 +107,17 @@ public class    MainActivity
                                     }
                                     Bundle b = msg.getData();
                                     currentSite = b.getParcelable(Globals.SITE_CHANGED);
+                                    mapFragment.changeSite(currentSite);
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             int position = adapter.getPosition(currentSite.getName());
                                             Log.v(TAG, "current site position: " + position + " ("+ StringUtils.toString(currentSite)+")");
+                                            ((Spinner) spinnerItem.getActionView()).setSelection(position);
                                             adapter.notifyDataSetChanged();
                                         }
                                     });
+
                                     // TODO update actionbar spinner to select the correct site
                                 }
                                     break;
@@ -169,10 +170,10 @@ public class    MainActivity
 
         // Set up the action bar to show a dropdown list.
         actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, android.R.id.text1, availableSites);
-        actionBar.setListNavigationCallbacks(adapter, this);
+        actionBar.setDisplayShowTitleEnabled(false);
+        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, availableSites);
+        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
     }
 
     public void showNotification(String str) {
@@ -201,22 +202,33 @@ public class    MainActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+        spinnerItem = menu.findItem( R.id.spinner);
+        View view1 = spinnerItem.getActionView();
+        if (view1 instanceof Spinner) {
+            final Spinner spinner = (Spinner) view1;
+            spinner.setAdapter(adapter);
+            Log.d(TAG, "SPINNER setAdapter");
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                    // TODO Auto-generated method stub
+                    Log.d(TAG, "SPINNER onItemSelected 0: " + arg0 + " 1: " + arg1 + " 2: " + arg2 + " 3: " + arg3);
+                    Log.v(TAG, "CALLBACK onNavigationItemSelected("+arg2+","+arg3+") = " + availableSites.get(arg2));
+                    boolean switchedSite = bs.setCurrentSite(availableSites.get(arg2));
+                    if (switchedSite) {
+                        mapFragment.changeSite(availableSites.get(arg2));
+                    }
+                }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+                @Override
+                public void onNothingSelected(AdapterView<?> arg0) {
+                    // TODO Auto-generated method stub
+                    Log.d(TAG, "SPINNER onNothingSelected 0: " + arg0);
+                }
+            });
+            Log.d(TAG, "SPINNER setOnItemSelectedListener");
         }
-
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     /**
@@ -230,14 +242,17 @@ public class    MainActivity
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
         Log.v(TAG, "CALLBACK onNavigationItemSelected("+itemPosition+","+itemId+") = " + availableSites.get(itemPosition));
-        return false;
+        boolean switchedSite = bs.setCurrentSite(availableSites.get(itemPosition));
+        if (switchedSite) {
+            mapFragment.changeSite(availableSites.get(itemPosition));
+        }
+        return switchedSite;
     }
 
 
     // The four methods below are called by the TaskFragment when new
     // progress updates or results are available. The MainActivity
     // should respond by updating its UI to indicate the change.
-
     @Override
     public void onPreExecute() {  }
 

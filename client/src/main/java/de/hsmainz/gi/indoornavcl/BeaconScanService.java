@@ -55,8 +55,8 @@ public class BeaconScanService
     private Set<Beacon>                 loggedBeacons       = Collections.synchronizedSet(new HashSet<Beacon>()),
                                         checkedBeacons      = Collections.synchronizedSet(new HashSet<Beacon>()),
                                         unregisteredBeacons = Collections.synchronizedSet(new HashSet<Beacon>());
-    private Site                        currentSite         = new Site();
-    private Set<Site>                   availableSites      = new HashSet<>();
+    private Site                        currentSite         = new Site(1, "KekSfabrik");
+    private Set<Site>                   availableSites      = Collections.synchronizedSet(new HashSet<Site>());
     private boolean                     siteHasChanged      = true;
     private Set<WkbLocation>            currentSiteLocations= Collections.synchronizedSet(new HashSet<WkbLocation>());
     private Map<WkbLocation, Measurement>
@@ -67,7 +67,7 @@ public class BeaconScanService
     private boolean                     isScanning;
     private final IBinder               binder = new LocalBinder();
     private Messenger                   updateBeaconPositionMessenger;
-    private Locator                     locator = new LocatorImpl1();
+    private Locator                     locator = new LocatorImpl1();//new TrivialLocator();
 
     /** whether or not the user is an administrator */
     private static boolean              isAdminUser = true;
@@ -81,7 +81,8 @@ public class BeaconScanService
                                 case Globals.GET_LOCATIONS_CALLBACK_ARRIVED:
                                     synchronized (currentSiteLocations) {
                                         for (WkbLocation loc: currentSiteLocations) {
-                                            if (!currentSiteMeasurements.containsKey(loc)) {
+                                            if (!currentSiteMeasurements.containsKey(loc)
+                                                && currentSite.equals(loc.getSite())) {
                                                 currentSiteMeasurements.put(loc, null);
                                             }
 //                                            Log.v(TAG, "GET_LOCATIONS_CALLBACK_ARRIVED -> "+StringUtils.toString(loc));
@@ -174,8 +175,10 @@ public class BeaconScanService
         new Thread(new Runnable() {
             @Override
             public void run() {
-                availableSites.addAll(SoapLocatorRequests.getSiteByApproximateName(""));
-                Log.v(TAG, "getAvailableSites() -> availableSites = " + Arrays.toString(StringUtils.listAll(availableSites)));
+                synchronized (availableSites) {
+                    availableSites.addAll(SoapLocatorRequests.getSiteByApproximateName(""));
+                    Log.v(TAG, "getAvailableSites() -> availableSites = " + StringUtils.listAll(availableSites));
+                }
                 handler.sendEmptyMessage(Globals.SITES_AVAILABLE_CALLBACK_ARRIVED);
             }
         }).start();
@@ -188,7 +191,7 @@ public class BeaconScanService
                 synchronized (loggedBeacons) {
                     if (!loggedBeacons.isEmpty()) {
                         checkedBeacons.addAll(SoapLocatorRequests.getBeacons(loggedBeacons));
-                        Log.v(TAG, "updateCheckedBeacons() -> checkedBeacons = " + Arrays.toString(StringUtils.listAll(checkedBeacons)));
+                        Log.v(TAG, "updateCheckedBeacons() -> checkedBeacons = " + StringUtils.listAll(checkedBeacons));
                     }
                 }
                 handler.sendEmptyMessage(Globals.ZERO);
@@ -220,7 +223,7 @@ public class BeaconScanService
                     if (!loggedBeacons.isEmpty()) {
                         currentSiteLocations.addAll(SoapLocatorRequests.getBeaconLocationsFromBeaconList(loggedBeacons));
                         updateCheckedBeacons(currentSiteLocations);
-                        Log.v(TAG, "getLocationsFromLoggedBeacons() -> currentSiteLocations = " + Arrays.toString(StringUtils.listAll(currentSiteLocations)));
+                        Log.v(TAG, "getLocationsFromLoggedBeacons() -> currentSiteLocations = " + StringUtils.listAll(currentSiteLocations));
                     }
                 }
                 handler.sendEmptyMessage(Globals.CURRENT_SITE_LOCATIONS_CALLBACK_ARRIVED);
@@ -236,7 +239,7 @@ public class BeaconScanService
                 synchronized (checkedBeacons) {
                     if (checkedBeacons != null && !checkedBeacons.isEmpty()) {
                         currentSiteLocations = SoapLocatorRequests.getBeaconLocationsFromBeaconList(checkedBeacons);
-                        Log.v(TAG, "getLocationsFromCheckedBeacons() -> currentSiteLocations = "+Arrays.toString(StringUtils.listAll(currentSiteLocations)));
+                        Log.v(TAG, "getLocationsFromCheckedBeacons() -> currentSiteLocations = "+StringUtils.listAll(currentSiteLocations));
                     }
                 }
                 handler.sendEmptyMessage(Globals.GET_LOCATIONS_CALLBACK_ARRIVED);
@@ -262,8 +265,10 @@ public class BeaconScanService
                 }
                 Site site = mostLikely.lastEntry().getValue();
                 siteHasChanged = currentSite == null || !currentSite.isVerified() ? true : !currentSite.equals(site);
-                currentSite = site;
-                Log.v(TAG, "Most likely Site: " + StringUtils.toString(currentSite));
+                if (siteHasChanged) {
+                    setCurrentSite(site);
+                    Log.v(TAG, "Most likely Site: " + StringUtils.toString(currentSite));
+                }
             }
         }
     }
@@ -277,7 +282,7 @@ public class BeaconScanService
                         && currentSite.isVerified()
                         && siteHasChanged) {
                         currentSiteLocations = SoapLocatorRequests.getBeaconLocationsFromSite(currentSite);
-                        Log.v(TAG, "getLocationsForCurrentSite() -> currentSiteLocations = "+Arrays.toString(StringUtils.listAll(currentSiteLocations)));
+                        Log.v(TAG, "getLocationsForCurrentSite() -> currentSiteLocations = "+StringUtils.listAll(currentSiteLocations));
                     }
                 }
                 handler.sendEmptyMessage(Globals.GET_LOCATIONS_CALLBACK_ARRIVED);
@@ -313,9 +318,6 @@ public class BeaconScanService
             if (!checkedBeacons.contains(beacon)
                 && !unregisteredBeacons.contains(beacon)) {
                 loggedBeacons.add(beacon);
-            }
-            if (calcPosition) {
-                Log.d(TAG, "calcPosition -> start to calculate the position!");
             }
         }
         return calcPosition;
@@ -481,6 +483,7 @@ public class BeaconScanService
                     }
                     getLocationsFromLoggedBeacons();
                     if (calcPosition) {
+                        Log.d(TAG, "calcPosition -> start to calculate the position!");
                         calcPosition();
                     }
                 }
@@ -528,8 +531,44 @@ public class BeaconScanService
         return currentSite;
     }
 
+    public boolean setCurrentSite(String siteName) {
+        Log.v(TAG, "setCurrentSite(): Change of currentSite requested (" + StringUtils.toString(currentSite) + " -> " + siteName + ")");
+        if (siteName == null) {
+            Log.v(TAG, "change not possible (is null)");
+            return false;
+        }
+        Site site = new Site(siteName);
+        synchronized (availableSites) {
+            if (currentSite.equals(site) || !availableSites.contains(site)) {
+                Log.v(TAG, "change not possible " + (currentSite.equals(site) ? "(equals currentSite)" : "(not available)"));
+                Log.v(TAG, "available sites: " + StringUtils.listAll(availableSites));
+                return false;
+            }
+            for (Site s : availableSites) {
+                if (site.equals(s)) {
+                    site = s;
+                    break;
+                }
+            }
+            if (site.isVerified()) {
+                setCurrentSite(site);
+                return true;
+            }
+            Log.v(TAG, "change not possible (not verified)");
+        }
+        return false;
+    }
+
     public void setCurrentSite(Site site) {
         this.currentSite = site;
+        Map<WkbLocation, Measurement> keep = new HashMap<>();
+        for (Map.Entry<WkbLocation, Measurement> entry : currentSiteMeasurements.entrySet()) {
+            if (entry.getKey().getSite().equals(currentSite))
+                keep.put(entry.getKey(), null);
+        }
+        currentSiteMeasurements.clear();
+        currentSiteMeasurements.putAll(keep);
+        Log.v(TAG, "Current Site changed to: " + StringUtils.toString(currentSite));
     }
 
     public Set<Site> getAllAvailableSites() {
