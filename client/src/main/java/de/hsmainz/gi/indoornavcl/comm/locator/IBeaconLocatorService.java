@@ -37,16 +37,23 @@ import java.net.Proxy;
 import java.util.*;
 
 /**
+ * Class that communicates with the backing WebService to LOCATE any user (without administrative privileges).
+ *
+ *
  *
  * @author  KekS (mailto:keks@keksfabrik.eu), 2015
  */
 public final class IBeaconLocatorService {
 
-    private static final String TAG     = IBeaconLocatorService.class.getSimpleName();
-
+    private static final String TAG = IBeaconLocatorService.class.getSimpleName();
     private String              SESSION_ID;
 
-
+    /**
+     * Get a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} object from its exact name.
+     * @param   name    the name of the Site
+     * @return  the Site object from the LocatorService
+     * @throws  Exception   if something goes wrong
+     */
     public Site getSite(String name) throws Exception {
         SoapObject request = new SoapObject(Configuration.getNamespace(), "getSite");
         Site ret = new Site();
@@ -69,7 +76,15 @@ public final class IBeaconLocatorService {
         return ret;
     }
 
-
+    /**
+     * Get the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} object from
+     * its uuid, major and minor fields.
+     * @param   uuid    the Beacons UUID field
+     * @param   major   the Beacons MAJOR field
+     * @param   minor   the Beacons MINOR field
+     * @return  the Beacon matching the description
+     * @throws  Exception   if something goes wrong
+     */
     public Beacon getBeaconFromUuidMajorMinor(String uuid, int major, int minor) throws Exception {
         SoapObject request = new SoapObject(Configuration.getNamespace(), "getBeaconFromUuidMajorMinor");
         Beacon ret = new Beacon();
@@ -95,10 +110,11 @@ public final class IBeaconLocatorService {
     }
 
     /**
-     * FINE!
-     * @param name
-     * @return
-     * @throws Exception
+     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from
+     * the approximate name of the Site.
+     * @param   name    the approximate name of the Site
+     * @return  a Set of Sites with names matching the name
+     * @throws  Exception   if something goes wrong
      */
     public Set<Site> getSiteByApproximateName(String name) throws Exception {
         SoapObject request = new SoapObject(Configuration.getNamespace(), "getSiteByApproximateName");
@@ -131,7 +147,15 @@ public final class IBeaconLocatorService {
         return ret;
     }
 
-
+    /**
+     * Get a {@link com.vividsolutions.jts.geom.Point} object from
+     * the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} and the {@link de.hsmainz.gi.indoornavcl.comm.types.Site}.
+     * The resulting Point is the Coordinate of the Beacon on that Site.
+     * @param   site    the Site the beacon is located at
+     * @param   beacon  the Beacon for which the coordinate should be found
+     * @return  the Coordinate of the Beacon on that Site
+     * @throws  Exception   if something goes wrong
+     */
     public WkbPoint getCoordinate(Site site, Beacon beacon) throws Exception {
         SoapObject request = new SoapObject(Configuration.getNamespace(), "getCoordinate");
         WkbPoint ret = new WkbPoint();
@@ -155,7 +179,13 @@ public final class IBeaconLocatorService {
         return ret;
     }
 
-
+    /**
+     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from
+     * an Array of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s.
+     * @param   beacons the Beacons for which the Sites are wanted
+     * @return  a Set of all Sites the given Beacons are located at
+     * @throws  Exception   if something goes wrong
+     */
     public Set<Site> getSitesFromBeaconList(Beacon[] beacons) throws Exception {
         SoapObject request = new SoapObject(Configuration.getNamespace(), "getSitesFromBeaconList");
         Set<Site> ret = new HashSet<>();
@@ -195,10 +225,11 @@ public final class IBeaconLocatorService {
     }
 
     /**
-     * FINE!
-     * @param site
-     * @return
-     * @throws Exception
+     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} objects from
+     * the {@link de.hsmainz.gi.indoornavcl.comm.types.Site} they are located at.
+     * @param   site    the Site at which all Beaconpositions should be found
+     * @return  the Locations of all Beacons on the given Site
+     * @throws  Exception   if something goes wrong
      */
     public Set<WkbLocation> getBeaconLocationsFromSite(Site site) throws Exception {
         SoapObject request = new SoapObject(Configuration.getNamespace(), "getBeaconLocationsFromSite");
@@ -248,10 +279,11 @@ public final class IBeaconLocatorService {
 
 
     /**
-     * FINE!
-     * @param beacon
-     * @return
-     * @throws Exception
+     * Get a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} object with its appropriate ID from
+     * a Beacon without ID.
+     * @param   beacon  the Beacon which should get its Field ID set
+     * @return  the beacon - if it is part of the system - with its ID field
+     * @throws  Exception   if something goes wrong
      */
     public Beacon getBeacon(Beacon beacon) throws Exception {
         SoapObject request = new SoapObject(Configuration.getNamespace(), "getBeacon");
@@ -275,7 +307,13 @@ public final class IBeaconLocatorService {
         return ret;
     }
 
-
+    /**
+     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from
+     * a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}.
+     * @param   beacon  the Beacon for which its Sites should be found
+     * @return  the Set of Sites the given Beacon can be located at
+     * @throws  Exception   if something goes wrong
+     */
     public Set<Site> getSitesFromBeacon(Beacon beacon) throws Exception {
         SoapObject request = new SoapObject(Configuration.getNamespace(), "getSitesFromBeacon");
         Set<Site> ret = new HashSet<>();
@@ -306,7 +344,13 @@ public final class IBeaconLocatorService {
         return ret;
     }
 
-
+    /**
+     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} objects from
+     * an Array of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s.
+     * @param   beacons the Set of Beacons for which Locations (Site & Position) should be found
+     * @return  all Locations of the given beacons
+     * @throws  Exception   if something goes wrong
+     */
     public Set<WkbLocation> getBeaconLocationsFromBeaconList(Beacon[] beacons) throws Exception {
         SoapObject request = new SoapObject(Configuration.getNamespace(), "getBeaconLocationsFromBeaconList");
         Set<WkbLocation> ret = new HashSet<>();
@@ -347,10 +391,11 @@ public final class IBeaconLocatorService {
 
 
     /**
-     * FINE!
-     * @param beacons
-     * @return
-     * @throws Exception
+     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} objects with ID fields from
+     * an Array of Beacons without IDs.
+     * @param   beacons the Set of Beacons for which the IDs should be set
+     * @return  the given Beacons - if they are part of the system - with their ID fields filled
+     * @throws  Exception   if something goes wrong
      */
     public Set<Beacon> getBeacons(Beacon[] beacons) throws Exception {
         SoapObject request = new SoapObject(Configuration.getNamespace(), "getBeacons");
@@ -392,6 +437,12 @@ public final class IBeaconLocatorService {
 
 // ----------- private helpers -----------
 
+    /**
+     * Getter for the Session-ID to allow for longer lasting Sessions instead of 1-Session-per-Request
+     * @param   ht  the HttpTransportSe to get the SessionID from
+     * @return  the SessionID
+     * @throws  IOException if it fails to get the properties of the ht
+     */
     private final String getSessionId(HttpTransportSE ht) throws IOException {
         List<HeaderProperty> COOKIE_HEADER = (List<HeaderProperty>) ht.getServiceConnection().getResponseProperties();
         for (int i = 0; i < COOKIE_HEADER.size(); i++) {
@@ -407,6 +458,10 @@ public final class IBeaconLocatorService {
         return SESSION_ID;
     }
 
+    /**
+     * Configures the header to be used on the envelope
+     * @return  the header
+     */
     private final List<HeaderProperty> getHeader() {
         List<HeaderProperty> header = new ArrayList<>();
         HeaderProperty headerPropertyObj = new HeaderProperty("cookie", this.SESSION_ID);
@@ -414,6 +469,10 @@ public final class IBeaconLocatorService {
         return header;
     }
 
+    /**
+     * Show debug output with the input request and the resulting response (both XML)
+     * @param   ht  the Transport to show the request and response for
+     */
     private static final void testResponse(HttpTransportSE ht) {
         ht.debug = Configuration.isDebug();
         if (Configuration.isDebug()) {
@@ -422,6 +481,11 @@ public final class IBeaconLocatorService {
         }
     }
 
+    /**
+     * Configures the {@link org.ksoap2.SoapEnvelope}.
+     * @param   request the request to wrap in the configured envelope
+     * @return  the configured SoapEnvelope
+     */
     private static final CustomSoapSerializationEnvelope getEnvelope(SoapObject request) {
         CustomSoapSerializationEnvelope envelope = new CustomSoapSerializationEnvelope(SoapEnvelope.VER11);
         envelope.dotNet = false;
@@ -432,6 +496,10 @@ public final class IBeaconLocatorService {
         return envelope;
     }
 
+    /**
+     * Getter for a new {@link org.ksoap2.transport.HttpTransportSE}
+     * @return  a configured HttpTransportSe
+     */
     private static final HttpTransportSE getTransport() {
         HttpTransportSE ht = new HttpTransportSE(Proxy.NO_PROXY, Configuration.getLocatorWsUrl(), Configuration.getTimeout());
         ht.debug = Configuration.isDebug();
@@ -439,6 +507,15 @@ public final class IBeaconLocatorService {
         return ht;
     }
 
+    /**
+     * Function to parse a {@link org.ksoap2.serialization.SoapObject} to a Class.
+     * @param   so      the SoapObject to parse
+     * @param   type    the class the Object should be parsed to
+     * @param   <T>     the Type the Object should be parsed to (must implement KvmSerializable)
+     * @return  the parsed Object
+     * @throws  IllegalAccessException  if the constructor of the given type is not visible
+     * @throws  InstantiationException  if it can not call newInstance() for the given type
+     */
     private static <T extends KvmSerializable> T parseType(SoapObject so, Class<T> type) throws IllegalAccessException, InstantiationException {
         T ret = type.newInstance();
         for (int i = 0, len = so.getPropertyCount(); i < len; i++) {

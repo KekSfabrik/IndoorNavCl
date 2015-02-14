@@ -31,6 +31,8 @@ import de.hsmainz.gi.indoornavcl.positioning.TinyCoordinate;
 import de.hsmainz.gi.indoornavcl.util.WebAppInterface;
 
 /**
+ * Fragment that holds a Leaflet based Map in a WebView.
+ *
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 12.02.15.
  */
 public class    MapFragment
@@ -46,8 +48,7 @@ public class    MapFragment
     }
 
     /**
-     * App startup
-     * @param savedInstanceState
+     * {@inheritDoc}
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,11 +57,8 @@ public class    MapFragment
 
 
     /**
-     * called after {@link #onCreate} when the fragment is added
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * {@inheritDoc}
+     * <p>Sets up the Leaflet based {@link android.webkit.WebView} and sets up TileServer etc
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,10 +75,12 @@ public class    MapFragment
         return view;
     }
 
-
+    /**
+     * Puts the Marker on the position on the Map given by the argument.
+     * @param   point   the position to put the marker to.
+     */
     public void setPoint(WkbPoint point) {
         TinyCoordinate coord = point.getCoordinate();
-        coord.round(5);
         leaflet.loadUrl("javascript:setPosition("+coord.y+", "+coord.x+", "+ coord.z +")");
     }
 
@@ -112,7 +112,7 @@ public class    MapFragment
     }
 
     /**
-     * called before {@link #onDestroy} when the fragment is removed
+     * {@inheritDoc}
      */
     @Override
     public void onDestroyView() {
@@ -120,7 +120,7 @@ public class    MapFragment
     }
 
     /**
-     * app shutdown
+     * {@inheritDoc}
      */
     @Override
     public void onDestroy() {

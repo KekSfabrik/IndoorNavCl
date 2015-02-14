@@ -24,7 +24,7 @@ import java.io.IOException;
 
 
 /**
- *
+ * Wrapper Class to avoid writing a SOAP Header
  * @author  KekS (mailto:keks@keksfabrik.eu), 2015
  */
 public class CustomSoapSerializationEnvelope extends SoapSerializationEnvelope {

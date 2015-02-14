@@ -23,6 +23,8 @@ import android.widget.Toast;
 import de.hsmainz.gi.indoornavcl.comm.Configuration;
 
 /**
+ * Interface so JavaScript can communicate with the App.
+ *
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 12.02.15.
  */
 public class WebAppInterface {
@@ -45,7 +47,7 @@ public class WebAppInterface {
         Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
     }
 
-    /** Show a toast from the web page */
+    /** Get the TileServer {@link de.hsmainz.gi.indoornavcl.comm.Configuration#getTileServer} from the Configuration */
     @JavascriptInterface
     public String getTileServer() {
         return Configuration.getTileServer();

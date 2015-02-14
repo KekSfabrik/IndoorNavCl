@@ -26,13 +26,23 @@ import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
 import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
 
 /**
+ * Class to rewrap in and outputs to calls to the
+ * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}.
+ *
+ *
+ *
  * @author  KekS (mailto:keks@keksfabrik.eu),  27.01.15.
  */
 public class SoapPositionerRequests {
 
     private static final String     TAG     = SoapPositionerRequests.class.getSimpleName();
 
-
+    /**
+     * Wrapper to put a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} into the System managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}.
+     * @param   site    the Site to put into the System
+     * @return  whether or not it was successful
+     */
     public static boolean addSite(Site site) {
         boolean res = false;
         try {
@@ -43,7 +53,12 @@ public class SoapPositionerRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to put a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} into the System managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}.
+     * @param   beacon    the Beacon to put into the System
+     * @return  whether or not it was successful
+     */
     public static boolean addBeacon(Beacon beacon) {
         boolean res = false;
         try {
@@ -54,7 +69,14 @@ public class SoapPositionerRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to put a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} into the System managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService} based on the beacons uuid, major & minor.
+     * @param   uuid    the Beacons manufacturer UUID
+     * @param   major   the Beacons MAJOR field
+     * @param   minor   the Beacons MINOR field
+     * @return  whether or not it was successful
+     */
     public static boolean addBeaconFromUuidMajorMinor(String uuid, int major, int minor) {
         boolean res = false;
         try {
@@ -65,7 +87,12 @@ public class SoapPositionerRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to put a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} into the System managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService} based on its name.
+     * @param   name    the name of the Site to put into the System
+     * @return  whether or not it was successful
+     */
     public static boolean addSiteFromName(String name) {
         boolean res = false;
         try {
@@ -76,7 +103,14 @@ public class SoapPositionerRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to delete a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from the System managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacon has to have its
+     * ID field set and therefor {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon#isVerified} has to be
+     * {@link java.lang.Boolean#TRUE}.
+     * @param   beacon    the Beacon to delete from the System
+     * @return  whether or not it was successful
+     */
     public static boolean deleteBeacon(Beacon beacon) {
         boolean res = false;
         try {
@@ -87,7 +121,16 @@ public class SoapPositionerRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to remove a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from a
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The inputs have to have their
+     * ID fields set and therefor {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be
+     * {@link java.lang.Boolean#TRUE}.
+     * @param   beacon  the Beacon to remove from the Site
+     * @param   site    the Site to remove the Beacon from
+     * @return  whether or not it was successful
+     */
     public static boolean removeBeaconFromSite(Beacon beacon, Site site) {
         boolean res = false;
         try {
@@ -98,7 +141,15 @@ public class SoapPositionerRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to place a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} at a Coordinate indicated by the given
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacon and Sites wrapped in
+     * the WkbLocation have to have their ID fields set and therefor
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * @param   wkbLocation     the location that should be added to the system
+     * @return  whether or not it was successful
+     */
     public static boolean placeBeaconAtLocation(WkbLocation wkbLocation) {
         boolean res = false;
         try {
@@ -109,7 +160,14 @@ public class SoapPositionerRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to delete a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} from the System managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Site has to have its
+     * ID field set and therefor {@link de.hsmainz.gi.indoornavcl.comm.types.Site#isVerified} has to be
+     * {@link java.lang.Boolean#TRUE}.
+     * @param   site    the Site to delete from the System
+     * @return  whether or not it was successful
+     */
     public static boolean deleteSite(Site site) {
         boolean res = false;
         try {
@@ -120,7 +178,15 @@ public class SoapPositionerRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to remove a {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} from the System managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacon and Sites wrapped in
+     * the WkbLocation have to have their ID fields set and therefor
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link java.lang.Boolean#TRUE}.
+     * @param   wkbLocation    the location to remove from the System
+     * @return  whether or not it was successful
+     */
     public static boolean removeLocation(WkbLocation wkbLocation) {
         boolean res = false;
         try {
@@ -131,7 +197,19 @@ public class SoapPositionerRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to place a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} on a specific
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} and at a given {@link com.vividsolutions.jts.geom.Point}
+     * Coordinate in the System managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacon and Site have to
+     * have their ID fields set and therefor
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link java.lang.Boolean#TRUE}.
+     * @param   site        the Site the Beacon should be placed on
+     * @param   beacon      the Beacon to place on that Site
+     * @param   coordinate  the Coordinate of the Beacon on the Site
+     * @return  whether or not it was successful
+     */
     public static boolean placeBeacon(Site site, Beacon beacon, Point coordinate) {
         boolean res = false;
         try {
@@ -142,7 +220,18 @@ public class SoapPositionerRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to replace a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} on a specific
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} in the System managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacons and Site have to
+     * have their ID fields set and therefor
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link java.lang.Boolean#TRUE}.
+     * @param   site        the Site the Beacon should be replaced at
+     * @param   oldBeacon   the Beacon to be replaced
+     * @param   newBeacon   the Beacon to place at the Coordinate of the old Beacon
+     * @return  whether or not it was successful
+     */
     public static boolean replaceBeacon(Site site, Beacon oldBeacon, Beacon newBeacon) {
         boolean res = false;
         try {
@@ -153,6 +242,19 @@ public class SoapPositionerRequests {
         return res;
     }
 
+    /**
+     * Wrapper to relocate a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from one
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} to another in the System managed through the
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacon and Sites have to
+     * have their ID fields set and therefor
+     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link java.lang.Boolean#TRUE}.
+     * @param   fromSite        the Site the Beacon was located at
+     * @param   toSite          the Site the Beacon is moved to
+     * @param   beacon          the Beacon that is relocated
+     * @param   toCoordinate    the Coordinate of the Beacon on the new Site
+     * @return  whether or not it was successful
+     */
     public static boolean relocateBeacon(Site fromSite, Site toSite, Beacon beacon, Point toCoordinate) {
         boolean res = false;
         try {

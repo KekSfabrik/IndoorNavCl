@@ -42,8 +42,10 @@ public final class Configuration {
     private static String     tileServer;
     private static boolean    isInitialized = false;
 
+
     /**
-     * Prohibits instantiation.
+     * Load Configuration based on the <code>../res/xml/config.xml</code> File and sets its variables accordingly.
+     * @param   parser  the parser to be used to read from the configuration file
      */
     public Configuration(XmlPullParser parser) {
         if (!isInitialized) {
@@ -90,48 +92,67 @@ public final class Configuration {
     }
 
     /**
-     * URL.
-     */ /**
      *
-     * @return The address which the web service is deployed.
+     * @return The address at which the LOCATOR WebService is deployed.
      */
     public static String getLocatorWsUrl() {
         return wsUrl + locatorWs;
     }
 
+
     /**
-     * URL.
-     */ /**
-     *
-     * @return The address which the web service is deployed.
+     * Getter for {@link #}
+     * @return The address which the POSITIONER WebService is deployed.
      */
     public static String getPositionerWsUrl() {
         return wsUrl + positionerWs;
     }
 
+    /**
+     * Getter for {@link #username}
+     * @return  the Username to access the POSITIONER WebService
+     */
     public static String getUsername() {
         return username;
     }
 
-
+    /**
+     * Getter for {@link #password}
+     * @return  the Password to access the POSITIONER WebService
+     */
     public static String getPassword() {
         return password;
     }
 
 
+    /**
+     * Getter for {@link #timeout}
+     * @return  the time in milliseconds a request to the WebService should take at most
+     */
     public static int getTimeout() {
         return timeout;
     }
 
-
+    /**
+     * Getter for {@link #debug}
+     * @return  whether or not the app is running in debug mode
+     */
     public static boolean isDebug() {
         return debug;
     }
 
+    /**
+     * Getter for {@link #namespace}
+     * @return  the Namespace used by the WebService
+     */
     public static String getNamespace() {
         return namespace;
     }
 
+    /**
+     * Getter for {@link #password}
+     * @return  the URL of the (WMS-) TileServer to be used by the {@link de.hsmainz.gi.indoornavcl.MapFragment}
+     */
     public static String getTileServer() {
         return tileServer;
     }

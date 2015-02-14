@@ -21,6 +21,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * Minimalistic Wrapper Class for rssi and txPower combined into a Measurement.
+ *
+ *
+ *
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 04.02.15.
  */
 public class Measurement

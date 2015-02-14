@@ -40,6 +40,13 @@ public class SoapLocatorRequests {
 
     private static final String TAG = SoapLocatorRequests.class.getSimpleName();
 
+    /**
+     * Wrapper to get a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} object from the
+     * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
+     * its exact name.
+     * @param   name    the name of the Site
+     * @return  the Site object from the LocatorService
+     */
     public static Site getSite(String name) {
         Site res = new Site();
         try {
@@ -50,7 +57,15 @@ public class SoapLocatorRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to get the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} object from the
+     * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
+     * its uuid, major and minor fields.
+     * @param   uuid    the Beacons UUID field
+     * @param   major   the Beacons MAJOR field
+     * @param   minor   the Beacons MINOR field
+     * @return  the Beacon matching the description
+     */
     public static Beacon getBeaconFromUuidMajorMinor(String uuid, int major, int minor) {
         Beacon res = new Beacon();
         try {
@@ -61,7 +76,13 @@ public class SoapLocatorRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from the
+     * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
+     * the approximate name of the Site.
+     * @param   name    the approximate name of the Site
+     * @return  a Set of Sites with names matching the name
+     */
     public static Set<Site> getSiteByApproximateName(String name) {
         Set<Site> res = new HashSet<>();
         try {
@@ -72,7 +93,15 @@ public class SoapLocatorRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to get a {@link com.vividsolutions.jts.geom.Point} object from the
+     * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
+     * the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} and the {@link de.hsmainz.gi.indoornavcl.comm.types.Site}.
+     * The resulting Point is the Coordinate of the Beacon on that Site.
+     * @param   site    the Site the beacon is located at
+     * @param   beacon  the Beacon for which the coordinate should be found
+     * @return  the Coordinate of the Beacon on that Site
+     */
     public static Point getCoordinate(Site site, Beacon beacon) {
         Point res = null;
         try {
@@ -83,7 +112,13 @@ public class SoapLocatorRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from the
+     * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
+     * a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s.
+     * @param   beacons the Beacons for which the Sites are wanted
+     * @return  a Set of all Sites the given Beacons are located at
+     */
     public static Set<Site> getSitesFromBeaconList(Set<Beacon> beacons){
         Set<Site> res = new HashSet<>();
         try {
@@ -96,7 +131,13 @@ public class SoapLocatorRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} objects from the
+     * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
+     * the {@link de.hsmainz.gi.indoornavcl.comm.types.Site} they are located at.
+     * @param   site    the Site at which all Beaconpositions should be found
+     * @return  the Locations of all Beacons on the given Site
+     */
     public static Set<WkbLocation> getBeaconLocationsFromSite(Site site) {
         Set<WkbLocation> res = new HashSet<>();
         try {
@@ -107,7 +148,13 @@ public class SoapLocatorRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to get a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} object with its appropriate ID from the
+     * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
+     * a Beacon without ID.
+     * @param   beacon  the Beacon which should get its Field ID set
+     * @return  the beacon - if it is part of the system - with its ID field
+     */
     public static Beacon getBeacon(Beacon beacon) {
         Beacon res = new Beacon();
         try {
@@ -118,7 +165,13 @@ public class SoapLocatorRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from the
+     * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
+     * a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}.
+     * @param   beacon  the Beacon for which its Sites should be found
+     * @return  the Set of Sites the given Beacon can be located at
+     */
     public static Set<Site> getSitesFromBeacon(Beacon beacon) {
         Set<Site> res = new HashSet<>();
         try {
@@ -129,7 +182,13 @@ public class SoapLocatorRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} objects from the
+     * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
+     * a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s.
+     * @param   beacons the Set of Beacons for which Locations (Site & Position) should be found
+     * @return  all Locations of the given beacons
+     */
     public static Set<WkbLocation> getBeaconLocationsFromBeaconList(Set<Beacon> beacons) {
         Set<WkbLocation> res = new HashSet<>();
         try {
@@ -142,7 +201,13 @@ public class SoapLocatorRequests {
         return res;
     }
 
-
+    /**
+     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} objects with ID fields from the
+     * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
+     * a Set of Beacons without IDs.
+     * @param   beacons the Set of Beacons for which the IDs should be set
+     * @return  the given Beacons - if they are part of the system - with their ID fields filled
+     */
     public static Set<Beacon> getBeacons(Set<Beacon> beacons) {
         Set<Beacon> res = new HashSet<>();
         try {

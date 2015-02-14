@@ -24,6 +24,9 @@ import java.util.Map;
 
 
 /**
+ * Interface to be shared by all Implementations that determine the Position based on a {@link java.util.Map} of
+ * {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation}s and the matching
+ * {@link de.hsmainz.gi.indoornavcl.positioning.Measurement}s.
  *
  * @author  KekS (mailto:keks@keksfabrik.eu), 2015
  */

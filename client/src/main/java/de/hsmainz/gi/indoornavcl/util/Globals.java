@@ -18,6 +18,11 @@
 package de.hsmainz.gi.indoornavcl.util;
 
 /**
+ * Class with global Callback Parameters to allow Callback-based communication between Service and Activities and
+ * callbacks from Threadrunners.
+ *
+ *
+ *
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 04.02.15.
  */
 public final class Globals {

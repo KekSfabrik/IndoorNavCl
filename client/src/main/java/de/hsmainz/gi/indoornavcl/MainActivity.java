@@ -77,6 +77,11 @@ public class    MainActivity
                         bs = null;
                         isBound = false;
                     }};
+
+    /**
+     * The Callback {@link android.os.Handler} ({@link android.os.Handler.Callback}) which evaluates the callbacks from
+     * the Service {@link de.hsmainz.gi.indoornavcl.BeaconScanService}.
+     */
     private Handler                      handler = new Handler(new Handler.Callback() {
                         @Override
                         public boolean handleMessage(Message msg) {
@@ -126,7 +131,8 @@ public class    MainActivity
                         }
                     });
     /**
-     * App startup
+     * {@inheritDoc}
+     * <p>Configures GUI elements and binds to the {@link de.hsmainz.gi.indoornavcl.BeaconScanService}.
      * @param savedInstanceState
      */
     @Override
@@ -176,18 +182,27 @@ public class    MainActivity
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
     }
 
+    /**
+     * Show a {@link android.widget.Toast} with the given Text
+     * @param   str     the Text shown by the Toast
+     */
     public void showNotification(String str) {
         Toast.makeText(buttonStart.getContext(), str, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onSaveInstanceState (Bundle outState) {
         if (bs.isScanning()) {
             bs.writeToFile(coordFragment.getCoords());
         }
     }
+
+
     /**
-     * app shutdown
+     * {@inheritDoc}
      */
     @Override
     protected void onDestroy () {
@@ -198,6 +213,12 @@ public class    MainActivity
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Binds the {@link android.widget.Spinner} to the {@link android.widget.ArrayAdapter} {@link #adapter} on the
+     * {@link android.app.ActionBar} {@link #actionBar} so the {@link de.hsmainz.gi.indoornavcl.comm.types.Site} selection
+     * by the user can be handed over to the {@link de.hsmainz.gi.indoornavcl.BeaconScanService} {@link #bs}.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -232,9 +253,7 @@ public class    MainActivity
     }
 
     /**
-     * This method is called whenever a navigation item in your action bar
-     * is selected.
-     *
+     * This method is called whenever a navigation item in the {@link android.app.ActionBar} is selected.
      * @param itemPosition Position of the item clicked.
      * @param itemId       ID of the item clicked.
      * @return True if the event was handled, false otherwise.
@@ -253,15 +272,27 @@ public class    MainActivity
     // The four methods below are called by the TaskFragment when new
     // progress updates or results are available. The MainActivity
     // should respond by updating its UI to indicate the change.
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onPreExecute() {  }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onProgressUpdate(int percent) {  }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCancelled() {  }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onPostExecute() {  }
 }

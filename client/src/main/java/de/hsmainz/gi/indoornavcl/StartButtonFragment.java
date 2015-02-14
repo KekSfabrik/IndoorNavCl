@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
+ * Fragment that holds a Button to start scanning/logging/positioning.
+ *
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 10.02.15.
  */
 public class    StartButtonFragment
@@ -32,34 +34,25 @@ public class    StartButtonFragment
     private static final String TAG = StartButtonFragment.class.getSimpleName();
 
 
-
     /**
-     * App startup
-     * @param savedInstanceState
+     * {@inheritDoc}
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-
     /**
-     * called after {@link #onCreate} when the fragment is added
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.startbutton_fragment, container, false);
     }
 
-
     /**
-     * called before {@link #onDestroy} when the fragment is removed
+     * {@inheritDoc}
      */
     @Override
     public void onDestroyView() {
@@ -67,7 +60,7 @@ public class    StartButtonFragment
     }
 
     /**
-     * app shutdown
+     * {@inheritDoc}
      */
     @Override
     public void onDestroy() {

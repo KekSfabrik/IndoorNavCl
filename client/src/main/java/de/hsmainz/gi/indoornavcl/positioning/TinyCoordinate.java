@@ -22,6 +22,10 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 /**
+ * Minimalistic Class to wrap x, y and z of a Coordinate. Also used to deserialize debug output positions to a file.
+ *
+ *
+ *
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 04.02.15.
  */
 public class TinyCoordinate {

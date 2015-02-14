@@ -20,13 +20,9 @@ package de.hsmainz.gi.indoornavcl;
 
 import android.app.Application;
 import de.hsmainz.gi.indoornavcl.comm.Configuration;
-import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
 import de.hsmainz.gi.indoornavcl.util.FileHelper;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author jodwyer
@@ -42,7 +38,9 @@ public class BeaconScannerApplication extends Application {
     /** global reference to {@link org.altbeacon.beacon.BeaconManager} */
     private BeaconManager           beaconManager;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreate() {
         super.onCreate();

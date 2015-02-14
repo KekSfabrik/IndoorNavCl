@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Fragment that holds 3 {@link android.widget.TextView}s representing x, y and z Coordinates of a position.
+ *
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 10.02.15.
  */
 public class    CoordinateFragment
@@ -43,6 +45,10 @@ public class    CoordinateFragment
     private static final Gson       gson = new Gson();
     private List<TinyCoordinate>    coords = new ArrayList<>();
 
+    /**
+     * Set the x, y and z Coordinate {@link android.widget.TextView}s with the Coordinates by the input point.
+     * @param   point   the point to show in the TextView Fields
+     */
     public void setPoint(WkbPoint point) {
         TinyCoordinate coord = point.getCoordinate();
         coord.round(5);
@@ -53,27 +59,27 @@ public class    CoordinateFragment
         coords.add(coord);
     }
 
+    /**
+     * Getter for {@link #coords} deserialized by {@link com.google.gson.Gson}. Clears the list of
+     * {@link de.hsmainz.gi.indoornavcl.positioning.TinyCoordinate} after deserialization.
+     * @return  a String representation of all the logged coordinates
+     */
     public String getCoords() {
         String str = gson.toJson(coords);
         coords.clear();
         return str;
     }
+
     /**
-     * App startup
-     * @param savedInstanceState
+     * {@inheritDoc}
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-
     /**
-     * called after {@link #onCreate} when the fragment is added
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,7 +94,7 @@ public class    CoordinateFragment
 
 
     /**
-     * called before {@link #onDestroy} when the fragment is removed
+     * {@inheritDoc}
      */
     @Override
     public void onDestroyView() {
@@ -96,7 +102,7 @@ public class    CoordinateFragment
     }
 
     /**
-     * app shutdown
+     * {@inheritDoc}
      */
     @Override
     public void onDestroy() {
