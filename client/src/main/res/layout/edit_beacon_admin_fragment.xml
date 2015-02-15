@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Jan "KekS" M.
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation; either
+  ~ version 2.1 of the License, or (at your option) any later version.
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+  ~ MA 02110-1301  USA
+  -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="4.7">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_beacon_label"
+        android:id="@+id/editBeaconLbl"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_weight="1.5"
+        android:drawableRight="@drawable/ic_beacon_logo"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/currentBeacon"
+        android:layout_weight="1"/>
+    <fragment
+        android:name="de.hsmainz.gi.indoornavcl.CoordinateFragment"
+        android:id="@+id/coordinate"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/coordinate_fragment"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:id="@+id/saveBeacon"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.2"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:layout_weight="1">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/move_beacon"
+                android:id="@+id/moveBtn"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+        <Button android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/replace_beacon"
+                android:id="@+id/replaceBtn"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+    </LinearLayout>
+</LinearLayout>

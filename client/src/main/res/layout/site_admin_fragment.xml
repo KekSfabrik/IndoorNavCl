@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2015 Jan "KekS" M.
   ~ This library is free software; you can redistribute it and/or
@@ -15,13 +16,22 @@
   ~ MA 02110-1301  USA
   -->
 
-<resources>
-    <!-- Example customization of dimensions originally defined in res/values/dimens.xml
-         (such as screen margins) for screens with more than 820dp of available width. This
-         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively). -->
-    <dimen name="activity_horizontal_margin">32dp</dimen>
-    <dimen name="activity_vertical_margin">23dp</dimen>
-    <dimen name="labelfield_fontsize">16sp</dimen>
-    <dimen name="editfield_fontsize">22sp</dimen>
-    <dimen name="tablefield_padding">5dp</dimen>
-</resources>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="5">
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_site"
+            android:id="@+id/btnAddSite"
+            android:layout_weight="1"/>
+    <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lsSites"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="4"/>
+</LinearLayout>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2015 Jan "KekS" M.
   ~ This library is free software; you can redistribute it and/or
@@ -17,35 +18,31 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/AppTheme.MyActionBar"
-    tools:context=".MainActivity"
-    android:textAppearance="?android:attr/textAppearanceLarge"
-    android:weightSum="5">
-    <!-- should be avoided: android:configChanges="orientation|screenSize"-->
-    <fragment
-            android:name="de.hsmainz.gi.indoornavcl.StartButtonFragment"
-            android:id="@+id/startbutton_fragment"
+    android:weightSum="2.2">
+    <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:layout="@layout/startbutton_fragment"
-            android:layout_weight="0.1"/>
-    <fragment
-            android:name="de.hsmainz.gi.indoornavcl.MapFragment"
-            android:id="@+id/map_fragment"
+            android:text="@string/edit_site_lbl"
+            android:id="@+id/editSiteLbl"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:drawableRight="@drawable/ic_site_logo"/>
+    <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:layout="@layout/map_fragment"
-            android:layout_weight="4.8"/>
-    <fragment
-            android:name="de.hsmainz.gi.indoornavcl.CoordinateFragment"
-            android:id="@+id/coordinate_fragment"
+            android:id="@+id/newSiteInput"
+            android:layout_weight="1"/>
+    <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:layout="@layout/coordinate_fragment"
-            android:layout_weight="0.1"/>
+            android:text="@string/save"
+            android:id="@+id/saveSite"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.2"/>
 </LinearLayout>
-

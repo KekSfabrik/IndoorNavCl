@@ -20,96 +20,90 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/coordinate_fragment_layout"
-    android:focusable="false"
     android:stretchColumns="*">
     <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:text="@string/x"
             android:id="@+id/xLbl"
             android:layout_column="0"
-            android:gravity="center|end"
+            android:textSize="@dimen/labelfield_fontsize"
+            android:textStyle="normal"
             android:textColor="@color/labelfield_color"
-            android:textSize="@dimen/labelfield_fontsize"/>
+            android:gravity="center|end"/>
         <EditText
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/txtX"
-            android:ellipsize="middle"
+            android:layout_column="1"
+            android:layout_span="3"
+            android:inputType="numberSigned|numberDecimal"
+            android:layout_gravity="center"
+            android:textSize="@dimen/editfield_fontsize"
+            android:textStyle="bold"
+            android:typeface="monospace"
             android:clickable="false"
             android:focusable="false"
-            android:typeface="monospace"
-            android:textStyle="bold"
-            android:paddingBottom="@dimen/tablefield_padding"
             android:paddingTop="@dimen/tablefield_padding"
-            android:textSize="@dimen/editfield_fontsize"
-            android:layout_column="1"
-            android:layout_span="12"
-            android:text="@string/example_position"
-            android:gravity="center"/>
-    </TableRow>
-    <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:paddingBottom="@dimen/tablefield_padding"
+            android:numeric="signed|decimal"
+            android:text="@string/example_position"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:text="@string/y"
             android:id="@+id/yLbl"
-            android:layout_column="0"
-            android:singleLine="false"
-            android:gravity="center|end"
+            android:layout_column="4"
+            android:textSize="@dimen/labelfield_fontsize"
+            android:textStyle="normal"
             android:textColor="@color/labelfield_color"
-            android:textSize="@dimen/labelfield_fontsize"/>
+            android:gravity="center|end"/>
         <EditText
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/txtY"
+            android:layout_column="5"
+            android:layout_span="3"
+            android:inputType="numberSigned|numberDecimal"
+            android:layout_gravity="center"
+            android:textSize="@dimen/editfield_fontsize"
+            android:textStyle="bold"
+            android:typeface="monospace"
             android:clickable="false"
             android:focusable="false"
-            android:ellipsize="middle"
-            android:typeface="monospace"
-            android:textStyle="bold"
-            android:paddingBottom="@dimen/tablefield_padding"
             android:paddingTop="@dimen/tablefield_padding"
-            android:textSize="@dimen/editfield_fontsize"
-            android:layout_column="1"
-            android:layout_span="12"
-            android:text="@string/example_position"
-            android:gravity="center"/>
-    </TableRow>
-    <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:paddingBottom="@dimen/tablefield_padding"
+            android:numeric="signed|decimal"
+            android:text="@string/example_position"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="@string/z"
-            android:id="@+id/zLbl"
-            android:layout_column="0"
-            android:singleLine="false"
-            android:gravity="center|end"
+            android:text="@string/h"
+            android:id="@+id/hLbl"
+            android:layout_column="8"
+            android:textSize="@dimen/labelfield_fontsize"
+            android:textStyle="normal"
             android:textColor="@color/labelfield_color"
-            android:textSize="@dimen/labelfield_fontsize"/>
+            android:gravity="center|end"/>
         <EditText
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/txtZ"
+            android:layout_column="9"
+            android:layout_span="3"
+            android:inputType="numberSigned|numberDecimal"
+            android:layout_gravity="center"
+            android:textSize="@dimen/editfield_fontsize"
+            android:textStyle="bold"
+            android:typeface="monospace"
             android:clickable="false"
             android:focusable="false"
-            android:ellipsize="middle"
-            android:typeface="monospace"
-            android:textStyle="bold"
-            android:paddingBottom="@dimen/tablefield_padding"
             android:paddingTop="@dimen/tablefield_padding"
-            android:textSize="@dimen/editfield_fontsize"
-            android:layout_column="1"
-            android:layout_span="12"
-            android:text="@string/example_position"
-            android:gravity="center"/>
+            android:paddingBottom="@dimen/tablefield_padding"
+            android:numeric="signed|decimal"
+            android:text="@string/example_position"/>
     </TableRow>
 </TableLayout>
