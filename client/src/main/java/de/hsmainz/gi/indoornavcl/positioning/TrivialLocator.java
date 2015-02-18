@@ -40,7 +40,7 @@ public class    TrivialLocator
                 if (rssiByTxPower < 0) {
                     rssiByTxPower = 1;
                 }
-                rssiByTxPower = 1 / rssiByTxPower;
+                rssiByTxPower = 1.0 / rssiByTxPower;
                 x += point.getX() * rssiByTxPower;
                 y += point.getY() * rssiByTxPower;
                 rssiByTxPowerSum += rssiByTxPower;

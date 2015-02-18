@@ -196,7 +196,7 @@ public class LocatorImpl1
                 paramEst.setLastPosition(new double[]{initialPosition.x, initialPosition.y, initialPosition.z});
                 Log.v(TAG, "Attempting to estimate for initialPosition " + initialPosition.toString());
                 try {
-                    SimpleMatrix res = paramEst.estimate(sm);
+                    SimpleMatrix res = paramEst.estimateBIBER(sm); //paramEst.estimate(sm);
                     return this.asPoint(res);
                 } catch (Exception ex) {
                     Log.w(TAG, "Could not determine position", ex);
