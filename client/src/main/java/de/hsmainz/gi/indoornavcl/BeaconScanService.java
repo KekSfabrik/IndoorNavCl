@@ -55,7 +55,7 @@ public class BeaconScanService
     private Set<Beacon>                 loggedBeacons       = Collections.synchronizedSet(new HashSet<Beacon>()),
                                         checkedBeacons      = Collections.synchronizedSet(new HashSet<Beacon>()),
                                         unregisteredBeacons = Collections.synchronizedSet(new HashSet<Beacon>());
-    private Site                        currentSite         = new Site(1, "KekSfabrik");
+    private Site                        currentSite         = new Site(5, "2OG @ HS Mainz - Lucy Hillebrandstrasse 2, 55128 Mainz");
     private Set<Site>                   availableSites      = Collections.synchronizedSet(new HashSet<Site>());
     private boolean                     siteHasChanged      = true;
     private Set<WkbLocation>            currentSiteLocations= Collections.synchronizedSet(new HashSet<WkbLocation>());

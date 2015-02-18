@@ -23,7 +23,7 @@
     android:layout_height="match_parent"
     android:theme="@style/AppTheme.MyActionBar"
     tools:context=".MainActivity"
-    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:textAppearance="?android:attr/textAppearanceSmall"
     android:weightSum="5">
     <!-- should be avoided: android:configChanges="orientation|screenSize"-->
     <fragment

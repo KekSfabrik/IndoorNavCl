@@ -19,6 +19,7 @@ package de.hsmainz.gi.indoornavcl;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -52,16 +53,24 @@ public class    MainActivity
 //    private static final String         TAG_TASK_FRAGMENT = "main_activity_task_fragment";
 //
 //    private TaskFragment                mTaskFragment;
+    private enum CURRENTMENU {
+        USER() {},
+        ADMIN_OVERVIEW() {},
+        BEACON_ADMIN() {},
+        SITE_ADMIN() {}
+    }
     private Button                      buttonStart;
     private BeaconScanService           bs;
     private boolean                     isBound = false;
     private List<String>                availableSites = new ArrayList<>();
     private Site                        currentSite;
+    private FragmentManager             fm;
     private CoordinateFragment          coordFragment;
     private MapFragment                 mapFragment;
     private ArrayAdapter<String>        adapter;
     private ActionBar                   actionBar;
     private MenuItem                    spinnerItem;
+    private CURRENTMENU                 currentMenu = CURRENTMENU.USER;
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection           connection = new ServiceConnection() {
@@ -96,8 +105,8 @@ public class    MainActivity
                                             mapFragment.setPoint(wkbPoint);
                                         }
                                     } else {
-                                        coordFragment = (CoordinateFragment) getFragmentManager().findFragmentById(R.id.coordinate_fragment);
-                                        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
+                                        coordFragment = (CoordinateFragment) fm.findFragmentById(R.id.coordinate_fragment);
+                                        mapFragment = (MapFragment) fm.findFragmentById(R.id.map_fragment);
                                     }
                                 }
                                     break;
@@ -141,7 +150,7 @@ public class    MainActivity
         setContentView(R.layout.activity_main);
         Log.v(TAG, "started");
 
-//        FragmentManager fm = getFragmentManager();
+//        fm = getFragmentManager();
 //        mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
 //
 //        // If the Fragment is non-null, then it is currently being
@@ -153,7 +162,8 @@ public class    MainActivity
         Intent intent = new Intent(this, BeaconScanService.class);
         intent.putExtra(Globals.UPDATE_POSITION_HANDLER, new Messenger(this.handler));
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
-        buttonStart = (Button) getFragmentManager().findFragmentById(R.id.startbutton_fragment).getView().findViewById(R.id.btnStart);
+        fm = getFragmentManager();
+        buttonStart = (Button) fm.findFragmentById(R.id.startbutton_fragment).getView().findViewById(R.id.btnStart);
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,8 +181,8 @@ public class    MainActivity
                 }
             }
         });
-        coordFragment = (CoordinateFragment) getFragmentManager().findFragmentById(R.id.coordinate_fragment);
-        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_fragment);
+        coordFragment = (CoordinateFragment) fm.findFragmentById(R.id.coordinate_fragment);
+        mapFragment = (MapFragment) fm.findFragmentById(R.id.map_fragment);
 
         // Set up the action bar to show a dropdown list.
         actionBar = getActionBar();
@@ -234,7 +244,7 @@ public class    MainActivity
                 public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                     // TODO Auto-generated method stub
                     Log.d(TAG, "SPINNER onItemSelected 0: " + arg0 + " 1: " + arg1 + " 2: " + arg2 + " 3: " + arg3);
-                    Log.v(TAG, "CALLBACK onNavigationItemSelected("+arg2+","+arg3+") = " + availableSites.get(arg2));
+                    Log.v(TAG, "CALLBACK onNavigationItemSelected(" + arg2 + "," + arg3 + ") = " + availableSites.get(arg2));
                     boolean switchedSite = bs.setCurrentSite(availableSites.get(arg2));
                     if (switchedSite) {
                         mapFragment.changeSite(availableSites.get(arg2));
@@ -252,6 +262,17 @@ public class    MainActivity
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.settings:
+                showNotification("SETTINGS ButtonClicked");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     /**
      * This method is called whenever a navigation item in the {@link android.app.ActionBar} is selected.
      * @param itemPosition Position of the item clicked.
