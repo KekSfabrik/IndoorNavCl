@@ -17,26 +17,28 @@
 
 package de.hsmainz.gi.indoornavcl;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.app.*;
+import android.content.*;
 import android.os.*;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
+import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
 import de.hsmainz.gi.indoornavcl.comm.types.Site;
+import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
 import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
+import de.hsmainz.gi.indoornavcl.util.BeaconLocationRowAdapter;
+import de.hsmainz.gi.indoornavcl.util.BeaconRowAdapter;
 import de.hsmainz.gi.indoornavcl.util.Globals;
 import de.hsmainz.gi.indoornavcl.util.StringUtils;
-import de.hsmainz.gi.indoornavcl.util.TaskFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -47,30 +49,31 @@ import java.util.List;
 public class    MainActivity
     extends     Activity
     implements  ActionBar.OnNavigationListener,
-                TaskFragment.TaskCallbacks {
+                DialogInterface.OnClickListener,
+                AdapterView.OnItemClickListener,
+                AdapterView.OnItemLongClickListener {
 
     private static final String         TAG = MainActivity.class.getSimpleName();
-//    private static final String         TAG_TASK_FRAGMENT = "main_activity_task_fragment";
-//
-//    private TaskFragment                mTaskFragment;
-    private enum CURRENTMENU {
-        USER() {},
-        ADMIN_OVERVIEW() {},
-        BEACON_ADMIN() {},
-        SITE_ADMIN() {}
+
+
+    enum CURRENTMENU {
+        USER, ADMIN_OVERVIEW, BEACON_ADMIN, SITE_ADMIN, LOCATION_ADMIN, EDIT_BEACON, EDIT_SITE, EDIT_LOCATION
     }
-    private Button                      buttonStart;
     private BeaconScanService           bs;
     private boolean                     isBound = false;
     private List<String>                availableSites = new ArrayList<>();
     private Site                        currentSite;
     private FragmentManager             fm;
-    private CoordinateFragment          coordFragment;
-    private MapFragment                 mapFragment;
+    private MainContainerFragment       mcFragment;
+    private AdminFragment               adminFragment;
+    private BeaconAdminFragment         beaconAdminFragment;
+    private SiteAdminFragment           siteAdminFragment;
+    private LocationAdminFragment       locationAdminFragment;
+    private EditBeaconFragment          editBeaconFragment;
     private ArrayAdapter<String>        adapter;
     private ActionBar                   actionBar;
     private MenuItem                    spinnerItem;
-    private CURRENTMENU                 currentMenu = CURRENTMENU.USER;
+    private CURRENTMENU                 currentMenu;
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection           connection = new ServiceConnection() {
@@ -96,18 +99,9 @@ public class    MainActivity
                         public boolean handleMessage(Message msg) {
                             switch (msg.what) {
                                 case Globals.UPDATE_POSITION_MSG: {
-                                    if (coordFragment != null
-                                        && mapFragment != null) {
-                                        Bundle b = msg.getData();
-                                        WkbPoint wkbPoint = b.getParcelable(Globals.CURRENT_POSITION);
-                                        if (wkbPoint != null && wkbPoint.isVerified()) {
-                                            coordFragment.setPoint(wkbPoint);
-                                            mapFragment.setPoint(wkbPoint);
-                                        }
-                                    } else {
-                                        coordFragment = (CoordinateFragment) fm.findFragmentById(R.id.coordinate_fragment);
-                                        mapFragment = (MapFragment) fm.findFragmentById(R.id.map_fragment);
-                                    }
+                                    Bundle b = msg.getData();
+                                    WkbPoint wkbPoint = b.getParcelable(Globals.CURRENT_POSITION);
+                                    mcFragment.setPoint(wkbPoint);
                                 }
                                     break;
                                 case Globals.DISPLAY_TOAST_MSG: {
@@ -119,9 +113,10 @@ public class    MainActivity
                                     for (Site s: bs.getAllAvailableSites()) {
                                         availableSites.add(s.getName());
                                     }
+                                    Collections.sort(availableSites);
                                     Bundle b = msg.getData();
                                     currentSite = b.getParcelable(Globals.SITE_CHANGED);
-                                    mapFragment.changeSite(currentSite);
+                                    mcFragment.changeSite(currentSite);
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -131,8 +126,6 @@ public class    MainActivity
                                             adapter.notifyDataSetChanged();
                                         }
                                     });
-
-                                    // TODO update actionbar spinner to select the correct site
                                 }
                                     break;
                             }
@@ -149,45 +142,37 @@ public class    MainActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.v(TAG, "started");
-
-//        fm = getFragmentManager();
-//        mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
-//
-//        // If the Fragment is non-null, then it is currently being
-//        // retained across a configuration change.
-//        if (mTaskFragment == null) {
-//            mTaskFragment = new TaskFragment();
-//            fm.beginTransaction().add(mTaskFragment, TAG_TASK_FRAGMENT).commit();
-//        }
         Intent intent = new Intent(this, BeaconScanService.class);
         intent.putExtra(Globals.UPDATE_POSITION_HANDLER, new Messenger(this.handler));
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
         fm = getFragmentManager();
-        buttonStart = (Button) fm.findFragmentById(R.id.startbutton_fragment).getView().findViewById(R.id.btnStart);
-        buttonStart.setOnClickListener(new View.OnClickListener() {
+        fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            /**
+             * Called whenever the contents of the back stack change.
+             */
             @Override
-            public void onClick(View v) {
-                Log.v(TAG, "START logging");
-                // start logging for R.id.inIntervalLength seconds
-                if (!bs.isScanning()) {
-                    bs.startScanning();
-                    Toast.makeText(buttonStart.getContext(), "Started", Toast.LENGTH_SHORT).show();
-                    buttonStart.setText(R.string.stop);
+            public void onBackStackChanged() {
+                Log.v(TAG, "OnBackStackChanged called");
+                if (fm.getBackStackEntryCount() == 0) {
+                    currentMenu = CURRENTMENU.USER;
                 } else {
-                    bs.stopScanning();
-                    Toast.makeText(buttonStart.getContext(), "Stopped", Toast.LENGTH_SHORT).show();
-                    buttonStart.setText(R.string.start);
-                    bs.writeToFile(coordFragment.getCoords());
+                    currentMenu = CURRENTMENU.valueOf(fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName());
+                }
+                for (int i = 0, k = fm.getBackStackEntryCount(); i<k; i++) {
+                    Log.v(TAG, "BSE: " + i + "\t" + fm.getBackStackEntryAt(i).getName());
                 }
             }
         });
-        coordFragment = (CoordinateFragment) fm.findFragmentById(R.id.coordinate_fragment);
-        mapFragment = (MapFragment) fm.findFragmentById(R.id.map_fragment);
+        mcFragment = new MainContainerFragment();
+        fm
+        .beginTransaction()
+        .replace(R.id.fragment_container, mcFragment)
+        .commit();
+        currentMenu = CURRENTMENU.USER;
 
         // Set up the action bar to show a dropdown list.
         actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
-        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, availableSites);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
     }
@@ -197,7 +182,7 @@ public class    MainActivity
      * @param   str     the Text shown by the Toast
      */
     public void showNotification(String str) {
-        Toast.makeText(buttonStart.getContext(), str, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -206,7 +191,7 @@ public class    MainActivity
     @Override
     protected void onSaveInstanceState (Bundle outState) {
         if (bs.isScanning()) {
-            bs.writeToFile(coordFragment.getCoords());
+            bs.writeToFile(mcFragment.getCoords());
         }
     }
 
@@ -242,19 +227,31 @@ public class    MainActivity
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                    // TODO Auto-generated method stub
                     Log.d(TAG, "SPINNER onItemSelected 0: " + arg0 + " 1: " + arg1 + " 2: " + arg2 + " 3: " + arg3);
                     Log.v(TAG, "CALLBACK onNavigationItemSelected(" + arg2 + "," + arg3 + ") = " + availableSites.get(arg2));
                     boolean switchedSite = bs.setCurrentSite(availableSites.get(arg2));
                     if (switchedSite) {
-                        mapFragment.changeSite(availableSites.get(arg2));
+                        mcFragment.changeSite(availableSites.get(arg2));
+                        bs.setUserOverride(true);
+                        // TODO remove this or find a better way
+                        // terrible hacky workaround since onNothingSelected is never fired but instead
+                        // a warning is logged by InputEventReceiver:
+                        // "Attempted to finish an input event but the input event receiver has already been disposed."
+                        // so 10 seconds delay until it gets reset
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                bs.setUserOverride(false);
+                                handler.postDelayed(this, 10000);
+                            }
+                        };
                     }
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> arg0) {
-                    // TODO Auto-generated method stub
                     Log.d(TAG, "SPINNER onNothingSelected 0: " + arg0);
+                    bs.setUserOverride(false);
                 }
             });
             Log.d(TAG, "SPINNER setOnItemSelectedListener");
@@ -268,6 +265,7 @@ public class    MainActivity
         switch (item.getItemId()) {
             case R.id.settings:
                 showNotification("SETTINGS ButtonClicked");
+                setCurrentFragment(CURRENTMENU.ADMIN_OVERVIEW);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -284,36 +282,176 @@ public class    MainActivity
         Log.v(TAG, "CALLBACK onNavigationItemSelected("+itemPosition+","+itemId+") = " + availableSites.get(itemPosition));
         boolean switchedSite = bs.setCurrentSite(availableSites.get(itemPosition));
         if (switchedSite) {
-            mapFragment.changeSite(availableSites.get(itemPosition));
+            mcFragment.changeSite(availableSites.get(itemPosition));
         }
         return switchedSite;
     }
 
+    public void setCurrentFragment(final CURRENTMENU menu) {
+        if (menu != currentMenu) {
+            String              tag = currentMenu == null ? null : currentMenu.name();
+            Fragment            newFragment;
+            FragmentTransaction ft = fm.beginTransaction();
+            switch (menu) {
+                case USER:
+                    mcFragment = new MainContainerFragment();
+                    newFragment = mcFragment;
+                    break;
+                case ADMIN_OVERVIEW:
+                    adminFragment = new AdminFragment();
+                    newFragment = adminFragment;
+                    ft.addToBackStack(tag);
+                    break;
+                case BEACON_ADMIN:
+                    beaconAdminFragment = new BeaconAdminFragment();
+                    newFragment = beaconAdminFragment;
+                    ft.addToBackStack(CURRENTMENU.ADMIN_OVERVIEW.name());
+                    break;
+                case SITE_ADMIN:
+                    siteAdminFragment = new SiteAdminFragment();
+                    newFragment = siteAdminFragment;
+                    ft.addToBackStack(CURRENTMENU.ADMIN_OVERVIEW.name());
+                    break;
+                case LOCATION_ADMIN:
+                    locationAdminFragment = new LocationAdminFragment();
+                    newFragment = locationAdminFragment;
+                    ft.addToBackStack(CURRENTMENU.ADMIN_OVERVIEW.name());
+                    break;
+                case EDIT_BEACON:
+                    editBeaconFragment = new EditBeaconFragment();
+                    newFragment = editBeaconFragment;
+                    ft.addToBackStack(CURRENTMENU.BEACON_ADMIN.name());
+                    break;
+                /*case EDIT_SITE:
+                    break;
+                case EDIT_LOCATION:
+                    break;*/
+                default:
+                    mcFragment = new MainContainerFragment();
+                    newFragment = mcFragment;
+            }
+            ft.replace(R.id.fragment_container, newFragment, menu.name());
+            ft.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.commit();
+            currentMenu = menu;
+        }
+    }
 
-    // The four methods below are called by the TaskFragment when new
-    // progress updates or results are available. The MainActivity
-    // should respond by updating its UI to indicate the change.
+    public boolean isScanning() {
+        return bs.isScanning();
+    }
+
+    public void startScanning() {
+        bs.startScanning();
+    }
+
+    public Beacon[] getBeaconList() {
+        List<Beacon> currentBeacons = new ArrayList<>();
+        for (WkbLocation loc: getLocations()) {
+            currentBeacons.add(loc.getBeacon());
+        }
+        return currentBeacons.toArray(new Beacon[0]);
+    }
+
+    public WkbLocation[] getLocations() {
+        return bs.getCurrentSiteLocations().toArray(new WkbLocation[0]);
+    }
+
+
+    public List<String> getSites() {
+        return availableSites;
+    }
+
+    public void stopScanning() {
+        bs.stopScanning();
+        bs.writeToFile(mcFragment.getCoords());
+    }
+
     /**
-     * {@inheritDoc}
+     * Tell the Backend to write all logged Positions since the last scan start to a file.
+     * @param   what    the Positions
+     */
+    public void writeToFile(String what) {
+        bs.writeToFile(what);
+    }
+
+    /**
+     * This method will be invoked when a button in the dialog is clicked.
+     *
+     * @param dialog The dialog that received the click.
+     * @param which  The button that was clicked (e.g.
+     *               {@link android.content.DialogInterface#BUTTON1}) or the position
      */
     @Override
-    public void onPreExecute() {  }
+    public void onClick(DialogInterface dialog, int which) {
+
+        // TODO call correct delete method for selection
+        Log.v(TAG, "Click on dialog " + dialog + "(which: " + which + ")");
+    }
 
     /**
-     * {@inheritDoc}
+     * Callback method to be invoked when an item in this AdapterView has
+     * been clicked.
+     * <p/>
+     * Implementers can call getItemAtPosition(position) if they need
+     * to access the data associated with the selected item.
+     *
+     * @param parent   The AdapterView where the click happened.
+     * @param view     The view within the AdapterView that was clicked (this
+     *                 will be a view provided by the adapter)
+     * @param position The position of the view in the adapter.
+     * @param id       The row id of the item that was clicked.
      */
     @Override
-    public void onProgressUpdate(int percent) {  }
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (parent.getAdapter() instanceof ArrayAdapter) {
+            Log.v(TAG, "Parent is instance of ArrayAdapter -> SiteAdminFragment");
+        } else if (parent.getAdapter() instanceof BeaconRowAdapter) {
+            Log.v(TAG, "Parent is instance of BeaconRowAdapter -> BeaconAdminFragment");
+            Beacon beacon = (Beacon) parent.getItemAtPosition(position);
+            setCurrentFragment(CURRENTMENU.EDIT_BEACON);
+            List<WkbLocation> locations = new ArrayList<>(bs.getCurrentSiteLocations());
+            for (WkbLocation loc: locations) {
+                if (loc.getSite().equals(currentSite)
+                        && loc.getBeacon().equals(beacon)) {
+                    editBeaconFragment.setLocation(loc);
+                    break;
+                }
+            }
+        } else if (parent.getAdapter() instanceof BeaconLocationRowAdapter) {
+            Log.v(TAG, "Parent is instance of BeaconLocationRowAdapter -> LocationAdminFragment");
+        }
+
+        // TODO go to correct fragment
+        Log.v(TAG, "Click on " + view + "(parent: " + parent + ") " + position + " " + id);
+    }
 
     /**
-     * {@inheritDoc}
+     * Callback method to be invoked when an item in this view has been
+     * clicked and held.
+     * <p/>
+     * Implementers can call getItemAtPosition(position) if they need to access
+     * the data associated with the selected item.
+     *
+     * @param parent   The AbsListView where the click happened
+     * @param view     The view within the AbsListView that was clicked
+     * @param position The position of the view in the list
+     * @param id       The row id of the item that was clicked
+     * @return true if the callback consumed the long click, false otherwise
      */
     @Override
-    public void onCancelled() {  }
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        if (parent.getAdapter() instanceof ArrayAdapter) {
+            Log.v(TAG, "Parent is instance of ArrayAdapter");
+        } else if (parent.getAdapter() instanceof BeaconRowAdapter) {
+            Log.v(TAG, "Parent is instance of BeaconRowAdapter");
+        } else if (parent.getAdapter() instanceof BeaconLocationRowAdapter) {
+            Log.v(TAG, "Parent is instance of BeaconLocationRowAdapter");
+        }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onPostExecute() {  }
+        // TODO show delete dialog
+        Log.v(TAG, "LongClick on " + view + "(parent: " + parent + ") " + position + " " + id);
+        return false;
+    }
+
 }

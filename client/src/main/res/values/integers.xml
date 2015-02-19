@@ -17,10 +17,10 @@
   -->
 
 <resources>
-    <integer name="beacon_uuid_colpan">5</integer>
-    <integer name="beacon_uuid_label_colpan">1</integer>
-    <integer name="beacon_major_colpan">2</integer>
-    <integer name="beacon_major_label_colpan">1</integer>
-    <integer name="beacon_minor_colpan">2</integer>
-    <integer name="beacon_minor_label_colpan">1</integer>
+    <integer name="beacon_uuid_colspan">5</integer>
+    <integer name="beacon_uuid_label_colspan">1</integer>
+    <integer name="beacon_major_colspan">2</integer>
+    <integer name="beacon_major_label_colspan">1</integer>
+    <integer name="beacon_minor_colspan">2</integer>
+    <integer name="beacon_minor_label_colspan">1</integer>
 </resources>

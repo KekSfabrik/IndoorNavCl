@@ -33,5 +33,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/lsSites"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="4"/>
+            android:layout_weight="4"
+            android:paddingTop="@dimen/site_item_padding"
+            android:paddingBottom="@dimen/site_item_padding"/>
 </LinearLayout>

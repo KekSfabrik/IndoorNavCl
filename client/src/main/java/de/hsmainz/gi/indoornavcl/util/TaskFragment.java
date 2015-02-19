@@ -29,6 +29,7 @@ import android.os.SystemClock;
  */
 public class TaskFragment extends Fragment {
 
+    public static final String  TAG = TaskFragment.class.getSimpleName();
     /**
      * Callback interface through which the fragment will report the
      * task's progress and results back to the Activity.

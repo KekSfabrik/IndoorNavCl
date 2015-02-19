@@ -30,7 +30,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/beacon_uuid"
                 android:id="@+id/beacon_uuid_label"
-                android:layout_span="@integer/beacon_uuid_label_colpan"
+                android:layout_span="@integer/beacon_uuid_label_colspan"
                 android:textSize="@dimen/labelfield_fontsize"
                 android:textColor="@color/labelfield_color"
                 android:gravity="center|end"/>
@@ -44,7 +44,8 @@
                 android:textSize="@dimen/editfield_fontsize"
                 android:textStyle="bold"
                 android:typeface="monospace"
-                android:gravity="center_vertical|center|center_horizontal" android:paddingTop="@dimen/tablefield_padding"
+                android:gravity="center_vertical|center|center_horizontal"
+                android:paddingTop="@dimen/tablefield_padding"
                 android:paddingBottom="@dimen/tablefield_padding"/>
     </TableRow>
     <TableRow
@@ -56,7 +57,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/beacon_major"
                 android:id="@+id/beacon_major_label"
-                android:layout_span="@integer/beacon_major_label_colpan"
+                android:layout_span="@integer/beacon_major_label_colspan"
                 android:textSize="@dimen/labelfield_fontsize"
                 android:textColor="@color/labelfield_color"
                 android:gravity="center|end"/>
@@ -70,7 +71,8 @@
                 android:textSize="@dimen/editfield_fontsize"
                 android:textStyle="bold"
                 android:typeface="monospace"
-                android:gravity="center_vertical|center|center_horizontal" android:paddingTop="@dimen/tablefield_padding"
+                android:gravity="center_vertical|center|center_horizontal"
+                android:paddingTop="@dimen/tablefield_padding"
                 android:paddingBottom="@dimen/tablefield_padding"/>
         <TextView
                 android:layout_width="wrap_content"
@@ -79,7 +81,7 @@
                 android:text="@string/beacon_major"
                 android:id="@+id/beacon_minor_label"
                 android:layout_column="3"
-                android:layout_span="@integer/beacon_minor_label_colpan"
+                android:layout_span="@integer/beacon_minor_label_colspan"
                 android:textSize="@dimen/labelfield_fontsize"
                 android:textColor="@color/labelfield_color"
                 android:gravity="center|end"/>
@@ -93,7 +95,8 @@
                 android:textSize="@dimen/editfield_fontsize"
                 android:textStyle="bold"
                 android:typeface="monospace"
-                android:gravity="center_vertical|center|center_horizontal" android:paddingTop="@dimen/tablefield_padding"
+                android:gravity="center_vertical|center|center_horizontal"
+                android:paddingTop="@dimen/tablefield_padding"
                 android:paddingBottom="@dimen/tablefield_padding"/>
     </TableRow>
 </TableLayout>

@@ -39,9 +39,9 @@ public class    MapFragment
     extends     Fragment {
 
 
-    private static final String TAG = MapFragment.class.getSimpleName();
+    public static final String  TAG = MapFragment.class.getSimpleName();
 
-    private WebView     leaflet;
+    private WebView             leaflet;
 
     private enum SITE {
         ug, eg, og1, og2, og3, test

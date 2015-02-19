@@ -34,12 +34,102 @@
         android:gravity="center"
         android:layout_weight="1.5"
         android:drawableRight="@drawable/ic_beacon_logo"/>
+    <!-- this would be a lot more elegant
+    if i had the time to make it work
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
         android:id="@+id/currentBeacon"
         android:layout_weight="1"/>
+    but instead:
+    -->
+    <TableLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            android:layout_weight="1">
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/beacon_uuid"
+                    android:id="@+id/beacon_uuid_label"
+                    android:layout_span="@integer/beacon_uuid_label_colspan"
+                    android:textSize="@dimen/labelfield_fontsize"
+                    android:textColor="@color/labelfield_color"
+                    android:gravity="center|end"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/beacon_uuid_text"
+                    android:layout_column="1"
+                    android:layout_span="9"
+                    android:text="@string/example_beacon_uuid"
+                    android:textSize="@dimen/editfield_fontsize"
+                    android:textStyle="bold"
+                    android:typeface="monospace"
+                    android:gravity="center_vertical|center|center_horizontal"
+                    android:paddingTop="@dimen/tablefield_padding"
+                    android:paddingBottom="@dimen/tablefield_padding"/>
+        </TableRow>
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/beacon_major"
+                    android:id="@+id/beacon_major_label"
+                    android:layout_span="@integer/beacon_major_label_colspan"
+                    android:textSize="@dimen/labelfield_fontsize"
+                    android:textColor="@color/labelfield_color"
+                    android:gravity="center|end"/>
+            <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/beacon_major_text"
+                    android:layout_column="1"
+                    android:layout_span="4"
+                    android:text="@string/example_beacon_major"
+                    android:textSize="@dimen/editfield_fontsize"
+                    android:textStyle="bold"
+                    android:typeface="monospace"
+                    android:gravity="center_vertical|center|center_horizontal"
+                    android:paddingTop="@dimen/tablefield_padding"
+                    android:paddingBottom="@dimen/tablefield_padding"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/beacon_major"
+                    android:id="@+id/beacon_minor_label"
+                    android:layout_column="3"
+                    android:layout_span="@integer/beacon_minor_label_colspan"
+                    android:textSize="@dimen/labelfield_fontsize"
+                    android:textColor="@color/labelfield_color"
+                    android:gravity="center|end"/>
+            <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/beacon_minor_text"
+                    android:layout_column="4"
+                    android:layout_span="4"
+                    android:text="@string/example_beacon_minor"
+                    android:textSize="@dimen/editfield_fontsize"
+                    android:textStyle="bold"
+                    android:typeface="monospace"
+                    android:gravity="center_vertical|center|center_horizontal"
+                    android:paddingTop="@dimen/tablefield_padding"
+                    android:paddingBottom="@dimen/tablefield_padding"/>
+        </TableRow>
+    </TableLayout>
+    <!-- this crap -->
     <fragment
         android:name="de.hsmainz.gi.indoornavcl.CoordinateFragment"
         android:id="@+id/coordinate"

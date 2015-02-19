@@ -24,4 +24,5 @@
     <dimen name="labelfield_fontsize">16sp</dimen>
     <dimen name="editfield_fontsize">22sp</dimen>
     <dimen name="tablefield_padding">5dp</dimen>
+    <dimen name="site_item_padding">12dp</dimen>
 </resources>

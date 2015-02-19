@@ -72,7 +72,7 @@ public class    LocatorComboImpl
                     }
                     Measurement msm = loc.getValue();
                     double rssiByTxPower = msm.getTxPower() - msm.getRssi();
-                    if (rssiByTxPower < 0) {
+                    if (rssiByTxPower <= 0) {
                         rssiByTxPower = 1;
                     }
                     rssiByTxPower = 1.0 / rssiByTxPower;

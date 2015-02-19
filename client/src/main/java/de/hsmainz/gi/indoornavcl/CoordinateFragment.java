@@ -38,7 +38,7 @@ import java.util.List;
 public class    CoordinateFragment
     extends     Fragment {
 
-    private static final String     TAG = CoordinateFragment.class.getSimpleName();
+    public static final String      TAG = CoordinateFragment.class.getSimpleName();
     private TextView                x,
                                     y,
                                     z;

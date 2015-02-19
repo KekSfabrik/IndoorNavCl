@@ -42,6 +42,11 @@ public final class Globals {
     public static final int     CURRENT_SITE_LOCATIONS_CALLBACK_ARRIVED  = 6;
     public static final int     SITES_AVAILABLE_CALLBACK_ARRIVED    = 7;
     public static final int     SITE_CHANGED_MSG                    = 8;
+    public static final int     ADD_BEACON_MSG                      = 9;
+    public static final int     DELETE_BEACON_MSG                   = 10;
+    public static final int     ADD_SITE_MSG                        = 11;
+    public static final int     DELETE_SITE_MSG                     = 12;
+    public static final int     WORKAROUND_DELAY_MSG                = 13;
 
 
 

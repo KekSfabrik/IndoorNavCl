@@ -31,7 +31,7 @@ import android.widget.Toast;
 public class    AdminFragment
     extends     Fragment {
 
-    private static final String TAG = AdminFragment.class.getSimpleName();
+    public static final String  TAG = AdminFragment.class.getSimpleName();
 
 
     /**
@@ -48,26 +48,29 @@ public class    AdminFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.startbutton_fragment, container, false);
+        View view = inflater.inflate(R.layout.admin_fragment, container, false);
         final Button beaconBtn = (Button) view.findViewById(R.id.btnBeacon);
         beaconBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(beaconBtn.getContext(), "BEACON buttonClicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "BEACON buttonClicked", Toast.LENGTH_SHORT).show();
+                ((MainActivity) getActivity()).setCurrentFragment(MainActivity.CURRENTMENU.BEACON_ADMIN);
             }
         });
         final Button siteBtn = (Button) view.findViewById(R.id.btnSite);
-        beaconBtn.setOnClickListener(new View.OnClickListener() {
+        siteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(siteBtn.getContext(), "SITE buttonClicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "SITE buttonClicked", Toast.LENGTH_SHORT).show();
+                ((MainActivity) getActivity()).setCurrentFragment(MainActivity.CURRENTMENU.SITE_ADMIN);
             }
         });
         final Button locationBtn = (Button) view.findViewById(R.id.btnLocation);
-        beaconBtn.setOnClickListener(new View.OnClickListener() {
+        locationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(locationBtn.getContext(), "LOCATION buttonClicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "LOCATION buttonClicked", Toast.LENGTH_SHORT).show();
+                ((MainActivity) getActivity()).setCurrentFragment(MainActivity.CURRENTMENU.LOCATION_ADMIN);
             }
         });
 

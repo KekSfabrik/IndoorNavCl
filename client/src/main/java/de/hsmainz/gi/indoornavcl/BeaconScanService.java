@@ -64,9 +64,10 @@ public class BeaconScanService
     private Region                      region;
     private Point                       currentClientLocation;
     private BeaconScannerApplication    app;
+    private boolean                     isUserOverride = false;
     private boolean                     isScanning;
     private final IBinder               binder = new LocalBinder();
-    private Messenger                   updateBeaconPositionMessenger;
+    private Messenger mainActivityMessenger;
     private Locator                     locator = new LocatorComboImpl();//new LocatorImpl1();//new TrivialLocator();
 
     /** whether or not the user is an administrator */
@@ -294,7 +295,7 @@ public class BeaconScanService
      */
     private void determineSite() {
         synchronized (currentSiteLocations) {
-            if (currentSiteLocations != null && !currentSiteLocations.isEmpty()) {
+            if (currentSiteLocations != null && !currentSiteLocations.isEmpty() && !isUserOverride) {
                 Map<Site, Integer> hits = new TreeMap<>();
                 for (WkbLocation loc : currentSiteLocations) {
                     Site site = loc.getSite();
@@ -342,6 +343,90 @@ public class BeaconScanService
         }).start();
     }
 
+    /**
+     * A Threadrunner to add a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} to the backing WebService.
+     * Its Callback to the {@link android.os.Handler} {@link #handler} is
+     * {@link de.hsmainz.gi.indoornavcl.util.Globals#ADD_BEACON_MSG}.
+     * @param   beacon      the Beacon to add to the System
+     */
+    public void addBeacon(final Beacon beacon) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "WARNING! trying to add Beacon: " + StringUtils.toString(beacon));
+                boolean result = SoapPositionerRequests.addBeacon(beacon);
+                handler.sendEmptyMessage(Globals.ADD_BEACON_MSG);
+            }
+        }).start();
+    }
+
+    /**
+     * A Threadrunner to delete a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from the backing WebService.
+     * Its Callback to the {@link android.os.Handler} {@link #handler} is
+     * {@link de.hsmainz.gi.indoornavcl.util.Globals#DELETE_BEACON_MSG}.
+     * <p>The connection to the WebService will only be done if the <code>beacon</code> is valid/verified
+     * @param   beacon      the Beacon to delete from the System
+     */
+    public void deleteBeacon(final Beacon beacon) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (beacon.isVerified()) {
+                    Log.d(TAG, "WARNING! trying to delete Beacon: " + StringUtils.toString(beacon));
+                    boolean result = SoapPositionerRequests.deleteBeacon(beacon);
+                    if (result) {
+                        loggedBeacons.remove(beacon);
+                        checkedBeacons.remove(beacon);
+                        unregisteredBeacons.add(beacon);
+                    }
+                    handler.sendEmptyMessage(Globals.DELETE_BEACON_MSG);
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * A Threadrunner to add a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} to the backing WebService.
+     * Its Callback to the {@link android.os.Handler} {@link #handler} is
+     * {@link de.hsmainz.gi.indoornavcl.util.Globals#ADD_SITE_MSG}.
+     * @param   site      the Site to add to the System
+     */
+    public void addSite(final Site site) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "WARNING! trying to add Site: " + StringUtils.toString(site));
+                boolean result = SoapPositionerRequests.addSite(site);
+                handler.sendEmptyMessage(Globals.ADD_SITE_MSG);
+            }
+        }).start();
+    }
+
+    /**
+     * A Threadrunner to delete a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} from the backing WebService.
+     * Its Callback to the {@link android.os.Handler} {@link #handler} is
+     * {@link de.hsmainz.gi.indoornavcl.util.Globals#DELETE_SITE_MSG}.
+     * <p>The connection to the WebService will only be done if the <code>site</code> is valid/verified
+     * @param   site      the Site to delete from the System
+     */
+    public void deleteSite(final Site site) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (site.isVerified()) {
+                    Log.d(TAG, "WARNING! trying to delete Site: " + StringUtils.toString(site));
+                    boolean result = SoapPositionerRequests.deleteSite(site);
+                    if (result) {
+                        availableSites.remove(site);
+                        if (currentSite.equals(site)) {
+                            determineSite();
+                        }
+                    }
+                    handler.sendEmptyMessage(Globals.DELETE_SITE_MSG);
+                }
+            }
+        }).start();
+    }
 
     /**
      * Checks what to do with the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} supplied by the
@@ -366,7 +451,7 @@ public class BeaconScanService
                             break;
                         }
                     }
-                    Log.d(TAG, "currentSiteMeasurements.containsKey("+StringUtils.toString(location)+") = " + currentSiteMeasurements.containsKey(location));
+//                    Log.d(TAG, "currentSiteMeasurements.containsKey("+StringUtils.toString(location)+") = " + currentSiteMeasurements.containsKey(location));
                     if (currentSiteMeasurements.containsKey(location)) {
                         currentSiteMeasurements.put(location, measurement);
                         calcPosition = true;
@@ -391,11 +476,11 @@ public class BeaconScanService
             @Override
             public void run() {
                 synchronized (currentSiteMeasurements) {
-                    Log.v(TAG, "================== calcPosition with measurements: ================== ");
-                    for (Map.Entry<WkbLocation, Measurement> entry : currentSiteMeasurements.entrySet()) {
-                        Log.v(TAG, StringUtils.toString(entry.getKey()) + " -> " + entry.getValue());
-                    }
-                    Log.v(TAG, "================== calcPosition with measurements EOF ================== ");
+//                    Log.v(TAG, "================== calcPosition with measurements: ================== ");
+//                    for (Map.Entry<WkbLocation, Measurement> entry : currentSiteMeasurements.entrySet()) {
+//                        Log.v(TAG, StringUtils.toString(entry.getKey()) + " -> " + entry.getValue());
+//                    }
+//                    Log.v(TAG, "================== calcPosition with measurements EOF ================== ");
                     Point tmp = locator.getLocation(currentSiteMeasurements);
                     if (tmp != null) {
                         currentClientLocation = tmp;
@@ -563,7 +648,6 @@ public class BeaconScanService
                     }
                     getLocationsFromLoggedBeacons();
                     if (calcPosition) {
-                        Log.d(TAG, "calcPosition -> start to calculate the position!");
                         calcPosition();
                     }
                 }
@@ -579,7 +663,7 @@ public class BeaconScanService
     public IBinder onBind(Intent intent) {
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            updateBeaconPositionMessenger = (Messenger) extras.get(Globals.UPDATE_POSITION_HANDLER);
+            mainActivityMessenger = (Messenger) extras.get(Globals.UPDATE_POSITION_HANDLER);
         }
         Log.v(TAG, "BeaconScanService bound.");
         return binder;
@@ -677,6 +761,7 @@ public class BeaconScanService
         }
         currentSiteMeasurements.clear();
         currentSiteMeasurements.putAll(keep);
+        uiSiteChanged();
         Log.v(TAG, "Current Site changed to: " + StringUtils.toString(currentSite));
     }
 
@@ -686,6 +771,14 @@ public class BeaconScanService
      */
     public Set<Site> getAllAvailableSites() {
         return availableSites;
+    }
+
+    /**
+     * Getter for the Field {@link #availableSites}
+     * @return  all available Sites
+     */
+    public Set<WkbLocation> getCurrentSiteLocations() {
+        return currentSiteLocations;
     }
 
     /**
@@ -727,6 +820,14 @@ public class BeaconScanService
     }
 
     /**
+     * Set override of current {@link de.hsmainz.gi.indoornavcl.comm.types.Site} access by the user.
+     * @param   override    xwwhether or not the Site set by the user should be used
+     */
+    public void setUserOverride(boolean override) {
+        this.isUserOverride = override;
+    }
+
+    /**
      * Notify the bound Activity that the current position has changed and should be displayed.
      * @param   point   the new position
      */
@@ -737,7 +838,7 @@ public class BeaconScanService
             Bundle bundle = new Bundle();
             bundle.putParcelable(Globals.CURRENT_POSITION, point);
             msg.setData(bundle);
-            updateBeaconPositionMessenger.send(msg);
+            mainActivityMessenger.send(msg);
         }
         catch (RemoteException e) {
             Log.w(getClass().getName(), "Exception sending message", e);
@@ -755,7 +856,7 @@ public class BeaconScanService
             Bundle bundle = new Bundle();
             bundle.putParcelable(Globals.SITE_CHANGED, currentSite);
             msg.setData(bundle);
-            updateBeaconPositionMessenger.send(msg);
+            mainActivityMessenger.send(msg);
         }
         catch (RemoteException e) {
             Log.w(getClass().getName(), "Exception sending message", e);
@@ -773,7 +874,7 @@ public class BeaconScanService
             Bundle bundle = new Bundle();
             bundle.putString(Globals.DISPLAY_TOAST, str);
             msg.setData(bundle);
-            updateBeaconPositionMessenger.send(msg);
+            mainActivityMessenger.send(msg);
         }
         catch (RemoteException e) {
             Log.w(getClass().getName(), "Exception sending message", e);

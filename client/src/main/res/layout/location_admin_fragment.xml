@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2015 Jan "KekS" M.
   ~ This library is free software; you can redistribute it and/or
@@ -15,12 +16,22 @@
   ~ MA 02110-1301  USA
   -->
 
-<resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="labelfield_fontsize">12sp</dimen>
-    <dimen name="editfield_fontsize">14sp</dimen>
-    <dimen name="tablefield_padding">3dp</dimen>
-    <dimen name="site_item_padding">6dp</dimen>
-</resources>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:weightSum="5">
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_location"
+            android:id="@+id/btnAddLocation"
+            android:layout_weight="1"/>
+    <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lsLocations"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="4"/>
+</LinearLayout>

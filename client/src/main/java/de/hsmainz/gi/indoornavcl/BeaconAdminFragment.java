@@ -19,22 +19,21 @@ package de.hsmainz.gi.indoornavcl;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ListView;
+import de.hsmainz.gi.indoornavcl.util.BeaconRowAdapter;
 
 /**
- * Fragment that holds a Button to start scanning/logging/positioning.
- *
- * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 10.02.15.
+ * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 19.02.15.
  */
-public class    StartButtonFragment
+public class    BeaconAdminFragment
     extends     Fragment {
 
-    public static final String  TAG = StartButtonFragment.class.getSimpleName();
+    public static final String  TAG = BeaconAdminFragment.class.getSimpleName();
+
+    private ListView list;
 
     /**
      * {@inheritDoc}
@@ -50,25 +49,11 @@ public class    StartButtonFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.startbutton_fragment, container, false);
-        final Button buttonStart = (Button) rootView.findViewById(R.id.btnStart);
-        buttonStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(TAG, "START logging");
-                // start logging for R.id.inIntervalLength seconds
-                MainActivity ma = (MainActivity) getActivity();
-                if (!ma.isScanning()) {
-                    ma.startScanning();
-                    Toast.makeText(ma, "Started", Toast.LENGTH_SHORT).show();
-                    buttonStart.setText(R.string.stop);
-                } else {
-                    ma.stopScanning();
-                    Toast.makeText(ma, "Stopped", Toast.LENGTH_SHORT).show();
-                    buttonStart.setText(R.string.start);
-                }
-            }
-        });
+        View rootView = inflater.inflate(R.layout.beacon_admin_fragment, container, false);
+        list = (ListView) rootView.findViewById(R.id.lsBeacons);
+        list.setAdapter(new BeaconRowAdapter(getActivity(), ((MainActivity) getActivity()).getBeaconList()));
+        list.setOnItemClickListener((MainActivity) getActivity());
+        list.setOnItemLongClickListener((MainActivity) getActivity());
         return rootView;
     }
 

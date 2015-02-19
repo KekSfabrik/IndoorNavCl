@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2015 Jan "KekS" M.
   ~ This library is free software; you can redistribute it and/or
@@ -15,22 +16,30 @@
   ~ MA 02110-1301  USA
   -->
 
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_container"
+    tools:context=".MainActivity"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/AppTheme.MyActionBar"
-    tools:context=".MainActivity"
-    android:textAppearance="?android:attr/textAppearanceSmall">
-    <!-- should be avoided: android:configChanges="orientation|screenSize"-->
-    <!--<fragment
-            android:name="de.hsmainz.gi.indoornavcl.MainContainerFragment"
-            android:id="@+id/main_container_fragment"
+    android:weightSum="5">
+    <FrameLayout
+            android:id="@+id/startbutton_fragment_holder"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout="@layout/main_container_fragment"/>-->
-</FrameLayout>
-
+            android:layout_height="wrap_content"
+            tools:layout="@layout/startbutton_fragment"
+            android:layout_weight="0.1" />
+    <FrameLayout
+            android:id="@+id/map_fragment_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/map_fragment"
+            android:layout_weight="4.8"/>
+    <FrameLayout
+            android:id="@+id/coordinate_fragment_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/coordinate_fragment"
+            android:layout_weight="0.1"/>
+</LinearLayout>

@@ -33,7 +33,7 @@
     <application
         android:name="de.hsmainz.gi.indoornavcl.BeaconScannerApplication"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_logo_hsmainz"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity

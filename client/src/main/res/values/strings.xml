@@ -43,5 +43,8 @@
     <string name="replace_beacon">Replace Beacon</string>
     <string name="edit_site_lbl">Edit Site</string>
     <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
     <string name="h">h</string>
+    <string name="add_location">Add Location manually</string>
+    <string name="no_impl">Not implemented yet</string>
 </resources>
