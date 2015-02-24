@@ -20,9 +20,9 @@ package de.hsmainz.gi.indoornavcl.comm;
 import android.util.Log;
 import com.vividsolutions.jts.geom.Point;
 import de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService;
-import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
-import de.hsmainz.gi.indoornavcl.comm.types.Site;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
+import de.hsmainz.gi.types.Beacon;
+import de.hsmainz.gi.types.Site;
+import de.hsmainz.gi.types.WkbLocation;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -41,7 +41,7 @@ public class SoapLocatorRequests {
     private static final String TAG = SoapLocatorRequests.class.getSimpleName();
 
     /**
-     * Wrapper to get a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} object from the
+     * Wrapper to get a {@link de.hsmainz.gi.types.Site} object from the
      * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
      * its exact name.
      * @param   name    the name of the Site
@@ -58,7 +58,7 @@ public class SoapLocatorRequests {
     }
 
     /**
-     * Wrapper to get the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} object from the
+     * Wrapper to get the {@link de.hsmainz.gi.types.Beacon} object from the
      * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
      * its uuid, major and minor fields.
      * @param   uuid    the Beacons UUID field
@@ -77,7 +77,7 @@ public class SoapLocatorRequests {
     }
 
     /**
-     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from the
+     * Wrapper to get a Set of {@link de.hsmainz.gi.types.Site} objects from the
      * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
      * the approximate name of the Site.
      * @param   name    the approximate name of the Site
@@ -96,7 +96,7 @@ public class SoapLocatorRequests {
     /**
      * Wrapper to get a {@link com.vividsolutions.jts.geom.Point} object from the
      * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
-     * the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} and the {@link de.hsmainz.gi.indoornavcl.comm.types.Site}.
+     * the {@link de.hsmainz.gi.types.Beacon} and the {@link de.hsmainz.gi.types.Site}.
      * The resulting Point is the Coordinate of the Beacon on that Site.
      * @param   site    the Site the beacon is located at
      * @param   beacon  the Beacon for which the coordinate should be found
@@ -113,9 +113,9 @@ public class SoapLocatorRequests {
     }
 
     /**
-     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from the
+     * Wrapper to get a Set of {@link de.hsmainz.gi.types.Site} objects from the
      * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
-     * a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s.
+     * a Set of {@link de.hsmainz.gi.types.Beacon}s.
      * @param   beacons the Beacons for which the Sites are wanted
      * @return  a Set of all Sites the given Beacons are located at
      */
@@ -132,9 +132,9 @@ public class SoapLocatorRequests {
     }
 
     /**
-     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} objects from the
+     * Wrapper to get a Set of {@link de.hsmainz.gi.types.WkbLocation} objects from the
      * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
-     * the {@link de.hsmainz.gi.indoornavcl.comm.types.Site} they are located at.
+     * the {@link de.hsmainz.gi.types.Site} they are located at.
      * @param   site    the Site at which all Beaconpositions should be found
      * @return  the Locations of all Beacons on the given Site
      */
@@ -149,7 +149,7 @@ public class SoapLocatorRequests {
     }
 
     /**
-     * Wrapper to get a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} object with its appropriate ID from the
+     * Wrapper to get a {@link de.hsmainz.gi.types.Beacon} object with its appropriate ID from the
      * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
      * a Beacon without ID.
      * @param   beacon  the Beacon which should get its Field ID set
@@ -166,9 +166,9 @@ public class SoapLocatorRequests {
     }
 
     /**
-     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from the
+     * Wrapper to get a Set of {@link de.hsmainz.gi.types.Site} objects from the
      * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
-     * a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}.
+     * a {@link de.hsmainz.gi.types.Beacon}.
      * @param   beacon  the Beacon for which its Sites should be found
      * @return  the Set of Sites the given Beacon can be located at
      */
@@ -183,9 +183,9 @@ public class SoapLocatorRequests {
     }
 
     /**
-     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} objects from the
+     * Wrapper to get a Set of {@link de.hsmainz.gi.types.WkbLocation} objects from the
      * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
-     * a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s.
+     * a Set of {@link de.hsmainz.gi.types.Beacon}s.
      * @param   beacons the Set of Beacons for which Locations (Site & Position) should be found
      * @return  all Locations of the given beacons
      */
@@ -202,7 +202,7 @@ public class SoapLocatorRequests {
     }
 
     /**
-     * Wrapper to get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} objects with ID fields from the
+     * Wrapper to get a Set of {@link de.hsmainz.gi.types.Beacon} objects with ID fields from the
      * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
      * a Set of Beacons without IDs.
      * @param   beacons the Set of Beacons for which the IDs should be set
@@ -231,7 +231,7 @@ public class SoapLocatorRequests {
 //    private SoapLocatorRequests() { }
 //
 //    /**
-//     * Get a the {@link de.hsmainz.gi.indoornavcl.comm.types.Site}s by it\'s name.
+//     * Get a the {@link de.hsmainz.gi.types.Site}s by it\'s name.
 //     * @param   name  the name of the Site to search for
 //     * @return  a Site Object
 //     */
@@ -264,7 +264,7 @@ public class SoapLocatorRequests {
 //    }
 //
 //    /**
-//     * Get a List of {@link de.hsmainz.gi.indoornavcl.comm.types.Site}s by by a wildcarded
+//     * Get a List of {@link de.hsmainz.gi.types.Site}s by by a wildcarded
 //     * name (SQL LIKE "%name%").
 //     * @param   name  the approximate name of the Site to search for
 //     * @return  a List of Site Object
@@ -298,8 +298,8 @@ public class SoapLocatorRequests {
 //    }
 //
 //    /**
-//     * Get a List of {@link de.hsmainz.gi.indoornavcl.comm.types.Site}s where the provided
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} is registered to.
+//     * Get a List of {@link de.hsmainz.gi.types.Site}s where the provided
+//     * {@link de.hsmainz.gi.types.Beacon} is registered to.
 //     * @param   beacon  the Beacon to search for
 //     * @return  a List of Sites where this Beacon is registered
 //     */
@@ -332,8 +332,8 @@ public class SoapLocatorRequests {
 //    }
 //
 //    /**
-//     * Get a List of {@link de.hsmainz.gi.indoornavcl.comm.types.Site}s where the provided
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s are registered to.
+//     * Get a List of {@link de.hsmainz.gi.types.Site}s where the provided
+//     * {@link de.hsmainz.gi.types.Beacon}s are registered to.
 //     * @param   beacons   a list of Beacons to search for
 //     * @return  a List of Sites where all provided Beacons are registered
 //     */
@@ -366,7 +366,7 @@ public class SoapLocatorRequests {
 //    }
 //
 //    /**
-//     * Get the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} Object by uuid, major
+//     * Get the {@link de.hsmainz.gi.types.Beacon} Object by uuid, major
 //     * and minor.
 //     * @param   uuid    the beacons manufacturer uuid
 //     * @param   major   the beacons major id
@@ -411,7 +411,7 @@ public class SoapLocatorRequests {
 //    }
 //
 //    /**
-//     * Get the ID of a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}.
+//     * Get the ID of a {@link de.hsmainz.gi.types.Beacon}.
 //     * @param   beacon     a List of Beacons to get IDs for
 //     * @return  a List of Beacons that exist
 //     */
@@ -452,7 +452,7 @@ public class SoapLocatorRequests {
 //    }
 //
 //    /**
-//     * Get the IDs for a bunch of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s.
+//     * Get the IDs for a bunch of {@link de.hsmainz.gi.types.Beacon}s.
 //     * and minor.
 //     * @param   beacons     a List of Beacons to get IDs for
 //     * @return  a List of Beacons that exist
@@ -492,8 +492,8 @@ public class SoapLocatorRequests {
 //
 //    /**
 //     * Get the {@link com.vividsolutions.jts.geom.Point} at the provided
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} where the provided
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} is positioned.
+//     * {@link de.hsmainz.gi.types.Site} where the provided
+//     * {@link de.hsmainz.gi.types.Beacon} is positioned.
 //     * @param   site    the Site of the Beacon
 //     * @param   beacon  the Beacon
 //     * @return  the Coordinate of the Beacon on the Site
@@ -531,9 +531,9 @@ public class SoapLocatorRequests {
 //    }
 //
 //    /**
-//     * Get all {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation}s of
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s at the specified
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site}.
+//     * Get all {@link de.hsmainz.gi.types.WkbLocation}s of
+//     * {@link de.hsmainz.gi.types.Beacon}s at the specified
+//     * {@link de.hsmainz.gi.types.Site}.
 //     * @param   site    the Site of the Locations
 //     * @return  all Locations of Beacons at the Site
 //     */
@@ -566,8 +566,8 @@ public class SoapLocatorRequests {
 //    }
 //
 //    /**
-//     * Attempt to find all {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation}s for
-//     * the provided List of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s.
+//     * Attempt to find all {@link de.hsmainz.gi.types.WkbLocation}s for
+//     * the provided List of {@link de.hsmainz.gi.types.Beacon}s.
 //     * @param   beacons  the Beacons for which a Site should be found
 //     * @return  all Locations of Beacons on the Site determined by the input
 //     */

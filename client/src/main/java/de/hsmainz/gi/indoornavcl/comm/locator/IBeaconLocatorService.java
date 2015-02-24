@@ -20,10 +20,10 @@ package de.hsmainz.gi.indoornavcl.comm.locator;
 import android.util.Log;
 import de.hsmainz.gi.indoornavcl.comm.Configuration;
 import de.hsmainz.gi.indoornavcl.comm.CustomSoapSerializationEnvelope;
-import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
-import de.hsmainz.gi.indoornavcl.comm.types.Site;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
+import de.hsmainz.gi.types.Beacon;
+import de.hsmainz.gi.types.Site;
+import de.hsmainz.gi.types.WkbLocation;
+import de.hsmainz.gi.types.WkbPoint;
 import org.ksoap2.HeaderProperty;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.KvmSerializable;
@@ -49,7 +49,7 @@ public final class IBeaconLocatorService {
     private String              SESSION_ID;
 
     /**
-     * Get a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} object from its exact name.
+     * Get a {@link de.hsmainz.gi.types.Site} object from its exact name.
      * @param   name    the name of the Site
      * @return  the Site object from the LocatorService
      * @throws  Exception   if something goes wrong
@@ -77,7 +77,7 @@ public final class IBeaconLocatorService {
     }
 
     /**
-     * Get the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} object from
+     * Get the {@link de.hsmainz.gi.types.Beacon} object from
      * its uuid, major and minor fields.
      * @param   uuid    the Beacons UUID field
      * @param   major   the Beacons MAJOR field
@@ -110,7 +110,7 @@ public final class IBeaconLocatorService {
     }
 
     /**
-     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from
+     * Get a Set of {@link de.hsmainz.gi.types.Site} objects from
      * the approximate name of the Site.
      * @param   name    the approximate name of the Site
      * @return  a Set of Sites with names matching the name
@@ -149,7 +149,7 @@ public final class IBeaconLocatorService {
 
     /**
      * Get a {@link com.vividsolutions.jts.geom.Point} object from
-     * the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} and the {@link de.hsmainz.gi.indoornavcl.comm.types.Site}.
+     * the {@link de.hsmainz.gi.types.Beacon} and the {@link de.hsmainz.gi.types.Site}.
      * The resulting Point is the Coordinate of the Beacon on that Site.
      * @param   site    the Site the beacon is located at
      * @param   beacon  the Beacon for which the coordinate should be found
@@ -180,8 +180,8 @@ public final class IBeaconLocatorService {
     }
 
     /**
-     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from
-     * an Array of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s.
+     * Get a Set of {@link de.hsmainz.gi.types.Site} objects from
+     * an Array of {@link de.hsmainz.gi.types.Beacon}s.
      * @param   beacons the Beacons for which the Sites are wanted
      * @return  a Set of all Sites the given Beacons are located at
      * @throws  Exception   if something goes wrong
@@ -225,8 +225,8 @@ public final class IBeaconLocatorService {
     }
 
     /**
-     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} objects from
-     * the {@link de.hsmainz.gi.indoornavcl.comm.types.Site} they are located at.
+     * Get a Set of {@link de.hsmainz.gi.types.WkbLocation} objects from
+     * the {@link de.hsmainz.gi.types.Site} they are located at.
      * @param   site    the Site at which all Beaconpositions should be found
      * @return  the Locations of all Beacons on the given Site
      * @throws  Exception   if something goes wrong
@@ -279,7 +279,7 @@ public final class IBeaconLocatorService {
 
 
     /**
-     * Get a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} object with its appropriate ID from
+     * Get a {@link de.hsmainz.gi.types.Beacon} object with its appropriate ID from
      * a Beacon without ID.
      * @param   beacon  the Beacon which should get its Field ID set
      * @return  the beacon - if it is part of the system - with its ID field
@@ -308,8 +308,8 @@ public final class IBeaconLocatorService {
     }
 
     /**
-     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Site} objects from
-     * a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}.
+     * Get a Set of {@link de.hsmainz.gi.types.Site} objects from
+     * a {@link de.hsmainz.gi.types.Beacon}.
      * @param   beacon  the Beacon for which its Sites should be found
      * @return  the Set of Sites the given Beacon can be located at
      * @throws  Exception   if something goes wrong
@@ -345,8 +345,8 @@ public final class IBeaconLocatorService {
     }
 
     /**
-     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} objects from
-     * an Array of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s.
+     * Get a Set of {@link de.hsmainz.gi.types.WkbLocation} objects from
+     * an Array of {@link de.hsmainz.gi.types.Beacon}s.
      * @param   beacons the Set of Beacons for which Locations (Site & Position) should be found
      * @return  all Locations of the given beacons
      * @throws  Exception   if something goes wrong
@@ -391,7 +391,7 @@ public final class IBeaconLocatorService {
 
 
     /**
-     * Get a Set of {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} objects with ID fields from
+     * Get a Set of {@link de.hsmainz.gi.types.Beacon} objects with ID fields from
      * an Array of Beacons without IDs.
      * @param   beacons the Set of Beacons for which the IDs should be set
      * @return  the given Beacons - if they are part of the system - with their ID fields filled

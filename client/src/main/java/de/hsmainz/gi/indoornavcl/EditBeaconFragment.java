@@ -24,8 +24,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
+import de.hsmainz.gi.types.Beacon;
+import de.hsmainz.gi.types.WkbLocation;
 import de.hsmainz.gi.indoornavcl.util.StringUtils;
 
 /**

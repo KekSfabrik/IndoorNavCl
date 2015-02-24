@@ -18,7 +18,7 @@
 package de.hsmainz.gi.indoornavcl.positioning;
 
 import com.vividsolutions.jts.geom.Point;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
+import de.hsmainz.gi.types.WkbLocation;
 import de.hsmainz.gi.indoornavcl.util.Utilities;
 
 import java.util.Map;
@@ -37,7 +37,7 @@ public class    TrivialLocator
                 Point point = loc.getKey().getCoord().getPoint();
                 Measurement msm = loc.getValue();
                 double rssiByTxPower = msm.getTxPower() - msm.getRssi();
-                if (rssiByTxPower < 0) {
+                if (rssiByTxPower <= 0) {
                     rssiByTxPower = 1;
                 }
                 rssiByTxPower = 1.0 / rssiByTxPower;
@@ -54,8 +54,8 @@ public class    TrivialLocator
 
 
     /**
-     * Calculate the {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} of the Client
-     * based on the visible {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s and their
+     * Calculate the {@link de.hsmainz.gi.types.WkbLocation} of the Client
+     * based on the visible {@link de.hsmainz.gi.types.Beacon}s and their
      * {@link de.hsmainz.gi.indoornavcl.positioning.Measurement}s.
      *
      * @param locations a Map of Locations with a List of their Measurements

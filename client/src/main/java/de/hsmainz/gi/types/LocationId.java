@@ -16,18 +16,16 @@
  * MA 02110-1301  USA
  */
 
-package de.hsmainz.gi.indoornavcl.comm.types;
+package de.hsmainz.gi.types;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import de.hsmainz.gi.indoornavcl.util.StringUtils;
 import de.hsmainz.gi.indoornavcl.util.Utilities;
 import org.ksoap2.serialization.KvmSerializable;
 import org.ksoap2.serialization.PropertyInfo;
 
 import java.io.Serializable;
 import java.util.Hashtable;
-import java.util.Objects;
 
 
 
@@ -35,54 +33,49 @@ import java.util.Objects;
  *
  * @author  KekS (mailto:keks@keksfabrik.eu), 2015
  */
-public class Site
+public class LocationId
         implements  KvmSerializable,
                     Serializable,
                     Comparable,
                     IndoorNavEntity,
                     Parcelable {
 
-    protected String name;
+    protected int beaconId;
     protected int site;
 
-    public Site() { }
-
-    public Site(String name) {
-        this(0, name);
+    /**
+     * Ruft den Wert der beaconId-Eigenschaft ab.
+     * 
+     */
+    public int getBeaconId() {
+        return beaconId;
     }
 
-    public Site(int id, String name) {
-        this.site = id;
-        this.name = name;
+    public LocationId() {
+
     }
 
-    public Site(Parcel in) {
-        this.name = in.readString();
+    public LocationId(Beacon beacon, Site site) {
+        this.beaconId = beacon.getId();
+        this.site = site.getSite();
+    }
+
+    public LocationId(int beaconId, int site) {
+        this.beaconId = beaconId;
+        this.site = site;
+    }
+
+    public LocationId(Parcel in) {
+        this.beaconId = in.readInt();
         this.site = in.readInt();
     }
 
     /**
-     * Ruft den Wert der name-Eigenschaft ab.
+     * Legt den Wert der beaconId-Eigenschaft fest.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
      */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Legt den Wert der name-Eigenschaft fest.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
+    public void setBeaconId(int value) {
+        this.beaconId = value;
     }
 
     /**
@@ -109,7 +102,7 @@ public class Site
     @Override
     public Object getProperty(int index) {
         switch(index) {
-            case 0: return name;
+            case 0: return beaconId;
             case 1: return site;
             default: return null;
         }
@@ -133,10 +126,10 @@ public class Site
     public void setProperty(int index, Object value) {
         switch(index) {
             case 0:
-                this.name = value.toString();
+                this.beaconId = Utilities.tryParseInt(value).intValue();
                 break;
             case 1:
-                this.site = Utilities.tryParseInt(value);
+                this.site = Utilities.tryParseInt(value).intValue();
                 break;
         }
     }
@@ -152,8 +145,8 @@ public class Site
     public void getPropertyInfo(int index, Hashtable properties, PropertyInfo info) {
         switch(index) {
             case 0:
-                info.type = PropertyInfo.STRING_CLASS;
-                info.name = "name";
+                info.type = PropertyInfo.INTEGER_CLASS;
+                info.name = "beaconId";
                 break;
             case 1:
                 info.type = PropertyInfo.INTEGER_CLASS;
@@ -179,14 +172,6 @@ public class Site
     }
 
     @Override
-    public int compareTo(Object o) {
-        int out = 0;
-        out += this.name.compareTo(((Site) o).getName());
-        //out += 42 * (this.site - ((Site) o).getSite());
-        return out;
-    }
-
-    @Override
     public boolean equals(Object other) {
         if (this == other) {
             return true;
@@ -194,26 +179,28 @@ public class Site
         if (other == null) {
             return false;
         }
-        if (!(other instanceof Site)) {
+        if (!(other instanceof LocationId)) {
             return false;
         }
-        Site castOther = (Site) other;
-        boolean res;
-        try {
-            res = this.name.equals(castOther.getName());
-        } catch (NullPointerException npe) {
-            android.util.Log.v("Site", "NPE " + StringUtils.toString(this) + " | " + StringUtils.toString(castOther), npe);
-            res = false;
-        }
-        return res;
+        LocationId castOther = (LocationId) other;
+        return (this.getSite() == castOther.getSite())
+                && (this.getBeaconId() == castOther.getBeaconId());
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        //hash = 11 * hash + this.site;
-        hash = 11 * hash + Objects.hashCode(this.name);
-        return hash;
+        int result = 17;
+        result = 37 * result + this.site;
+        result = 37 * result + this.beaconId;
+        return result;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        int out = 0;
+        out += 37 * (this.beaconId - ((LocationId) o).getBeaconId());
+        out += 42 * (this.site - ((LocationId) o).getSite());
+        return out;
     }
 
     /**
@@ -237,12 +224,12 @@ public class Site
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
+        dest.writeInt(this.beaconId);
         dest.writeInt(this.site);
     }
 
 
-    public static final Parcelable.Creator<Site> CREATOR = new Parcelable.Creator<Site>() {
+    public static final Parcelable.Creator<LocationId> CREATOR = new Parcelable.Creator<LocationId>() {
 
         /**
          * Create a new instance of the Parcelable class, instantiating it
@@ -253,8 +240,8 @@ public class Site
          * @return Returns a new instance of the Parcelable class.
          */
         @Override
-        public Site createFromParcel(Parcel source) {
-            return new Site(source);
+        public LocationId createFromParcel(Parcel source) {
+            return new LocationId(source);
         }
 
         /**
@@ -265,13 +252,13 @@ public class Site
          * initialized to null.
          */
         @Override
-        public Site[] newArray(int size) {
-            return new Site[size];
+        public LocationId[] newArray(int size) {
+            return new LocationId[size];
         }
     };
 
     public boolean isVerified() {
-        return  this.site != 0
-                && this.name != null;
+        return  this.beaconId != 0
+                && this.site != 0;
     }
 }

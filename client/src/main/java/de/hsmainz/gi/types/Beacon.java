@@ -16,7 +16,7 @@
  * MA 02110-1301  USA
  */
 
-package de.hsmainz.gi.indoornavcl.comm.types;
+package de.hsmainz.gi.types;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -56,7 +56,7 @@ public class Beacon
 
     /**
      * Overridden method to un-{@link android.os.Parcel}
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s
+     * {@link de.hsmainz.gi.types.Beacon}s
      *
      * @param   in      the {@link android.os.Parcel}
      */

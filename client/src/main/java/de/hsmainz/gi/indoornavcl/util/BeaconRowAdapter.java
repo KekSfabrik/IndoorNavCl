@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import de.hsmainz.gi.indoornavcl.R;
-import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
+import de.hsmainz.gi.types.Beacon;
 
 /**
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 19.02.15.

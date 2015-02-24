@@ -28,10 +28,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
-import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
-import de.hsmainz.gi.indoornavcl.comm.types.Site;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
+import de.hsmainz.gi.types.Beacon;
+import de.hsmainz.gi.types.Site;
+import de.hsmainz.gi.types.WkbLocation;
+import de.hsmainz.gi.types.WkbPoint;
 import de.hsmainz.gi.indoornavcl.util.BeaconLocationRowAdapter;
 import de.hsmainz.gi.indoornavcl.util.BeaconRowAdapter;
 import de.hsmainz.gi.indoornavcl.util.Globals;
@@ -211,7 +211,7 @@ public class    MainActivity
     /**
      * {@inheritDoc}
      * <p>Binds the {@link android.widget.Spinner} to the {@link android.widget.ArrayAdapter} {@link #adapter} on the
-     * {@link android.app.ActionBar} {@link #actionBar} so the {@link de.hsmainz.gi.indoornavcl.comm.types.Site} selection
+     * {@link android.app.ActionBar} {@link #actionBar} so the {@link de.hsmainz.gi.types.Site} selection
      * by the user can be handed over to the {@link de.hsmainz.gi.indoornavcl.BeaconScanService} {@link #bs}.
      */
     @Override

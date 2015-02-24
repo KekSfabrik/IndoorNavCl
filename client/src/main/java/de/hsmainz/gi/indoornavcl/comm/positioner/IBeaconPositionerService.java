@@ -20,10 +20,10 @@ package de.hsmainz.gi.indoornavcl.comm.positioner;
 import android.util.Log;
 import de.hsmainz.gi.indoornavcl.comm.Configuration;
 import de.hsmainz.gi.indoornavcl.comm.CustomSoapSerializationEnvelope;
-import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
-import de.hsmainz.gi.indoornavcl.comm.types.Site;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
+import de.hsmainz.gi.types.Beacon;
+import de.hsmainz.gi.types.Site;
+import de.hsmainz.gi.types.WkbLocation;
+import de.hsmainz.gi.types.WkbPoint;
 import org.ksoap2.HeaderProperty;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -52,7 +52,7 @@ public final class IBeaconPositionerService {
     private static String           SESSION_ID;
 
     /**
-     * Put a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} into the.
+     * Put a {@link de.hsmainz.gi.types.Site} into the.
      * @param   site    the Site to put into the System
      * @return  whether or not it was successful
      * @throws  Exception   if something goes wrong
@@ -74,7 +74,7 @@ public final class IBeaconPositionerService {
     }
 
     /**
-     * Put a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} into the System.
+     * Put a {@link de.hsmainz.gi.types.Beacon} into the System.
      * @param   beacon    the Beacon to put into the System
      * @return  whether or not it was successful
      * @throws  Exception   if something goes wrong
@@ -96,7 +96,7 @@ public final class IBeaconPositionerService {
     }
 
     /**
-     * Put a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} into the System based on the beacons uuid, major & minor.
+     * Put a {@link de.hsmainz.gi.types.Beacon} into the System based on the beacons uuid, major & minor.
      * @param   uuid    the Beacons manufacturer UUID
      * @param   major   the Beacons MAJOR field
      * @param   minor   the Beacons MINOR field
@@ -122,7 +122,7 @@ public final class IBeaconPositionerService {
     }
 
     /**
-     * Wrapper to put a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} into the System based on its name.
+     * Wrapper to put a {@link de.hsmainz.gi.types.Site} into the System based on its name.
      * @param   name    the name of the Site to put into the System
      * @return  whether or not it was successful
      * @throws  Exception   if something goes wrong
@@ -144,8 +144,8 @@ public final class IBeaconPositionerService {
     }
 
     /**
-     * Deletes a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from the System. The input Beacon has to have its
-     * ID field set and therefor {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon#isVerified} has to be
+     * Deletes a {@link de.hsmainz.gi.types.Beacon} from the System. The input Beacon has to have its
+     * ID field set and therefor {@link de.hsmainz.gi.types.Beacon#isVerified} has to be
      * {@link java.lang.Boolean#TRUE}.
      * @param   beacon    the Beacon to delete from the System
      * @return  whether or not it was successful
@@ -168,9 +168,9 @@ public final class IBeaconPositionerService {
     }
 
     /**
-     * Removes a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from a
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} managed through the. The inputs have to have their
-     * ID fields set and therefor {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be
+     * Removes a {@link de.hsmainz.gi.types.Beacon} from a
+     * {@link de.hsmainz.gi.types.Site} managed through the. The inputs have to have their
+     * ID fields set and therefor {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be
      * {@link java.lang.Boolean#TRUE}.
      * @param   beacon  the Beacon to remove from the Site
      * @param   site    the Site to remove the Beacon from
@@ -195,10 +195,10 @@ public final class IBeaconPositionerService {
     }
 
     /**
-     * Places a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} at a Coordinate indicated by the given
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation}. The input Beacon and Sites wrapped in
+     * Places a {@link de.hsmainz.gi.types.Beacon} at a Coordinate indicated by the given
+     * {@link de.hsmainz.gi.types.WkbLocation}. The input Beacon and Sites wrapped in
      * the WkbLocation have to have their ID fields set and therefor
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
      * @param   wkbLocation     the location that should be added to the system
      * @return  whether or not it was successful
      * @throws  Exception   if something goes wrong
@@ -220,8 +220,8 @@ public final class IBeaconPositionerService {
     }
 
     /**
-     * Deletes a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} from the System. The input Site has to have its
-     * ID field set and therefor {@link de.hsmainz.gi.indoornavcl.comm.types.Site#isVerified} has to be
+     * Deletes a {@link de.hsmainz.gi.types.Site} from the System. The input Site has to have its
+     * ID field set and therefor {@link de.hsmainz.gi.types.Site#isVerified} has to be
      * {@link java.lang.Boolean#TRUE}.
      * @param   site    the Site to delete from the System
      * @return  whether or not it was successful
@@ -244,9 +244,9 @@ public final class IBeaconPositionerService {
     }
 
     /**
-     * Removes a {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} from the System. The input Beacon and Sites
+     * Removes a {@link de.hsmainz.gi.types.WkbLocation} from the System. The input Beacon and Sites
      * wrapped in the WkbLocation have to have their ID fields set and therefor
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
      * {@link java.lang.Boolean#TRUE}.
      * @param   wkbLocation    the location to remove from the System
      * @return  whether or not it was successful
@@ -269,10 +269,10 @@ public final class IBeaconPositionerService {
     }
 
     /**
-     * Placed a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} on a specific
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} and at a given {@link com.vividsolutions.jts.geom.Point}
+     * Placed a {@link de.hsmainz.gi.types.Beacon} on a specific
+     * {@link de.hsmainz.gi.types.Site} and at a given {@link com.vividsolutions.jts.geom.Point}
      * Coordinate in the System. The input Beacon and Site have to have their ID fields set and therefor
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
      * {@link java.lang.Boolean#TRUE}.
      * @param   site        the Site the Beacon should be placed on
      * @param   beacon      the Beacon to place on that Site
@@ -299,10 +299,10 @@ public final class IBeaconPositionerService {
     }
 
     /**
-     * Replaces a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} on a specific
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} in the System. The input Beacons and Site have to
+     * Replaces a {@link de.hsmainz.gi.types.Beacon} on a specific
+     * {@link de.hsmainz.gi.types.Site} in the System. The input Beacons and Site have to
      * have their ID fields set and therefor
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
      * {@link java.lang.Boolean#TRUE}.
      * @param   site        the Site the Beacon should be replaced at
      * @param   oldBeacon   the Beacon to be replaced
@@ -329,10 +329,10 @@ public final class IBeaconPositionerService {
     }
 
     /**
-     * Relocates a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from one
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} to another in the System. The input Beacon and Sites have to
+     * Relocates a {@link de.hsmainz.gi.types.Beacon} from one
+     * {@link de.hsmainz.gi.types.Site} to another in the System. The input Beacon and Sites have to
      * have their ID fields set and therefor
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
      * {@link java.lang.Boolean#TRUE}.
      * @param   fromSite        the Site the Beacon was located at
      * @param   toSite          the Site the Beacon is moved to

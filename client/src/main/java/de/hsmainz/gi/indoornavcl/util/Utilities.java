@@ -21,7 +21,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
-import de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity;
+import de.hsmainz.gi.types.IndoorNavEntity;
 
 import java.util.*;
 
@@ -139,8 +139,8 @@ public class Utilities {
     }
 
     /**
-     * Check through a {@link java.util.Collection} of {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity}s
-     * and returns whether all all of their {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified}
+     * Check through a {@link java.util.Collection} of {@link de.hsmainz.gi.types.IndoorNavEntity}s
+     * and returns whether all all of their {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified}
      * methods are {@link java.lang.Boolean#TRUE}.
      *
      * @param   entities    a Collection of IndoorNavEntities
@@ -156,13 +156,13 @@ public class Utilities {
 
     /**
      * Get a {@link java.util.Collection} of the same Type as the input-{@link java.util.Collection} where all
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity} elements are verified or not as specified by
+     * {@link de.hsmainz.gi.types.IndoorNavEntity} elements are verified or not as specified by
      * the second argument. Warning: does not work for {@link java.util.ArrayList}s generated with {@link java.util.Arrays#asList}
      * or any of the {@link java.util.Collections} specials such as {@link java.util.Collections#synchronizedList} or
      * {@link java.util.Collections#unmodifiableSet} (throws {@link java.lang.NoSuchMethodException}).
      * @param   entities            the collection to filter through
      * @param   shouldBeVerified    whether the output should contain the elements whose
-     *          {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} returned true or false
+     *          {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} returned true or false
      * @param   <T>                 the generic type of the entities
      * @return  all elements that satisfy the shouldBeVerified argument
      */

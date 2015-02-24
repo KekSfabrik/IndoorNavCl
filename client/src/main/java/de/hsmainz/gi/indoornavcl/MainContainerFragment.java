@@ -23,8 +23,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import de.hsmainz.gi.indoornavcl.comm.types.Site;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
+import de.hsmainz.gi.types.Site;
+import de.hsmainz.gi.types.WkbPoint;
 
 /**
  * @author Jan 'KekS' M. <a href='mailto:keks@keksfabrik.eu'>mail</a>, 19.02.15.

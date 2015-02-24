@@ -20,10 +20,10 @@ package de.hsmainz.gi.indoornavcl.comm;
 import android.util.Log;
 import com.vividsolutions.jts.geom.Point;
 import de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService;
-import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
-import de.hsmainz.gi.indoornavcl.comm.types.Site;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
+import de.hsmainz.gi.types.Beacon;
+import de.hsmainz.gi.types.Site;
+import de.hsmainz.gi.types.WkbLocation;
+import de.hsmainz.gi.types.WkbPoint;
 
 /**
  * Class to rewrap in and outputs to calls to the
@@ -38,7 +38,7 @@ public class SoapPositionerRequests {
     private static final String     TAG     = SoapPositionerRequests.class.getSimpleName();
 
     /**
-     * Wrapper to put a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} into the System managed through the
+     * Wrapper to put a {@link de.hsmainz.gi.types.Site} into the System managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}.
      * @param   site    the Site to put into the System
      * @return  whether or not it was successful
@@ -54,7 +54,7 @@ public class SoapPositionerRequests {
     }
 
     /**
-     * Wrapper to put a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} into the System managed through the
+     * Wrapper to put a {@link de.hsmainz.gi.types.Beacon} into the System managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}.
      * @param   beacon    the Beacon to put into the System
      * @return  whether or not it was successful
@@ -70,7 +70,7 @@ public class SoapPositionerRequests {
     }
 
     /**
-     * Wrapper to put a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} into the System managed through the
+     * Wrapper to put a {@link de.hsmainz.gi.types.Beacon} into the System managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService} based on the beacons uuid, major & minor.
      * @param   uuid    the Beacons manufacturer UUID
      * @param   major   the Beacons MAJOR field
@@ -88,7 +88,7 @@ public class SoapPositionerRequests {
     }
 
     /**
-     * Wrapper to put a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} into the System managed through the
+     * Wrapper to put a {@link de.hsmainz.gi.types.Site} into the System managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService} based on its name.
      * @param   name    the name of the Site to put into the System
      * @return  whether or not it was successful
@@ -104,9 +104,9 @@ public class SoapPositionerRequests {
     }
 
     /**
-     * Wrapper to delete a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from the System managed through the
+     * Wrapper to delete a {@link de.hsmainz.gi.types.Beacon} from the System managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacon has to have its
-     * ID field set and therefor {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon#isVerified} has to be
+     * ID field set and therefor {@link de.hsmainz.gi.types.Beacon#isVerified} has to be
      * {@link java.lang.Boolean#TRUE}.
      * @param   beacon    the Beacon to delete from the System
      * @return  whether or not it was successful
@@ -122,10 +122,10 @@ public class SoapPositionerRequests {
     }
 
     /**
-     * Wrapper to remove a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from a
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} managed through the
+     * Wrapper to remove a {@link de.hsmainz.gi.types.Beacon} from a
+     * {@link de.hsmainz.gi.types.Site} managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The inputs have to have their
-     * ID fields set and therefor {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be
+     * ID fields set and therefor {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be
      * {@link java.lang.Boolean#TRUE}.
      * @param   beacon  the Beacon to remove from the Site
      * @param   site    the Site to remove the Beacon from
@@ -142,11 +142,11 @@ public class SoapPositionerRequests {
     }
 
     /**
-     * Wrapper to place a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} at a Coordinate indicated by the given
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} managed through the
+     * Wrapper to place a {@link de.hsmainz.gi.types.Beacon} at a Coordinate indicated by the given
+     * {@link de.hsmainz.gi.types.WkbLocation} managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacon and Sites wrapped in
      * the WkbLocation have to have their ID fields set and therefor
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
      * @param   wkbLocation     the location that should be added to the system
      * @return  whether or not it was successful
      */
@@ -161,9 +161,9 @@ public class SoapPositionerRequests {
     }
 
     /**
-     * Wrapper to delete a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} from the System managed through the
+     * Wrapper to delete a {@link de.hsmainz.gi.types.Site} from the System managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Site has to have its
-     * ID field set and therefor {@link de.hsmainz.gi.indoornavcl.comm.types.Site#isVerified} has to be
+     * ID field set and therefor {@link de.hsmainz.gi.types.Site#isVerified} has to be
      * {@link java.lang.Boolean#TRUE}.
      * @param   site    the Site to delete from the System
      * @return  whether or not it was successful
@@ -179,10 +179,10 @@ public class SoapPositionerRequests {
     }
 
     /**
-     * Wrapper to remove a {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation} from the System managed through the
+     * Wrapper to remove a {@link de.hsmainz.gi.types.WkbLocation} from the System managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacon and Sites wrapped in
      * the WkbLocation have to have their ID fields set and therefor
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
      * {@link java.lang.Boolean#TRUE}.
      * @param   wkbLocation    the location to remove from the System
      * @return  whether or not it was successful
@@ -198,12 +198,12 @@ public class SoapPositionerRequests {
     }
 
     /**
-     * Wrapper to place a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} on a specific
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} and at a given {@link com.vividsolutions.jts.geom.Point}
+     * Wrapper to place a {@link de.hsmainz.gi.types.Beacon} on a specific
+     * {@link de.hsmainz.gi.types.Site} and at a given {@link com.vividsolutions.jts.geom.Point}
      * Coordinate in the System managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacon and Site have to
      * have their ID fields set and therefor
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
      * {@link java.lang.Boolean#TRUE}.
      * @param   site        the Site the Beacon should be placed on
      * @param   beacon      the Beacon to place on that Site
@@ -221,11 +221,11 @@ public class SoapPositionerRequests {
     }
 
     /**
-     * Wrapper to replace a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} on a specific
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} in the System managed through the
+     * Wrapper to replace a {@link de.hsmainz.gi.types.Beacon} on a specific
+     * {@link de.hsmainz.gi.types.Site} in the System managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacons and Site have to
      * have their ID fields set and therefor
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
      * {@link java.lang.Boolean#TRUE}.
      * @param   site        the Site the Beacon should be replaced at
      * @param   oldBeacon   the Beacon to be replaced
@@ -243,11 +243,11 @@ public class SoapPositionerRequests {
     }
 
     /**
-     * Wrapper to relocate a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from one
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} to another in the System managed through the
+     * Wrapper to relocate a {@link de.hsmainz.gi.types.Beacon} from one
+     * {@link de.hsmainz.gi.types.Site} to another in the System managed through the
      * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService}. The input Beacon and Sites have to
      * have their ID fields set and therefor
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
+     * {@link de.hsmainz.gi.types.IndoorNavEntity#isVerified} has to be {@link java.lang.Boolean#TRUE}.
      * {@link java.lang.Boolean#TRUE}.
      * @param   fromSite        the Site the Beacon was located at
      * @param   toSite          the Site the Beacon is moved to
@@ -278,7 +278,7 @@ public class SoapPositionerRequests {
 //
 //
 //    /**
-//     * Add a new {@link de.hsmainz.gi.indoornavcl.comm.types.Site} to the System.
+//     * Add a new {@link de.hsmainz.gi.types.Site} to the System.
 //     * @param   site    the Site to add
 //     * @return  whether site was successfully added
 //     */
@@ -311,8 +311,8 @@ public class SoapPositionerRequests {
 //    }
 //
 //    /**
-//     * Wrapped call for {@link #addSite(de.hsmainz.gi.indoornavcl.comm.types.Site) } with
-//     * the implication of a new {@link de.hsmainz.gi.indoornavcl.comm.types.Site}
+//     * Wrapped call for {@link #addSite(de.hsmainz.gi.types.Site) } with
+//     * the implication of a new {@link de.hsmainz.gi.types.Site}
 //     * being constructed before adding it to the System.
 //     * @param   name    the new Site's name
 //     * @return  whether the site was successfully added
@@ -348,7 +348,7 @@ public class SoapPositionerRequests {
 //
 //
 //    /**
-//     * Unregister a {@link #addSite(de.hsmainz.gi.indoornavcl.comm.types.Site) } from the
+//     * Unregister a {@link #addSite(de.hsmainz.gi.types.Site) } from the
 //     * System and delete it from the Database.
 //     * @param   site    the Site to remove
 //     * @return  whether the site was successfully deleted from the database
@@ -382,7 +382,7 @@ public class SoapPositionerRequests {
 //    }
 //
 //    /**
-//     * Register a new {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} to the System.
+//     * Register a new {@link de.hsmainz.gi.types.Beacon} to the System.
 //     * @param   beacon  the Beacon to register to the System
 //     * @return  whether the Beacon was successully registered
 //     */
@@ -416,8 +416,8 @@ public class SoapPositionerRequests {
 //    }
 //
 //    /**
-//     * wrapped call to {@link #addBeacon(de.hsmainz.gi.indoornavcl.comm.types.Beacon) }
-//     * with a new new {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} being constructed
+//     * wrapped call to {@link #addBeacon(de.hsmainz.gi.types.Beacon) }
+//     * with a new new {@link de.hsmainz.gi.types.Beacon} being constructed
 //     * before registering with the System.
 //     * @param   uuid    the Beacons manufacturer uuid
 //     * @param   major   the Beacons major version
@@ -465,8 +465,8 @@ public class SoapPositionerRequests {
 //    }
 //
 //    /**
-//     * Unregister a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from a specific
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site}
+//     * Unregister a {@link de.hsmainz.gi.types.Beacon} from a specific
+//     * {@link de.hsmainz.gi.types.Site}
 //     * @param   beacon  the Beacon to unregister from the Site
 //     * @param   site    the Site to remove the Beacon from
 //     * @return  whether successful
@@ -506,9 +506,9 @@ public class SoapPositionerRequests {
 //    }
 //
 //    /**
-//     * Unregister a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from a specific
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} by its
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation}.
+//     * Unregister a {@link de.hsmainz.gi.types.Beacon} from a specific
+//     * {@link de.hsmainz.gi.types.Site} by its
+//     * {@link de.hsmainz.gi.types.WkbLocation}.
 //     * @param   location    the location to remove
 //     * @return  whether successful
 //     */
@@ -541,7 +541,7 @@ public class SoapPositionerRequests {
 //    }
 //
 //    /**
-//     * Unregister a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from the System
+//     * Unregister a {@link de.hsmainz.gi.types.Beacon} from the System
 //     * and remove it from the Database.
 //     * @param   beacon  the Beacon to unregister from the System
 //     * @return  whether successful
@@ -575,8 +575,8 @@ public class SoapPositionerRequests {
 //    }
 //
 //    /**
-//     * Place a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} on a
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} with a
+//     * Place a {@link de.hsmainz.gi.types.Beacon} on a
+//     * {@link de.hsmainz.gi.types.Site} with a
 //     * {@link com.vividsolutions.jts.geom.Point}
 //     * @param   site        the Site to place the Beacon on
 //     * @param   beacon      the Beacon that is being placed
@@ -625,8 +625,8 @@ public class SoapPositionerRequests {
 //
 //
 //    /**
-//     * Place a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} on a
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site} with a
+//     * Place a {@link de.hsmainz.gi.types.Beacon} on a
+//     * {@link de.hsmainz.gi.types.Site} with a
 //     * {@link com.vividsolutions.jts.geom.Point}
 //     * @param   location    the WkbLocation (Site, Beacon, Point)
 //     * @return  whether successful
@@ -660,7 +660,7 @@ public class SoapPositionerRequests {
 //    }
 //
 //    /**
-//     * Replace an existing {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} with a
+//     * Replace an existing {@link de.hsmainz.gi.types.Beacon} with a
 //     * new one at the same {@link com.vividsolutions.jts.geom.Point}.
 //     * @param   site        the Site on which to replace the Beacon
 //     * @param   oldBeacon   the old Beacon
@@ -708,9 +708,9 @@ public class SoapPositionerRequests {
 //    }
 //
 //    /**
-//     * Relocate an existing {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} to a
+//     * Relocate an existing {@link de.hsmainz.gi.types.Beacon} to a
 //     * different {@link com.vividsolutions.jts.geom.Point} on another
-//     * {@link de.hsmainz.gi.indoornavcl.comm.types.Site}.
+//     * {@link de.hsmainz.gi.types.Site}.
 //     * @param   fromSite        from which Site the Beacon is moved
 //     * @param   toSite          to which Site the Beacon is moved to
 //     * @param   beacon          the Beacon that is being moved

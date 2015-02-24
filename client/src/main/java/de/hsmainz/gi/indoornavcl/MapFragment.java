@@ -25,8 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import de.hsmainz.gi.indoornavcl.comm.Configuration;
-import de.hsmainz.gi.indoornavcl.comm.types.Site;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbPoint;
+import de.hsmainz.gi.types.Site;
+import de.hsmainz.gi.types.WkbPoint;
 import de.hsmainz.gi.indoornavcl.positioning.TinyCoordinate;
 import de.hsmainz.gi.indoornavcl.util.WebAppInterface;
 

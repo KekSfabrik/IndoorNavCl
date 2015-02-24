@@ -25,8 +25,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import de.hsmainz.gi.indoornavcl.R;
-import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
-import de.hsmainz.gi.indoornavcl.comm.types.WkbLocation;
+import de.hsmainz.gi.types.Beacon;
+import de.hsmainz.gi.types.WkbLocation;
 import de.hsmainz.gi.indoornavcl.positioning.TinyCoordinate;
 
 /**

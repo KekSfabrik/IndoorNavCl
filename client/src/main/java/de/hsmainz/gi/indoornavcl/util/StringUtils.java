@@ -17,7 +17,7 @@
 
 package de.hsmainz.gi.indoornavcl.util;
 
-import de.hsmainz.gi.indoornavcl.comm.types.*;
+import de.hsmainz.gi.types.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- *  Class with String Utilities since none of the {@link de.hsmainz.gi.indoornavcl.comm.types.IndoorNavEntity} implementors
+ *  Class with String Utilities since none of the {@link de.hsmainz.gi.types.IndoorNavEntity} implementors
  *  could override {@link Object#toString} because of XML-marshalling/unmarshalling.
  *
  * @author Jan "KekS" M. <a href="mailto:keks@keksfabrik.eu">mail</a>, 23.01.2015

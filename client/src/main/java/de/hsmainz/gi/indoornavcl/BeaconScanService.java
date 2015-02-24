@@ -26,13 +26,13 @@ import android.util.Log;
 import com.vividsolutions.jts.geom.Point;
 import de.hsmainz.gi.indoornavcl.comm.SoapLocatorRequests;
 import de.hsmainz.gi.indoornavcl.comm.SoapPositionerRequests;
-import de.hsmainz.gi.indoornavcl.comm.types.Beacon;
-import de.hsmainz.gi.indoornavcl.comm.types.*;
 import de.hsmainz.gi.indoornavcl.positioning.Locator;
-import de.hsmainz.gi.indoornavcl.positioning.LocatorComboImpl;
 import de.hsmainz.gi.indoornavcl.positioning.Measurement;
+import de.hsmainz.gi.indoornavcl.positioning.TrivialLocator;
 import de.hsmainz.gi.indoornavcl.util.Globals;
 import de.hsmainz.gi.indoornavcl.util.StringUtils;
+import de.hsmainz.gi.types.Beacon;
+import de.hsmainz.gi.types.*;
 import org.altbeacon.beacon.*;
 
 import java.util.*;
@@ -68,7 +68,7 @@ public class BeaconScanService
     private boolean                     isScanning;
     private final IBinder               binder = new LocalBinder();
     private Messenger mainActivityMessenger;
-    private Locator                     locator = new LocatorComboImpl();//new LocatorImpl1();//new TrivialLocator();
+    private Locator                     locator = new TrivialLocator();//new LocatorComboImpl();//new LocatorImpl1();//new TrivialLocator();
 
     /** whether or not the user is an administrator */
     private static boolean              isAdminUser = true;
@@ -179,7 +179,7 @@ public class BeaconScanService
 
 
     /**
-     * A Threadrunner to get all available {@link de.hsmainz.gi.indoornavcl.comm.types.Site}s for the from the backing WebService.
+     * A Threadrunner to get all available {@link de.hsmainz.gi.types.Site}s for the from the backing WebService.
      * Its Callback to the {@link android.os.Handler} {@link #handler} is
      * {@link de.hsmainz.gi.indoornavcl.util.Globals#SITES_AVAILABLE_CALLBACK_ARRIVED}.
      * <p>This will be called when the Service starts up to give the user the choice of selecting a Site.
@@ -199,11 +199,11 @@ public class BeaconScanService
 
 
     /**
-     * A Threadrunner to get all {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s for the {@link #loggedBeacons}
+     * A Threadrunner to get all {@link de.hsmainz.gi.types.Beacon}s for the {@link #loggedBeacons}
      * from the backing WebService.
      * Its Callback to the {@link android.os.Handler} {@link #handler} is
      * {@link de.hsmainz.gi.indoornavcl.util.Globals#ZERO}.
-     * <p>The connection to the WebService will only be done if there are {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s
+     * <p>The connection to the WebService will only be done if there are {@link de.hsmainz.gi.types.Beacon}s
      * still unknown (position/location) to the Service in the local {@link #loggedBeacons}.
      */
     private void updateCheckedBeacons() {
@@ -241,11 +241,11 @@ public class BeaconScanService
 
 
     /**
-     * A Threadrunner to get all {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation}s for the {@link #loggedBeacons}
+     * A Threadrunner to get all {@link de.hsmainz.gi.types.WkbLocation}s for the {@link #loggedBeacons}
      * from the backing WebService.
      * Its Callback to the {@link android.os.Handler} {@link #handler} is
      * {@link de.hsmainz.gi.indoornavcl.util.Globals#CURRENT_SITE_LOCATIONS_CALLBACK_ARRIVED}.
-     * <p>The connection to the WebService will only be done if there are {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s
+     * <p>The connection to the WebService will only be done if there are {@link de.hsmainz.gi.types.Beacon}s
      * still unknown (position/location) to the Service in the local {@link #loggedBeacons}.
      */
     private void getLocationsFromLoggedBeacons() {
@@ -266,12 +266,12 @@ public class BeaconScanService
 
 
     /**
-     * A Threadrunner to get all {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation}s for the {@link #checkedBeacons}
+     * A Threadrunner to get all {@link de.hsmainz.gi.types.WkbLocation}s for the {@link #checkedBeacons}
      * from the backing WebService.
      * Its Callback to the {@link android.os.Handler} {@link #handler} is
      * {@link de.hsmainz.gi.indoornavcl.util.Globals#GET_LOCATIONS_CALLBACK_ARRIVED}.
      * <p>The connection to the WebService will only be done if there are actually
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}s in the local {@link #checkedBeacons}.
+     * {@link de.hsmainz.gi.types.Beacon}s in the local {@link #checkedBeacons}.
      */
     private void getLocationsFromCheckedBeacons() {
         new Thread(new Runnable() {
@@ -289,7 +289,7 @@ public class BeaconScanService
     }
 
     /**
-     * Tries to determine which {@link de.hsmainz.gi.indoornavcl.comm.types.Site} the client is actually at.
+     * Tries to determine which {@link de.hsmainz.gi.types.Site} the client is actually at.
      * To do so it counts occurences of Sites in the {@link #currentSiteLocations} and calls {@link #setCurrentSite}
      * if it thinks the Site is has changed.
      */
@@ -320,7 +320,7 @@ public class BeaconScanService
     }
 
     /**
-     * A Threadrunner to get all {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation}s for the {@link #currentSite}
+     * A Threadrunner to get all {@link de.hsmainz.gi.types.WkbLocation}s for the {@link #currentSite}
      * from the backing WebService.
      * Its Callback to the {@link android.os.Handler} {@link #handler} is
      * {@link de.hsmainz.gi.indoornavcl.util.Globals#GET_LOCATIONS_CALLBACK_ARRIVED}.
@@ -344,7 +344,7 @@ public class BeaconScanService
     }
 
     /**
-     * A Threadrunner to add a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} to the backing WebService.
+     * A Threadrunner to add a {@link de.hsmainz.gi.types.Beacon} to the backing WebService.
      * Its Callback to the {@link android.os.Handler} {@link #handler} is
      * {@link de.hsmainz.gi.indoornavcl.util.Globals#ADD_BEACON_MSG}.
      * @param   beacon      the Beacon to add to the System
@@ -361,7 +361,7 @@ public class BeaconScanService
     }
 
     /**
-     * A Threadrunner to delete a {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} from the backing WebService.
+     * A Threadrunner to delete a {@link de.hsmainz.gi.types.Beacon} from the backing WebService.
      * Its Callback to the {@link android.os.Handler} {@link #handler} is
      * {@link de.hsmainz.gi.indoornavcl.util.Globals#DELETE_BEACON_MSG}.
      * <p>The connection to the WebService will only be done if the <code>beacon</code> is valid/verified
@@ -386,7 +386,7 @@ public class BeaconScanService
     }
 
     /**
-     * A Threadrunner to add a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} to the backing WebService.
+     * A Threadrunner to add a {@link de.hsmainz.gi.types.Site} to the backing WebService.
      * Its Callback to the {@link android.os.Handler} {@link #handler} is
      * {@link de.hsmainz.gi.indoornavcl.util.Globals#ADD_SITE_MSG}.
      * @param   site      the Site to add to the System
@@ -403,7 +403,7 @@ public class BeaconScanService
     }
 
     /**
-     * A Threadrunner to delete a {@link de.hsmainz.gi.indoornavcl.comm.types.Site} from the backing WebService.
+     * A Threadrunner to delete a {@link de.hsmainz.gi.types.Site} from the backing WebService.
      * Its Callback to the {@link android.os.Handler} {@link #handler} is
      * {@link de.hsmainz.gi.indoornavcl.util.Globals#DELETE_SITE_MSG}.
      * <p>The connection to the WebService will only be done if the <code>site</code> is valid/verified
@@ -429,7 +429,7 @@ public class BeaconScanService
     }
 
     /**
-     * Checks what to do with the {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon} supplied by the
+     * Checks what to do with the {@link de.hsmainz.gi.types.Beacon} supplied by the
      * {@link org.altbeacon.beacon.RangeNotifier} configured in {@link #onCreate}.
      * @param   beacon      the scanned Beacon
      * @param   measurement the {@link de.hsmainz.gi.indoornavcl.positioning.Measurement}
@@ -516,10 +516,10 @@ public class BeaconScanService
         AsyncTask<String,Void, Long> task = new AsyncTask<String, Void, Long>() {
             protected Long doInBackground(String... params) {
                 long startTime = System.currentTimeMillis();
-                de.hsmainz.gi.indoornavcl.comm.types.Beacon testBeacon = new de.hsmainz.gi.indoornavcl.comm.types.Beacon(100, 0, 0, "00000000000000000000000000000000");
-                de.hsmainz.gi.indoornavcl.comm.types.Beacon repBeacon = new de.hsmainz.gi.indoornavcl.comm.types.Beacon(111, 1, 1, "11111111111111111111111111111111");
+                de.hsmainz.gi.types.Beacon testBeacon = new de.hsmainz.gi.types.Beacon(100, 0, 0, "00000000000000000000000000000000");
+                de.hsmainz.gi.types.Beacon repBeacon = new de.hsmainz.gi.types.Beacon(111, 1, 1, "11111111111111111111111111111111");
                 repBeacon.setId(0);
-                de.hsmainz.gi.indoornavcl.comm.types.Beacon noIdBeacon = new de.hsmainz.gi.indoornavcl.comm.types.Beacon();
+                de.hsmainz.gi.types.Beacon noIdBeacon = new de.hsmainz.gi.types.Beacon();
                 noIdBeacon.setUuid("00000000000000000000000000000000");
                 noIdBeacon.setMajor(0);
                 noIdBeacon.setMinor(0);
@@ -611,7 +611,7 @@ public class BeaconScanService
      * the {@link #app} ({@link de.hsmainz.gi.indoornavcl.BeaconScannerApplication}) and setup of the way the Service
      * is scanning for {@link org.altbeacon.beacon.Beacon}s. Also setup of how to handle scanned Beacons: null all
      * {@link de.hsmainz.gi.indoornavcl.positioning.Measurement}s in the local Field {@link #currentSiteMeasurements},
-     * translate Beacon own class {@link de.hsmainz.gi.indoornavcl.comm.types.Beacon}, run it through {@link #checkMeasuredBeacon}
+     * translate Beacon own class {@link de.hsmainz.gi.types.Beacon}, run it through {@link #checkMeasuredBeacon}
      * and if any of the scanned Beacons indicate a new position should be calculated it tries to
      * {@link #getLocationsFromLoggedBeacons} and starts the calculation of a new position ({@link #calcPosition}).
      */
@@ -712,7 +712,7 @@ public class BeaconScanService
     }
 
     /**
-     * Set the current {@link de.hsmainz.gi.indoornavcl.comm.types.Site} from a String. Will return {@link java.lang.Boolean#FALSE}
+     * Set the current {@link de.hsmainz.gi.types.Site} from a String. Will return {@link java.lang.Boolean#FALSE}
      * if the new Site is the current one or the new one doesn't exist in the database. When the correct Site can be found,
      * {@link #setCurrentSite} is called with this site
      * @param   siteName    the name of the new Site
@@ -747,8 +747,8 @@ public class BeaconScanService
     }
 
     /**
-     * Override the current {@link de.hsmainz.gi.indoornavcl.comm.types.Site} with another one. Only keeps
-     * {@link de.hsmainz.gi.indoornavcl.comm.types.WkbLocation}s of the new Site in the local {@link java.util.Map} of
+     * Override the current {@link de.hsmainz.gi.types.Site} with another one. Only keeps
+     * {@link de.hsmainz.gi.types.WkbLocation}s of the new Site in the local {@link java.util.Map} of
      * WkbLocations and {@link de.hsmainz.gi.indoornavcl.positioning.Measurement}s.
      * @param   site    the new Site
      */
@@ -820,7 +820,7 @@ public class BeaconScanService
     }
 
     /**
-     * Set override of current {@link de.hsmainz.gi.indoornavcl.comm.types.Site} access by the user.
+     * Set override of current {@link de.hsmainz.gi.types.Site} access by the user.
      * @param   override    xwwhether or not the Site set by the user should be used
      */
     public void setUserOverride(boolean override) {
@@ -847,7 +847,7 @@ public class BeaconScanService
 
 
     /**
-     * Notify the bound Activity that the current {@link de.hsmainz.gi.indoornavcl.comm.types.Site} has changed.
+     * Notify the bound Activity that the current {@link de.hsmainz.gi.types.Site} has changed.
      */
     private void uiSiteChanged() {
         try {

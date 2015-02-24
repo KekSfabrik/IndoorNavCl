@@ -15,7 +15,7 @@
  * MA 02110-1301  USA
  */
 
-package de.hsmainz.gi.indoornavcl.comm.types;
+package de.hsmainz.gi.types;
 
 import android.os.Parcel;
 import android.os.Parcelable;
