@@ -26,13 +26,13 @@ import android.util.Log;
 import com.vividsolutions.jts.geom.Point;
 import de.hsmainz.gi.indoornavcl.comm.SoapLocatorRequests;
 import de.hsmainz.gi.indoornavcl.comm.SoapPositionerRequests;
-import de.hsmainz.gi.indoornavcl.positioning.Locator;
-import de.hsmainz.gi.indoornavcl.positioning.Measurement;
-import de.hsmainz.gi.indoornavcl.positioning.TrivialLocator;
-import de.hsmainz.gi.indoornavcl.util.Globals;
-import de.hsmainz.gi.indoornavcl.util.StringUtils;
 import de.hsmainz.gi.types.Beacon;
 import de.hsmainz.gi.types.*;
+import de.hsmainz.gi.indoornavcl.positioning.Locator;
+import de.hsmainz.gi.indoornavcl.positioning.LocatorComboImpl;
+import de.hsmainz.gi.indoornavcl.positioning.Measurement;
+import de.hsmainz.gi.indoornavcl.util.Globals;
+import de.hsmainz.gi.indoornavcl.util.StringUtils;
 import org.altbeacon.beacon.*;
 
 import java.util.*;
@@ -68,7 +68,7 @@ public class BeaconScanService
     private boolean                     isScanning;
     private final IBinder               binder = new LocalBinder();
     private Messenger mainActivityMessenger;
-    private Locator                     locator = new TrivialLocator();//new LocatorComboImpl();//new LocatorImpl1();//new TrivialLocator();
+    private Locator                     locator = new LocatorComboImpl();//new LocatorImpl1();//new TrivialLocator();
 
     /** whether or not the user is an administrator */
     private static boolean              isAdminUser = true;

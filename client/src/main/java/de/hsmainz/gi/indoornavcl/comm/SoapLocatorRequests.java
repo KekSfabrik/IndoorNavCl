@@ -186,7 +186,7 @@ public class SoapLocatorRequests {
      * Wrapper to get a Set of {@link de.hsmainz.gi.types.WkbLocation} objects from the
      * {@link de.hsmainz.gi.indoornavcl.comm.locator.IBeaconLocatorService} based on
      * a Set of {@link de.hsmainz.gi.types.Beacon}s.
-     * @param   beacons the Set of Beacons for which Locations (Site & Position) should be found
+     * @param   beacons the Set of Beacons for which Locations (Site &amp; Position) should be found
      * @return  all Locations of the given beacons
      */
     public static Set<WkbLocation> getBeaconLocationsFromBeaconList(Set<Beacon> beacons) {

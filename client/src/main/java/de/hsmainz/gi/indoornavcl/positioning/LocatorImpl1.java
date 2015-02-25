@@ -137,9 +137,9 @@ public class LocatorImpl1
      * @param dA    Distance to a
      * @param dB    Distance to b
      * @param dC    Distance to c
-     * @param cA    Confidence of a (0 < cA < 1)
-     * @param cB    Confidence of b (0 < cB < 1)
-     * @param cC    Confidence of c (0 < cC < 1)
+     * @param cA    Confidence of a (0 &lt; cA &lt; 1)
+     * @param cB    Confidence of b (0 &lt; cB &lt; 1)
+     * @param cC    Confidence of c (0 &lt; cC &lt; 1)
      * @return      the position based on the 3 strongest signals
      */
     private TinyCoordinate position(

@@ -92,7 +92,7 @@ public final class Configuration {
     }
 
     /**
-     *
+     * Getter for {@link #wsUrl} and {@link #locatorWs}
      * @return The address at which the LOCATOR WebService is deployed.
      */
     public static String getLocatorWsUrl() {
@@ -101,7 +101,7 @@ public final class Configuration {
 
 
     /**
-     * Getter for {@link #}
+     * Getter for {@link #wsUrl} and {@link #positionerWs}
      * @return The address which the POSITIONER WebService is deployed.
      */
     public static String getPositionerWsUrl() {

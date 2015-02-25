@@ -71,7 +71,7 @@ public class SoapPositionerRequests {
 
     /**
      * Wrapper to put a {@link de.hsmainz.gi.types.Beacon} into the System managed through the
-     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService} based on the beacons uuid, major & minor.
+     * {@link de.hsmainz.gi.indoornavcl.comm.positioner.IBeaconPositionerService} based on the beacons uuid, major &amp; minor.
      * @param   uuid    the Beacons manufacturer UUID
      * @param   major   the Beacons MAJOR field
      * @param   minor   the Beacons MINOR field

@@ -347,7 +347,7 @@ public final class IBeaconLocatorService {
     /**
      * Get a Set of {@link de.hsmainz.gi.types.WkbLocation} objects from
      * an Array of {@link de.hsmainz.gi.types.Beacon}s.
-     * @param   beacons the Set of Beacons for which Locations (Site & Position) should be found
+     * @param   beacons the Set of Beacons for which Locations (Site &amp; Position) should be found
      * @return  all Locations of the given beacons
      * @throws  Exception   if something goes wrong
      */

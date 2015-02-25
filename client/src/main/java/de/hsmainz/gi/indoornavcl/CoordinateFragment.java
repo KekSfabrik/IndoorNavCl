@@ -99,6 +99,9 @@ public class    CoordinateFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        x.setText("");
+        y.setText("");
+        z.setText("");
     }
 
     /**
